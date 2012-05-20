@@ -5,7 +5,7 @@ This is the start of a library for [Twilio](http://www.twilio.com/). It currentl
 Gotwilio is licensed under a BSD license.
 
 ## Installation
-To install gotwilio, simply run `goinstall github.com/sfreiberg/gotwilio`.
+To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 
 ## Example
 
