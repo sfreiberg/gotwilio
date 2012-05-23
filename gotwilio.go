@@ -4,7 +4,6 @@ package gotwilio
 
 import (
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -24,33 +23,44 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 
 // SendTextMessage uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
-func (twilio *Twilio) SendTextMessage(from, to, body string) (string, error) {
+func (twilio *Twilio) SendTextMessage(from, to, body, statusCallback, applicationSid string) (string, error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/SMS/Messages.json" // needs a better variable name
 
 	formValues := url.Values{}
 	formValues.Set("From", from)
 	formValues.Set("To", to)
 	formValues.Set("Body", body)
+	if statusCallback != "" {
+		formValues.Set("StatusCallback", statusCallback)
+	}
+	if applicationSid != "" {
+		formValues.Set("ApplicationSid", applicationSid)
+	}
 
 	return twilio.post(formValues, twilioUrl)
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (string, error) {
-	var respError error
-	req, _ := http.NewRequest("POST", twilioUrl, strings.NewReader(formValues.Encode())) // TODO: check error
+	req, err := http.NewRequest("POST", twilioUrl, strings.NewReader(formValues.Encode()))
+	if err != nil {
+		return "", err
+	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(err)
+		return "", err
 	}
-	resBody, _ := ioutil.ReadAll(resp.Body) // TODO: check error
+	resBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
 	results := string(resBody)
 
 	if resp.StatusCode != 200 {
-		respError = errors.New(resp.Status)
+		err = errors.New(resp.Status)
 	}
-	return results, respError
+	return results, err
 }
