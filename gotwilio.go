@@ -21,24 +21,7 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 	return &Twilio{accountSid, authToken, twilioUrl}
 }
 
-// SendTextMessage uses Twilio to send a text message.
-// See http://www.twilio.com/docs/api/rest/sending-sms for more information.
-func (twilio *Twilio) SendTextMessage(from, to, body, statusCallback, applicationSid string) (string, error) {
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/SMS/Messages.json" // needs a better variable name
 
-	formValues := url.Values{}
-	formValues.Set("From", from)
-	formValues.Set("To", to)
-	formValues.Set("Body", body)
-	if statusCallback != "" {
-		formValues.Set("StatusCallback", statusCallback)
-	}
-	if applicationSid != "" {
-		formValues.Set("ApplicationSid", applicationSid)
-	}
-
-	return twilio.post(formValues, twilioUrl)
-}
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (string, error) {
 	req, err := http.NewRequest("POST", twilioUrl, strings.NewReader(formValues.Encode()))
