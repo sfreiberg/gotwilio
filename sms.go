@@ -18,7 +18,7 @@ type SmsResponse struct {
 
 // SendTextMessage uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
-func (twilio *Twilio) SendTextMessage(from, to, body, statusCallback, applicationSid string) (string, error) {
+func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (string, error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/SMS/Messages.json" // needs a better variable name
 
 	formValues := url.Values{}
