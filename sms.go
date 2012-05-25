@@ -1,5 +1,9 @@
 package gotwilio
 
+import (
+	"net/url"
+)
+
 type SmsResponse struct {
 	Sid         string
 	DateCreated string // TODO: Change this to date type if possible
