@@ -33,7 +33,7 @@ func (sms *SmsResponse) DateUpdateAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateUpdate)
 }
 
-func (sms *SmsResponse) DateSentdAsTime() (time.Time, error) {
+func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateSent)
 }
 
