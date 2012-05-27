@@ -21,7 +21,7 @@ type SmsResponse struct {
 	Status      string   `xml:"SMSMessage>Status"`
 	Direction   string   `xml:"SMSMessage>Direction"`
 	ApiVersion  string   `xml:"SMSMessage>ApiVersion"`
-	Price       float32  `xml:"SMSMessage>Price"` // TODO: need to find out what this returns. My example is null
+	Price       float32  `xml:"SMSMessage>Price"`
 	Url         string   `xml:"SMSMessage>Uri"`
 }
 
