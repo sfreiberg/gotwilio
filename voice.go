@@ -98,6 +98,7 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	if err != nil {
 		return voiceResponse, exception, err
 	}
+	defer res.Body.Close()
 
 	decoder := xml.NewDecoder(res.Body)
 
@@ -115,11 +116,33 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	return voiceResponse, exception, err
 }
 
-func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid string) (*http.Response, error) {
+func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid string) (*VoiceResponse, *Exception, error) {
+	var voiceResponse *VoiceResponse
+	var exception *Exception
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls"
 	formValues := url.Values{}
 	formValues.Set("From", from)
 	formValues.Set("To", to)
 	formValues.Set("ApplicationSid", applicationSid)
-	return twilio.post(formValues, twilioUrl)
+	
+	res, err := twilio.post(formValues, twilioUrl)
+	if err != nil {
+		return voiceResponse, exception, err
+	}
+	defer res.Body.Close()
+
+	decoder := xml.NewDecoder(res.Body)
+
+	if res.StatusCode != http.StatusCreated {
+		exception = new(Exception)
+		err = decoder.Decode(exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return voiceResponse, exception, err
+	}
+
+	voiceResponse = new(VoiceResponse)
+	err = decoder.Decode(voiceResponse)
+	return voiceResponse, exception, err
 }

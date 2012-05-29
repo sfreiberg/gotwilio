@@ -59,6 +59,7 @@ func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid str
 	if err != nil {
 		return smsResponse, exception, err
 	}
+	defer res.Body.Close()
 
 	responseBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
