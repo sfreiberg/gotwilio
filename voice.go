@@ -72,10 +72,6 @@ func NewCallbackParameters(url string) *CallbackParameters {
 }
 
 func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *CallbackParameters) (*VoiceResponse, *Exception, error) {
-	var voiceResponse *VoiceResponse
-	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls"
-
 	formValues := url.Values{}
 	formValues.Set("From", from)
 	formValues.Set("To", to)
@@ -94,37 +90,23 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 		formValues.Set("Record", "false")
 	}
 
-	res, err := twilio.post(formValues, twilioUrl)
-	if err != nil {
-		return voiceResponse, exception, err
-	}
-	defer res.Body.Close()
-
-	decoder := xml.NewDecoder(res.Body)
-
-	if res.StatusCode != http.StatusCreated {
-		exception = new(Exception)
-		err = decoder.Decode(exception)
-
-		// We aren't checking the error because we don't actually care.
-		// It's going to be passed to the client either way.
-		return voiceResponse, exception, err
-	}
-
-	voiceResponse = new(VoiceResponse)
-	err = decoder.Decode(voiceResponse)
-	return voiceResponse, exception, err
+	return twilio.voicePost(formValues)
 }
 
 func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid string) (*VoiceResponse, *Exception, error) {
-	var voiceResponse *VoiceResponse
-	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls"
 	formValues := url.Values{}
 	formValues.Set("From", from)
 	formValues.Set("To", to)
 	formValues.Set("ApplicationSid", applicationSid)
-	
+
+	return twilio.voicePost(formValues)
+}
+
+func (twilio *Twilio) voicePost(formValues url.Values) (*VoiceResponse, *Exception, error) {
+	var voiceResponse *VoiceResponse
+	var exception *Exception
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls"
+
 	res, err := twilio.post(formValues, twilioUrl)
 	if err != nil {
 		return voiceResponse, exception, err
