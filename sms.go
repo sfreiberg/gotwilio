@@ -8,6 +8,7 @@ import (
 	"time"
 )
 
+// SmsResponse is returned after a text/sms message is posted to Twilio
 type SmsResponse struct {
 	XMLName     xml.Name `xml:"TwilioResponse"`
 	Sid         string   `xml:"SMSMessage>Sid"`
@@ -25,14 +26,20 @@ type SmsResponse struct {
 	Url         string   `xml:"SMSMessage>Uri"`
 }
 
+// Returns SmsResponse.DateCreated as a time.Time object
+// instead of a string.
 func (sms *SmsResponse) DateCreatedAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateCreated)
 }
 
+// Returns SmsResponse.DateUpdate as a time.Time object
+// instead of a string.
 func (sms *SmsResponse) DateUpdateAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateUpdate)
 }
 
+// Returns SmsResponse.DateSent as a time.Time object
+// instead of a string.
 func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateSent)
 }

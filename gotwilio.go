@@ -8,20 +8,24 @@ import (
 	"strings"
 )
 
+// Twilio stores basic information important for connecting to the
+// twilio.com REST api such as AccountSid and AuthToken.
 type Twilio struct {
 	AccountSid string
 	AuthToken  string
 	BaseUrl    string
 }
 
+// Exception is a representation of a twilio exception.
 type Exception struct {
 	XMLName  xml.Name `xml:"TwilioResponse"`
-	Status   int      `xml:"RestException>Status"`
-	Message  string   `xml:"RestException>Message"`
-	Code     int      `xml:"RestException>Code"`
-	MoreInfo string   `xml:"RestException>MoreInfo"`
+	Status   int      `xml:"RestException>Status"` // HTTP specific error code
+	Message  string   `xml:"RestException>Message"` // HTTP error message
+	Code     int      `xml:"RestException>Code"` // Twilio specific error code
+	MoreInfo string   `xml:"RestException>MoreInfo"` // Additional info from Twilio
 }
 
+// Create a new Twilio struct.
 func NewTwilioClient(accountSid, authToken string) *Twilio {
 	twilioUrl := "https://api.twilio.com/2010-04-01" // Should this be moved into a constant?
 	return &Twilio{accountSid, authToken, twilioUrl}

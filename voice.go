@@ -23,6 +23,7 @@ type CallbackParameters struct {
 	Record               bool   // Optional
 }
 
+// VoiceResponse contains the details about successful voice calls.
 type VoiceResponse struct {
 	XMLName        xml.Name `xml:"TwilioResponse"`
 	Sid            string   `xml:"Call>Sid"`
@@ -51,26 +52,37 @@ type VoiceResponse struct {
 	// TODO: handle SubresourceUris
 }
 
+// Returns VoiceResponse.DateCreated as a time.Time object
+// instead of a string.
 func (vr *VoiceResponse) DateCreatedAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, vr.DateCreated)
 }
 
+// Returns VoiceResponse.DateUpdated as a time.Time object
+// instead of a string.
 func (vr *VoiceResponse) DateUpdatedAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, vr.DateUpdated)
 }
 
+// Returns VoiceResponse.StartTime as a time.Time object
+// instead of a string.
 func (vr *VoiceResponse) StartTimeAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, vr.StartTime)
 }
 
+// Returns VoiceResponse.EndTime as a time.Time object
+// instead of a string.
 func (vr *VoiceResponse) EndTimeAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, vr.EndTime)
 }
 
+// Returns a CallbackParameters type with the specified url and
+// CallbackParameters.Timeout set to 60.
 func NewCallbackParameters(url string) *CallbackParameters {
 	return &CallbackParameters{Url: url, Timeout: 60}
 }
 
+// Place a voice call with a list of callbacks specified.
 func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *CallbackParameters) (*VoiceResponse, *Exception, error) {
 	formValues := url.Values{}
 	formValues.Set("From", from)
@@ -93,6 +105,7 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	return twilio.voicePost(formValues)
 }
 
+// Place a voice call with an ApplicationSid specified.
 func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid string) (*VoiceResponse, *Exception, error) {
 	formValues := url.Values{}
 	formValues.Set("From", from)
@@ -102,6 +115,7 @@ func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid stri
 	return twilio.voicePost(formValues)
 }
 
+// This is a private method that has the common bits for making a voice call.
 func (twilio *Twilio) voicePost(formValues url.Values) (*VoiceResponse, *Exception, error) {
 	var voiceResponse *VoiceResponse
 	var exception *Exception
