@@ -1,7 +1,7 @@
 package gotwilio
 
 import (
-	"encoding/xml"
+	"encoding/json"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -25,30 +25,29 @@ type CallbackParameters struct {
 
 // VoiceResponse contains the details about successful voice calls.
 type VoiceResponse struct {
-	XMLName        xml.Name `xml:"TwilioResponse"`
-	Sid            string   `xml:"Call>Sid"`
-	DateCreated    string   `xml:"Call>DateCreated"`
-	DateUpdated    string   `xml:"Call>DateUpdated"`
-	ParentCallSid  string   `xml:"Call>ParentCallSid"`
-	AccountSid     string   `xml:"Call>AccountSid"`
-	To             string   `xml:"Call>To"`
-	ToFormatted    string   `xml:"Call>ToFormatted"`
-	From           string   `xml:"Call>From"`
-	FromFormatted  string   `xml:"Call>FromFormatted"`
-	PhoneNumberSid string   `xml:"Call>PhoneNumberSid"`
-	Status         string   `xml:"Call>Status"`
-	StartTime      string   `xml:"Call>StartTime"`
-	EndTime        string   `xml:"Call>EndTime"`
-	Duration       int      `xml:"Call>Duration"`
-	Price          float32  `xml:"Call>Price"`
-	Direction      string   `xml:"Call>Direction"`
-	AnsweredBy     string   `xml:"Call>AnsweredBy"`
-	ApiVersion     string   `xml:"Call>ApiVersion"`
-	Annotation     string   `xml:"Call>Annotation"`
-	ForwardedFrom  string   `xml:"Call>ForwardedFrom"`
-	GroupSid       string   `xml:"Call>GroupSid"`
-	CallerName     string   `xml:"Call>CallerName"`
-	Uri            string   `xml:"Call>Uri"`
+	Sid            string   `json:"sid"`
+	DateCreated    string   `json:"date_created"`
+	DateUpdated    string   `json:"date_updated"`
+	ParentCallSid  string   `json:"parent_call_sid"`
+	AccountSid     string   `json:"account_sid"`
+	To             string   `json:"to"`
+	ToFormatted    string   `json:"to_formatted"`
+	From           string   `json:"from"`
+	FromFormatted  string   `json:"from_formatted"`
+	PhoneNumberSid string   `json:"phone_number_sid"`
+	Status         string   `json:"status"`
+	StartTime      string   `json:"start_time"`
+	EndTime        string   `json:"end_time"`
+	Duration       int      `json:"duration"`
+	Price          *float32 `json:"price,omitempty"`
+	Direction      string   `json:"direction"`
+	AnsweredBy     string   `json:"answered_by"`
+	ApiVersion     string   `json:"api_version"`
+	Annotation     string   `json:"annotation"`
+	ForwardedFrom  string   `json:"forwarded_from"`
+	GroupSid       string   `json:"group_sid"`
+	CallerName     string   `json:"caller_name"`
+	Uri            string   `json:"uri"`
 	// TODO: handle SubresourceUris
 }
 
@@ -119,7 +118,7 @@ func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid stri
 func (twilio *Twilio) voicePost(formValues url.Values) (*VoiceResponse, *Exception, error) {
 	var voiceResponse *VoiceResponse
 	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls"
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls.json"
 
 	res, err := twilio.post(formValues, twilioUrl)
 	if err != nil {
@@ -127,7 +126,7 @@ func (twilio *Twilio) voicePost(formValues url.Values) (*VoiceResponse, *Excepti
 	}
 	defer res.Body.Close()
 
-	decoder := xml.NewDecoder(res.Body)
+	decoder := json.NewDecoder(res.Body)
 
 	if res.StatusCode != http.StatusCreated {
 		exception = new(Exception)

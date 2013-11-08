@@ -2,7 +2,6 @@
 package gotwilio
 
 import (
-	"encoding/xml"
 	"net/http"
 	"net/url"
 	"strings"
@@ -18,11 +17,10 @@ type Twilio struct {
 
 // Exception is a representation of a twilio exception.
 type Exception struct {
-	XMLName  xml.Name `xml:"TwilioResponse"`
-	Status   int      `xml:"RestException>Status"` // HTTP specific error code
-	Message  string   `xml:"RestException>Message"` // HTTP error message
-	Code     int      `xml:"RestException>Code"` // Twilio specific error code
-	MoreInfo string   `xml:"RestException>MoreInfo"` // Additional info from Twilio
+	Status   int    `json:"status"`    // HTTP specific error code
+	Message  string `json:"message"`   // HTTP error message
+	Code     int    `json:"code"`      // Twilio specific error code
+	MoreInfo string `json:"more_info"` // Additional info from Twilio
 }
 
 // Create a new Twilio struct.
