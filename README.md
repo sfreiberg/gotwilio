@@ -50,8 +50,8 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 	package main
 
 	import (
-	"net/http"
-	"github.com/sfreiberg/gotwilio"
+		"net/http"
+		"github.com/sfreiberg/gotwilio"
 	)
 
 	func root(w http.ResponseWriter, r *http.Request) {
