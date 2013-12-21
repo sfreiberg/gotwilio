@@ -44,3 +44,26 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 		callbackParams := gotwilio.NewCallbackParameters("http://example.com")
 		twilio.CallWithUrlCallbacks(from, to, callbackParams)
 	}
+
+## Validate Example
+
+	package main
+
+	import (
+	"net/http"
+	"github.com/sfreiberg/gotwilio"
+	)
+
+	func root(w http.ResponseWriter, r *http.Request) {
+		url := "http://example.com/"
+		authToken := "12345"
+		err := gotwilio.Validate(r, url, authToken)
+		if err != nil {
+			// do something
+		}
+	}
+
+	func main() {
+		http.HandleFunc("/", root)
+		http.ListenAndServe(":8080", nil)
+	}
