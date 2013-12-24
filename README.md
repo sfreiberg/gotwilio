@@ -79,7 +79,7 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 
 	func root(w http.ResponseWriter, r *http.Request) {
 		resp := gotwilio.NewTwimlResponse()
-		resp.Message("test")
+		resp.Message("test", "")
 		resp.SendTwimlResponse(w)
 	}
 

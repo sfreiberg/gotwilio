@@ -29,7 +29,7 @@ func (resp *Response) addVerb(verb interface{}) {
 	resp.Verbs = newVerbs
 }
 
-// adds a message containing only text
+// adds a message to the given response
 func (resp *Response) Message(body, media string) {
 	resp.addVerb(Message{Body: body, Media: media})
 }
