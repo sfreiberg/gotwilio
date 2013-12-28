@@ -25,14 +25,19 @@ func (resp *Response) addVerb(verb interface{}) {
 // makes a buffer, writes the standard xml header and beginning response tag
 // encodes all of the responses verbs as xml, and writes them to the buffer
 // closes the response, and writes the buffer's contents to the provided writer
-func (resp *Response) SendTwimlResponse(w io.Writer) {
+func (resp *Response) SendTwimlResponse(w io.Writer) error {
 	var b bytes.Buffer
 	b.WriteString(xml.Header)
 	b.WriteString("<Response>")
-	result, _ := xml.Marshal(resp.Verbs) // TODO: add error handling
-	b.Write(result)
-	b.WriteString("</Response>")
-	w.Write(b.Bytes())
+	result, err := xml.Marshal(resp.Verbs)
+	if err != nil {
+		return err
+	} else {
+		b.Write(result)
+		b.WriteString("</Response>")
+		w.Write(b.Bytes())
+		return nil
+	}
 }
 
 // these next structs define the XML encoding of Twiml verbs
@@ -40,9 +45,14 @@ func (resp *Response) SendTwimlResponse(w io.Writer) {
 // and the proper XML encoding
 
 type Message struct {
-	XMLName xml.Name `xml:"Message"`
-	Body    string   `xml:"Body,omitempty"`
-	Media   string   `xml:"Media,omitempty"`
+	XMLName        xml.Name `xml:"Message"`
+	To             string   `xml:"to,attr,omitempty"`
+	From           string   `xml:"from,attr,omitempty"`
+	Action         string   `xml:"action,attr,omitempty"`
+	Method         string   `xml:"method,attr"`
+	StatusCallback string   `xml:"statusCallback,attr,omitempty"`
+	Body           string   `xml:"Body,omitempty"`
+	Media          string   `xml:"Media,omitempty"`
 }
 
 type Redirect struct {
@@ -53,13 +63,16 @@ type Redirect struct {
 // these next methods handle adding the respective verbs to the given Response
 // e.g the Message method handles adding a Message verb to the given Response
 
-func (resp *Response) Message(body, media string) {
-	resp.addVerb(Message{Body: body, Media: media})
+func (resp *Response) Message(params Message) {
+	if params.Method == "" {
+		params.Method = "POST"
+	}
+	resp.addVerb(params)
 }
 
-func (resp *Response) Redirect(url, method string) {
-	if method == "" {
-		method = "POST"
+func (resp *Response) Redirect(params Redirect) {
+	if params.Method == "" {
+		params.Method = "POST"
 	}
-	resp.addVerb(Redirect{url, method}) // TODO: require url
+	resp.addVerb(params)
 }

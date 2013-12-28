@@ -50,8 +50,8 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 	package main
 
 	import (
-		"net/http"
 		"github.com/sfreiberg/gotwilio"
+		"net/http"
 	)
 
 	func root(w http.ResponseWriter, r *http.Request) {
@@ -79,7 +79,7 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 
 	func root(w http.ResponseWriter, r *http.Request) {
 		resp := gotwilio.NewTwimlResponse()
-		resp.Message("test", "")
+		resp.Message(gotwilio.Message{Body: "test", To: "+1234567890"})
 		resp.SendTwimlResponse(w)
 	}
 
