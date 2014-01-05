@@ -41,11 +41,7 @@ func TestVoice(t *testing.T) {
 	}
 }
 
-func TestValidate(t *testing.T) {
-
-}
-
-func TestMessage(t *testing.T) {
+func ExampleMessage(t *testing.T) {
 	resp := NewTwimlResponse()
 	resp.Message(Message{Body: "test", To: "+16169165421"})
 	resp.SendTwimlResponse(os.Stdout)
