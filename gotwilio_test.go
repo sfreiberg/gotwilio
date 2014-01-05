@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"os"
 	"testing"
 )
 
@@ -38,4 +39,17 @@ func TestVoice(t *testing.T) {
 	if exc != nil {
 		t.Fatal(exc)
 	}
+}
+
+func TestValidate(t *testing.T) {
+
+}
+
+func TestMessage(t *testing.T) {
+	resp := NewTwimlResponse()
+	resp.Message(Message{Body: "test", To: "+16169165421"})
+	resp.SendTwimlResponse(os.Stdout)
+	// Output:
+	// <?xml version="1.0" encoding="UTF-8"?>
+	// <Response><Message to="+16169165421" method="POST"><Body>test</Body></Message></Response>
 }
