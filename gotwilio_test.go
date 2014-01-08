@@ -47,5 +47,5 @@ func ExampleMessage() {
 	resp.SendTwimlResponse(os.Stdout)
 	// Output:
 	// <?xml version="1.0" encoding="UTF-8"?>
-	// <Response><Message to="+16169165421" method="POST"><Body>test</Body></Message></Response>
+	// <Response><Message to="+16169165421"><Body>test</Body></Message></Response>
 }

@@ -1,14 +1,14 @@
 package gotwilio
 
 import (
-	"net/http"
-	"net/url"
-	"sort"
 	"bytes"
 	"crypto/hmac"
 	"crypto/sha1"
 	"encoding/base64"
 	"errors"
+	"net/http"
+	"net/url"
+	"sort"
 )
 
 // request is validated via instructions found at https://www.twilio.com/docs/security
@@ -48,10 +48,10 @@ func Validate(r *http.Request, url, authToken string) error {
 		r.ParseForm()
 		rawForm := r.PostForm
 		formString := sortedFormString(rawForm)
-		urlString = url+formString
+		urlString = url + formString
 	} else {
 		urlString = url
-	} 
+	}
 
 	mac := hmac.New(sha1.New, []byte(authToken))
 	mac.Write([]byte(urlString))

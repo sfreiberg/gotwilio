@@ -3,7 +3,10 @@ package gotwilio
 import (
 	"bytes"
 	"encoding/xml"
+	"errors"
+	"fmt"
 	"io"
+	"strconv"
 )
 
 // A response has a single field, a slice of all of its Verbs
@@ -49,7 +52,7 @@ type Message struct {
 	To             string   `xml:"to,attr,omitempty"`
 	From           string   `xml:"from,attr,omitempty"`
 	Action         string   `xml:"action,attr,omitempty"`
-	Method         string   `xml:"method,attr"`
+	Method         string   `xml:"method,attr,omitempty"`
 	StatusCallback string   `xml:"statusCallback,attr,omitempty"`
 	Body           string   `xml:"Body,omitempty"`
 	Media          string   `xml:"Media,omitempty"`
@@ -57,22 +60,95 @@ type Message struct {
 
 type Redirect struct {
 	Url    string `xml:",chardata"`
-	Method string `xml:"method,attr"`
+	Method string `xml:"method,attr,omitempty"`
+}
+
+type Say struct {
+	Text     string `xml:",chardata"`
+	Voice    string `xml:"voice,attr,omitempty"`
+	Loop     string `xml:"loop,attr,omitempty"`
+	Language string `xml:"language,attr,omitempty"`
 }
 
 // these next methods handle adding the respective verbs to the given Response
 // e.g the Message method handles adding a Message verb to the given Response
 
+// TODO: implement error checking in all verb adding methods
+
 func (resp *Response) Message(params Message) {
-	if params.Method == "" {
-		params.Method = "POST"
-	}
 	resp.addVerb(params)
 }
 
 func (resp *Response) Redirect(params Redirect) {
-	if params.Method == "" {
-		params.Method = "POST"
-	}
 	resp.addVerb(params)
+}
+
+func (resp *Response) Say(params Say) error {
+	voices := map[string]bool{
+		"":      true,
+		"man":   true,
+		"women": true,
+		"alice": true,
+	}
+	regLangs := map[string]bool{
+		"":      true,
+		"en":    true,
+		"en-gb": true,
+		"es":    true,
+		"fr":    true,
+		"de":    true,
+		"it":    true,
+	}
+	aliceLangs := map[string]bool{
+		"":      true,
+		"da-DK": true,
+		"de-DE": true,
+		"en-AU": true,
+		"en-CA": true,
+		"en-GB": true,
+		"en-IN": true,
+		"en-US": true,
+		"ca-ES": true,
+		"es-ES": true,
+		"es-MX": true,
+		"fi-FI": true,
+		"fr-CA": true,
+		"fr-FR": true,
+		"it-IT": true,
+		"ja-JP": true,
+		"ko-KR": true,
+		"nb-NO": true,
+		"nl-NL": true,
+		"pl-PL": true,
+		"pt-BR": true,
+		"pt-PT": true,
+		"ru-RU": true,
+		"sv-SE": true,
+		"zh-CN": true,
+		"zh-HK": true,
+		"zh-TW": true,
+	}
+
+	invalidLangError := fmt.Errorf("The language you specified (%s) is not valid for your voice (%s).", params.Language, params.Voice)
+
+	if !voices[params.Voice] {
+		return errors.New("Please select a valid voice: man, women, alice, or none.")
+	} else if params.Voice != "alice" && params.Voice != "" {
+		if !regLangs[params.Language] {
+			return invalidLangError
+		}
+	} else if params.Voice == "alice" {
+		if !aliceLangs[params.Language] {
+			return invalidLangError
+		}
+	}
+
+	if loopNum, err := strconv.Atoi(params.Loop); err != nil {
+		return err
+	} else if loopNum < 0 {
+		return errors.New("Please give a nonnegative loop")
+	} else {
+		resp.addVerb(params)
+		return nil
+	}
 }
