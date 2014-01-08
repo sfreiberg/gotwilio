@@ -84,6 +84,8 @@ func (resp *Response) Redirect(params Redirect) {
 }
 
 func (resp *Response) Say(params Say) error {
+
+	// list of all valid choices for an attribute
 	voices := map[string]bool{
 		"":      true,
 		"man":   true,
@@ -131,6 +133,7 @@ func (resp *Response) Say(params Say) error {
 
 	invalidLangError := fmt.Errorf("The language you specified (%s) is not valid for your voice (%s).", params.Language, params.Voice)
 
+	// checking if the chosen voice is valid for the chosen language
 	if !voices[params.Voice] {
 		return errors.New("Please select a valid voice: man, women, alice, or none.")
 	} else if params.Voice != "alice" && params.Voice != "" {
@@ -143,6 +146,7 @@ func (resp *Response) Say(params Say) error {
 		}
 	}
 
+	// checking validity of loop attribute. If it passes, add the given Say verb to the response
 	if loopNum, err := strconv.Atoi(params.Loop); err != nil {
 		return err
 	} else if loopNum < 0 {

@@ -28,7 +28,7 @@ func sortedFormString(f url.Values) string {
 	// params must be sorted in alphabetical order
 	sort.Strings(keys)
 
-	// we use a buffer here because it's a helluva lot faster and it's way easier
+	// we use a buffer to concatenate the keys and values because it's a helluva lot faster and way easier than +ing everything
 	var b bytes.Buffer
 	for _, val := range keys {
 		b.WriteString(val)
@@ -62,12 +62,12 @@ func Validate(r *http.Request, url, authToken string) error {
 	encoder.Write(macBytes)
 	encoder.Close()
 
+	// fetch the given twilio signature and compare against our signature
 	twilioSig := r.Header.Get("X-Twilio-Signature")
 
 	if bytes.Equal([]byte(twilioSig), b.Bytes()) == true {
 		return nil
 	} else {
-		err := errors.New("This request was spoofed")
-		return err
+		return errors.New("This request was spoofed")
 	}
 }
