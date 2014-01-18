@@ -79,6 +79,8 @@ To install gotwilio, simply run `go get github.com/Januzellij/gotwilio`, until t
 
 	func main() {
 		resp := gotwilio.NewTwimlResponse()
-		resp.AddVerb(gotwilio.Message{Body: "test", To: "+1234567890"})
+		newGather := gotwilio.Gather{Method: "POST"}
+		newGather.Say = gotwilio.Say{Text: "test", Voice: "alice"}
+		resp.AddVerb(newGather)
 		resp.SendTwimlResponse(os.Stdout) // when using Twiml in a real web app, this would actually be written to a http.ResponseWriter.
 	}

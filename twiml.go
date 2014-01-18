@@ -27,7 +27,7 @@ type Message struct {
 }
 
 type Redirect struct {
-	Url    string `xml:",chardata"`
+	Text   string `xml:",chardata"`
 	Method string `xml:"method,attr,omitempty"`
 }
 
@@ -36,6 +36,28 @@ type Say struct {
 	Voice    string `xml:"voice,attr,omitempty"`
 	Loop     string `xml:"loop,attr,omitempty"`
 	Language string `xml:"language,attr,omitempty"`
+}
+
+type Play struct {
+	Text   string `xml:",chardata"`
+	Loop   string `xml:"loop,attr,omitempty"`
+	Digits string `xml:"digits,attr,omitempty"`
+}
+
+type Pause struct {
+	Length string `xml:"length,attr"`
+}
+
+type Gather struct {
+	XMLName     xml.Name `xml:"Gather"`
+	Action      string   `xml:"action,attr,omitempty"`
+	Method      string   `xml:"method,attr,omitempty"`
+	Timeout     string   `xml:"timeout,attr,omitempty"`
+	FinishOnKey string   `xml:"finishOnKey,attr,omitempty"`
+	NumDigits   string   `xml:"numDigits,attr,omitempty"`
+	Say         Say      `xml:"Say"`
+	Play        Play     `xml:"Play"`
+	Pause       Pause    `xml:"Pause"`
 }
 
 // constructor method to make a Response
