@@ -60,6 +60,26 @@ type Gather struct {
 	Pause       Pause    `xml:"Pause"`
 }
 
+type Record struct {
+	Action             string `xml:"action,attr,omitempty"`
+	Method             string `xml:"method,attr,omitempty"`
+	Timeout            string `xml:"timeout,attr,omitempty"`
+	FinishOnKey        string `xml:"finishOnKey,attr,omitempty"`
+	MaxLength          string `xml:"maxLength,attr,omitempty"`
+	Transcribe         string `xml:"transcribe,attr,omitempty"`
+	TranscribeCallback string `xml:"transcribeCallback,attr,omitempty"`
+	PlayBeep           string `xml:"playBeep,attr,omitempty"`
+}
+
+type Sms struct {
+	Text           string `xml:",chardata"`
+	To             string `xml:"to,attr,omitempty"`
+	From           string `xml:"from,attr,omitempty"`
+	Action         string `xml:"action,attr,omitempty"`
+	Method         string `xml:"method,attr,omitempty"`
+	StatusCallback string `xml:"statusCallback,attr,omitempty"`
+}
+
 // constructor method to make a Response
 func NewTwimlResponse() *Response {
 	return &Response{}
