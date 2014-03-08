@@ -80,6 +80,57 @@ type Sms struct {
 	StatusCallback string `xml:"statusCallback,attr,omitempty"`
 }
 
+type Number struct {
+	Text       string `xml:",chardata"`
+	SendDigits string `xml:"sendDigits,attr,omitempty"`
+	Url        string `xml:"url,attr,omitempty"`
+	Method     string `xml:"method,attr,omitempty"`
+}
+
+type Sip struct {
+	Text     string `xml:",chardata"`
+	Username string `xml:"username,attr,omitempty"`
+	Password string `xml:"password,attr,omitempty"`
+	Url      string `xml:"url,attr,omitempty"`
+	Method   string `xml:"method,attr,omitempty"`
+}
+
+type Client struct {
+	Text   string `xml:",chardata"`
+	Url    string `xml:"url,attr,omitempty"`
+	Method string `xml:"method,attr,omitempty"`
+}
+
+type Conference struct {
+	Text                   string `xml:",chardata"`
+	Muted                  string `xml:"muted,attr,omitempty"`
+	Beep                   string `xml:"beep,attr,omitempty"`
+	StartConferenceOnEnter string `xml:"startConferenceOnEnter,attr,omitempty"`
+	EndConferenceOnExit    string `xml:"endConferenceOnExit,attr,omitempty"`
+	WaitUrl                string `xml:"waitUrl,attr,omitempty"`
+	WaitMethod             string `xml:"waitMethod,attr,omitempty"`
+	MaxParticipants        string `xml:"maxParticipants,attr,omitempty"`
+}
+
+type Queue struct {
+	Text   string `xml:",chardata"`
+	Url    string `xml:"url,attr,omitempty"`
+	Method string `xml:"method,attr,omitempty"`
+}
+
+type Dial struct {
+	Text         string   `xml:",chardata"`
+	Action       string   `xml:"action,attr,omitempty"`
+	Method       string   `xml:"method,attr,omitempty"`
+	Timeout      string   `xml:"timeout,attr,omitempty"`
+	HangupOnStar string   `xml:"hangupOnStar,attr,omitempty"`
+	TimeLimit    string   `xml:"timeLimit,attr,omitempty"`
+	CallerId     string   `xml:"callerId,attr,omitempty"`
+	Record       string   `xml:"record,attr,omitempty"`
+	Numbers      []Number `xml:"number"`
+	Clients      []Client `xml:"client"`
+}
+
 // constructor method to make a Response
 func NewTwimlResponse() *Response {
 	return &Response{}
