@@ -7,6 +7,10 @@ Gotwilio is licensed under a BSD license.
 ## Installation
 To install gotwilio, simply run `go get github.com/Januzellij/gotwilio`, until the original author has merged my pull request.
 
+## Todo
+Start implementing the account usage API
+Generate docs with http://godoc.org
+
 ## SMS Example
 
 	package main
