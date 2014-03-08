@@ -8,17 +8,17 @@ Gotwilio is licensed under a BSD license.
 To install gotwilio, simply run `go get github.com/Januzellij/gotwilio`, until the original author has merged my pull request.
 
 ## Todo
-Get Twilio credentials from environment variables
 Start implementing the account usage API
 Generate docs with http://godoc.org
+
+## Getting Started
+Just create a Twilio client with either NewTwilioClient(accountSid, authToken) or NewTwilioClientFromEnvironment(), and store the accountSid and authToken in TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN environment variables, respectively.
 
 ## SMS Example
 
 	package main
 
-	import (
-		"github.com/Januzellij/gotwilio"
-	)
+	import "github.com/Januzellij/gotwilio"
 
 	func main() {
 		accountSid := "ABC123..........ABC123"
@@ -35,9 +35,7 @@ Generate docs with http://godoc.org
 
 	package main
 
-	import (
-		"github.com/Januzellij/gotwilio"
-	)
+	import "github.com/Januzellij/gotwilio"
 
 	func main() {
 		accountSid := "ABC123..........ABC123"

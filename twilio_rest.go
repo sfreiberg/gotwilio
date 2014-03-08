@@ -1,9 +1,11 @@
 package gotwilio
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
 	"strings"
+	"syscall"
 )
 
 // Twilio stores basic information important for connecting to the
@@ -22,10 +24,21 @@ type Exception struct {
 	MoreInfo string `json:"more_info"` // Additional info from Twilio
 }
 
-// Create a new Twilio struct.
+const twilioUrl = "https://api.twilio.com/2010-04-01"
+
+// Create a new Twilio struct from provided credentials.
 func NewTwilioClient(accountSid, authToken string) *Twilio {
-	const twilioUrl = "https://api.twilio.com/2010-04-01" // move to be accessed from the package?
 	return &Twilio{accountSid, authToken, twilioUrl}
+}
+
+func NewTwilioClientFromEnvironment() (*Twilio, error) {
+	accountSid, sidFound := syscall.Getenv("TWILIO_ACCOUNT_SID")
+	authToken, authFound := syscall.Getenv("TWILIO_AUTH_TOKEN")
+	if sidFound && authFound {
+		return &Twilio{accountSid, authToken, twilioUrl}, nil
+	} else {
+		return nil, errors.New("Could not find required environment variables")
+	}
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
