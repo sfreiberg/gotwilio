@@ -31,6 +31,7 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 	return &Twilio{accountSid, authToken, twilioUrl}
 }
 
+// Create a new Twilio struct from environment variables.
 func NewTwilioClientFromEnvironment() (*Twilio, error) {
 	accountSid, sidFound := syscall.Getenv("TWILIO_ACCOUNT_SID")
 	authToken, authFound := syscall.Getenv("TWILIO_AUTH_TOKEN")
