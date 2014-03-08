@@ -1,4 +1,3 @@
-// Package gotwilio is a library for interacting with http://www.twilio.com/ API.
 package gotwilio
 
 import (

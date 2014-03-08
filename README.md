@@ -8,6 +8,7 @@ Gotwilio is licensed under a BSD license.
 To install gotwilio, simply run `go get github.com/Januzellij/gotwilio`, until the original author has merged my pull request.
 
 ## Todo
+Get Twilio credentials from environment variables
 Start implementing the account usage API
 Generate docs with http://godoc.org
 
@@ -86,5 +87,8 @@ Generate docs with http://godoc.org
 		newGather := gotwilio.Gather{Method: "POST"}
 		newGather.Say = gotwilio.Say{Text: "test", Voice: "alice"}
 		resp.AddVerb(newGather)
-		resp.SendTwimlResponse(os.Stdout) // when using Twiml in a real web app, this would actually be written to a http.ResponseWriter.
+		err := resp.SendTwimlResponse(os.Stdout) // when using Twiml in a real web app, this would actually be written to a http.ResponseWriter.
+		if err != nil {
+			// your XML was incorrect
+		}
 	}
