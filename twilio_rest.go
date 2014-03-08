@@ -25,7 +25,7 @@ type Exception struct {
 
 // Create a new Twilio struct.
 func NewTwilioClient(accountSid, authToken string) *Twilio {
-	const twilioUrl = "https://api.twilio.com/2010-04-01" // Should this be moved into a constant? Yes.
+	const twilioUrl = "https://api.twilio.com/2010-04-01" // move to be accessed from the package?
 	return &Twilio{accountSid, authToken, twilioUrl}
 }
 
