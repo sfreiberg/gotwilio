@@ -127,8 +127,8 @@ type Dial struct {
 	TimeLimit    string   `xml:"timeLimit,attr,omitempty"`
 	CallerId     string   `xml:"callerId,attr,omitempty"`
 	Record       string   `xml:"record,attr,omitempty"`
-	Numbers      []Number `xml:"number"`
-	Clients      []Client `xml:"client"`
+	Numbers      []Number `xml:"Number"`
+	Clients      []Client `xml:"Client"`
 }
 
 // constructor method to make a Response
