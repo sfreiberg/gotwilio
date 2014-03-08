@@ -1,5 +1,5 @@
 ## Overview
-This is the start of a library for [Twilio](http://www.twilio.com/). Gotwilio supports making voice calls and sending text messages.
+This is the start of a library for [Twilio](http://www.twilio.com/). Gotwilio supports making voice calls, sending text messages, validating requests, and creating TWiML responses.
 
 ## License
 Gotwilio is licensed under a BSD license.
