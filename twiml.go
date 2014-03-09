@@ -136,10 +136,17 @@ func NewTwimlResponse() *Response {
 	return &Response{}
 }
 
-// method to add verbs to a response
+// method to add a verb to a response
 func (resp *Response) AddVerb(verb interface{}) {
 	newVerbs := append(resp.Verbs, verb)
 	resp.Verbs = newVerbs
+}
+
+// easily add multiple verbs to a response
+func (resp *Response) AddVerbs(verbs []interface{}) {
+	for _, verb := range verbs {
+		resp.AddVerb(verb)
+	}
 }
 
 // makes a buffer, writes the standard xml header and beginning response tag

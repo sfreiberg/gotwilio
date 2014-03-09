@@ -8,6 +8,7 @@ Gotwilio is licensed under a BSD license.
 To install gotwilio, simply run `go get github.com/Januzellij/gotwilio`, until the original author has merged my pull request.
 
 ## Todo
+Maybe make a TWiML verb interface type?
 Start implementing the account usage API
 Generate docs with http://godoc.org
 
