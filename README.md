@@ -80,14 +80,24 @@ Just create a Twilio client with either `NewTwilioClient(accountSid, authToken)`
 		"github.com/Januzellij/gotwilio"
 		"os"
 	)
-
+	
 	func main() {
 		resp := gotwilio.NewTwimlResponse()
 		newGather := gotwilio.Gather{Method: "POST"}
 		newGather.Say = gotwilio.Say{Text: "test", Voice: "alice"}
-		resp.AddVerb(newGather)
+
+		newDial := gotwilio.Dial{}
+		firstNumber := gotwilio.Number{Text: "I am the first number"}
+		secondNumber := gotwilio.Number{Text: "I am the second number"}
+		newDial.Numbers = []gotwilio.Number{firstNumber, secondNumber}
+
+		newPause := gotwilio.Pause{Length: "2"}
+
+		// be careful of the order in which you add verbs, that's the order they'll appear in the XML
+		resp.AddVerb(newPause)
+		resp.AddVerbs([]interface{}{newDial, newGather})
 		err := resp.SendTwimlResponse(os.Stdout) // when using Twiml in a real web app, this would actually be written to a http.ResponseWriter.
 		if err != nil {
-			// your XML was incorrect
+			// your verbs were invalid XML
 		}
 	}
