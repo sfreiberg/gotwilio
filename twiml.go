@@ -134,8 +134,8 @@ type Dial struct {
 	Clients      []Client `xml:"Client"`
 }
 
-// NewTwimlResponse creates a Response
-func NewTwimlResponse() *Response {
+// TwimlResponse creates a Response
+func TwimlResponse() *Response {
 	return &Response{}
 }
 

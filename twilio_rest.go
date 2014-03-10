@@ -26,13 +26,13 @@ type Exception struct {
 
 const twilioUrl = "https://api.twilio.com/2010-04-01"
 
-// NewTwilioClient creates a new Twilio struct from provided credentials.
-func NewTwilioClient(accountSid, authToken string) *Twilio {
+// TwilioClient creates a new Twilio struct from provided credentials.
+func TwilioClient(accountSid, authToken string) *Twilio {
 	return &Twilio{accountSid, authToken, twilioUrl}
 }
 
-// NewTwilioClientFromEnvironment creates a new Twilio struct from environment variables.
-func NewTwilioClientFromEnvironment() (*Twilio, error) {
+// TwilioClientFromEnvironment creates a new Twilio struct from environment variables.
+func TwilioClientFromEnvironment() (*Twilio, error) {
 	accountSid, sidFound := syscall.Getenv("TWILIO_ACCOUNT_SID")
 	authToken, authFound := syscall.Getenv("TWILIO_AUTH_TOKEN")
 	if sidFound && authFound {
