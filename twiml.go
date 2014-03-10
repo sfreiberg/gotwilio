@@ -8,8 +8,8 @@ import (
 	"io"
 )
 
-// Response is a representation of a TWiML response
-// more information about TWiML can be found at https://www.twilio.com/docs/api/twiml
+// Response is a representation of a TWiML response.
+// More information about TWiML can be found at https://www.twilio.com/docs/api/twiml
 type Response struct {
 	Verbs []interface{}
 }
