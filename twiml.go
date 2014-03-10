@@ -1,3 +1,4 @@
+// Package gotwilio provides an easy way to interface with the http://www.twilio.com API
 package gotwilio
 
 import (
@@ -6,7 +7,7 @@ import (
 	"io"
 )
 
-// A response has a single field, a slice of all of its Verbs
+// Response has a single field, a slice of all of its Verbs
 type Response struct {
 	Verbs []interface{}
 }
@@ -131,27 +132,25 @@ type Dial struct {
 	Clients      []Client `xml:"Client"`
 }
 
-// constructor method to make a Response
+// NewTwimlResponse creates a Response
 func NewTwimlResponse() *Response {
 	return &Response{}
 }
 
-// method to add a verb to a response
+// AddVerb adds a verb to a Response
 func (resp *Response) AddVerb(verb interface{}) {
 	newVerbs := append(resp.Verbs, verb)
 	resp.Verbs = newVerbs
 }
 
-// easily add multiple verbs to a response
+// AddVerbs adds multiple verbs to a Response
 func (resp *Response) AddVerbs(verbs []interface{}) {
 	for _, verb := range verbs {
 		resp.AddVerb(verb)
 	}
 }
 
-// makes a buffer, writes the standard xml header and beginning response tag
-// encodes all of the responses verbs as xml, and writes them to the buffer
-// closes the response, and writes the buffer's contents to the provided writer
+// SendTwimlResponse encodes the Response and writes it to the provided io.Writer
 func (resp *Response) SendTwimlResponse(w io.Writer) error {
 	var b bytes.Buffer
 	b.WriteString(xml.Header)

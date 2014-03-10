@@ -11,8 +11,6 @@ import (
 	"sort"
 )
 
-// request is validated via instructions found at https://www.twilio.com/docs/security
-
 // takes in POST parameters and returns a string of the params concatenated like "keyvaluekeyvaluevalue"
 func sortedFormString(f url.Values) string {
 	keys := make([]string, len(f))
@@ -40,6 +38,8 @@ func sortedFormString(f url.Values) string {
 	return b.String()
 }
 
+// Validate checks if a *http.Request actually came from Twilio, and is not faked.
+// Validate uses directions from https://www.twilio.com/docs/security
 func Validate(r *http.Request, url, authToken string) error {
 	var urlString string
 
