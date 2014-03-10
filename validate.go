@@ -38,7 +38,7 @@ func sortedFormString(f url.Values) string {
 	return b.String()
 }
 
-// Validate checks if a *http.Request actually came from Twilio, and is not faked.
+// Validate checks if an http request actually came from Twilio, and is not faked.
 // Validate uses directions from https://www.twilio.com/docs/security
 func Validate(r *http.Request, url, authToken string) error {
 	var urlString string

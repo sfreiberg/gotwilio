@@ -1,4 +1,5 @@
-// Package gotwilio provides an easy way to interface with the http://www.twilio.com API
+// Package gotwilio is a library for interacting with http://www.twilio.com/ API.
+// It is an extended version of http://godoc.org/github.com/sfreiberg/gotwilio
 package gotwilio
 
 import (
@@ -7,7 +8,8 @@ import (
 	"io"
 )
 
-// Response has a single field, a slice of all of its Verbs
+// Response is a representation of a TWiML response
+// more information about TWiML can be found at https://www.twilio.com/docs/api/twiml
 type Response struct {
 	Verbs []interface{}
 }
