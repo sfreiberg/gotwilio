@@ -47,7 +47,7 @@ The documentation can be found at http://godoc.org/github.com/Januzellij/gotwili
 
 		from := "+15555555555"
 		to := "+15555555555"
-		callbackParams := gotwilio.CallbackParameters("http://example.com")
+		callbackParams := gotwilio.NewCallbackParameters("http://example.com")
 		twilio.CallWithUrlCallbacks(from, to, callbackParams)
 	}
 
