@@ -134,6 +134,8 @@ type Dial struct {
 	Clients      []Client `xml:"Client"`
 }
 
+// make TwimlResponseWithVerb and TwimlResponseWithVerbs methods?
+
 // TwimlResponse creates a Response
 func TwimlResponse() *Response {
 	return &Response{}

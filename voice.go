@@ -77,7 +77,7 @@ func (vr *VoiceResponse) EndTimeAsTime() (time.Time, error) {
 
 // Returns a CallbackParameters type with the specified url and
 // CallbackParameters.Timeout set to 60.
-func NewCallbackParameters(url string) *CallbackParameters {
+func CallbackParameters(url string) *CallbackParameters {
 	return &CallbackParameters{Url: url, Timeout: 60}
 }
 
