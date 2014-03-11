@@ -75,7 +75,7 @@ func (vr *VoiceResponse) EndTimeAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, vr.EndTime)
 }
 
-// Returns a CallbackParameters type with the specified url and
+// NewCallbackParameters returns a CallbackParameters type with the specified url and
 // CallbackParameters.Timeout set to 60.
 func NewCallbackParameters(url string) *CallbackParameters {
 	return &CallbackParameters{Url: url, Timeout: 60}

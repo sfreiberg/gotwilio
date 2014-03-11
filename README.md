@@ -26,7 +26,7 @@ The documentation can be found at http://godoc.org/github.com/Januzellij/gotwili
 	func main() {
 		accountSid := "ABC123..........ABC123"
 		authToken := "ABC123..........ABC123"
-		twilio := gotwilio.TwilioClient(accountSid, authToken)
+		twilio := gotwilio.NewTwilioClient(accountSid, authToken)
 
 		from := "+15555555555"
 		to := "+15555555555"
@@ -43,7 +43,7 @@ The documentation can be found at http://godoc.org/github.com/Januzellij/gotwili
 	func main() {
 		accountSid := "ABC123..........ABC123"
 		authToken := "ABC123..........ABC123"
-		twilio := gotwilio.TwilioClient(accountSid, authToken)
+		twilio := gotwilio.NewTwilioClient(accountSid, authToken)
 
 		from := "+15555555555"
 		to := "+15555555555"
@@ -61,7 +61,7 @@ The documentation can be found at http://godoc.org/github.com/Januzellij/gotwili
 	)
 
 	func root(w http.ResponseWriter, r *http.Request) {
-		twilio := TwilioClientFromEnvironment()
+		twilio := NewTwilioClientFromEnvironment()
 		url := "http://example.com/"
 		err := gotwilio.Validate(r, url, twilio.authToken)
 		if err == nil {
@@ -84,7 +84,7 @@ The documentation can be found at http://godoc.org/github.com/Januzellij/gotwili
 	)
 	
 	func main() {
-		resp := gotwilio.TwimlResponse()
+		resp := gotwilio.NewTwimlResponse()
 		newGather := gotwilio.Gather{Method: "POST"}
 		newGather.Say = gotwilio.Say{Text: "test", Voice: "alice"}
 

@@ -136,8 +136,8 @@ type Dial struct {
 
 // make TwimlResponseWithVerb and TwimlResponseWithVerbs methods?
 
-// TwimlResponse creates a Response
-func TwimlResponse() *Response {
+// NewTwimlResponse creates a Response
+func NewTwimlResponse() *Response {
 	return &Response{}
 }
 
