@@ -4,8 +4,8 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"os"
 	"strings"
-	"syscall"
 )
 
 // Twilio stores basic information important for connecting to the
@@ -35,9 +35,9 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 // NewTwilioClientFromEnvironment creates a new Twilio struct from environment variables.
 // Recommended for use in public code
 func NewTwilioClientFromEnvironment() (*Twilio, error) {
-	accountSid, sidFound := syscall.Getenv("TWILIO_ACCOUNT_SID")
-	authToken, authFound := syscall.Getenv("TWILIO_AUTH_TOKEN")
-	if sidFound && authFound {
+	accountSid := os.Getenv("TWILIO_ACCOUNT_SID")
+	authToken := os.Getenv("TWILIO_AUTH_TOKEN")
+	if accountSid != "" && authToken != "" {
 		return &Twilio{accountSid, authToken, twilioUrl}, nil
 	} else {
 		return nil, errors.New("Could not find required environment variables")
