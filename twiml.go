@@ -74,15 +74,6 @@ type Record struct {
 	PlayBeep           string `xml:"playBeep,attr,omitempty"`
 }
 
-type Sms struct {
-	Text           string `xml:",chardata"`
-	To             string `xml:"to,attr,omitempty"`
-	From           string `xml:"from,attr,omitempty"`
-	Action         string `xml:"action,attr,omitempty"`
-	Method         string `xml:"method,attr,omitempty"`
-	StatusCallback string `xml:"statusCallback,attr,omitempty"`
-}
-
 type Number struct {
 	Text       string `xml:",chardata"`
 	SendDigits string `xml:"sendDigits,attr,omitempty"`
@@ -134,24 +125,10 @@ type Dial struct {
 	Clients      []Client `xml:"Client"`
 }
 
-// make TwimlResponseWithVerb and TwimlResponseWithVerbs methods?
-
-// NewTwimlResponse creates a Response
-func NewTwimlResponse() *Response {
-	return &Response{}
-}
-
-// AddVerb adds a verb to a Response
-func (resp *Response) AddVerb(verb interface{}) {
-	newVerbs := append(resp.Verbs, verb)
-	resp.Verbs = newVerbs
-}
-
-// AddVerbs adds multiple verbs to a Response
-func (resp *Response) AddVerbs(verbs []interface{}) {
-	for _, verb := range verbs {
-		resp.AddVerb(verb)
-	}
+// NewTwimlResponse creates a Response with the provided slice of verbs.
+// verbs will appear in XML in the order of the provided slice
+func NewTwimlResponse(verbs []interface{}) *Response {
+	return &Response{Verbs: verbs}
 }
 
 // SendTwimlResponse encodes the Response and writes it to the provided io.Writer

@@ -84,20 +84,9 @@ The documentation can be found at http://godoc.org/github.com/Januzellij/gotwili
 	)
 	
 	func main() {
-		resp := gotwilio.NewTwimlResponse()
-		newGather := gotwilio.Gather{Method: "POST"}
-		newGather.Say = gotwilio.Say{Text: "test", Voice: "alice"}
-
-		newDial := gotwilio.Dial{}
-		firstNumber := gotwilio.Number{Text: "I am the first number"}
-		secondNumber := gotwilio.Number{Text: "I am the second number"}
-		newDial.Numbers = []gotwilio.Number{firstNumber, secondNumber}
-
+		newSay := gotwilio.Say{Text: "test", Voice: "alice"}
 		newPause := gotwilio.Pause{Length: "2"}
-
-		// be careful of the order in which you add verbs, that's the order they'll appear in the XML
-		resp.AddVerb(newPause)
-		resp.AddVerbs([]interface{}{newDial, newGather})
+		resp := gotwilio.NewTwimlResponse([]interface{}{newSay, newPause})
 		err := resp.SendTwimlResponse(os.Stdout) // when using Twiml in a real web app, this would actually be written to a http.ResponseWriter.
 		if err != nil {
 			// your verbs were invalid XML
