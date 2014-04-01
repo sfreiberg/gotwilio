@@ -24,7 +24,7 @@ type Exception struct {
 	MoreInfo string `json:"more_info"` // Additional info from Twilio
 }
 
-const twilioUrl = "https://api.twilio.com/2010-04-01"
+const twilioUrl = "https://api.twilio.com/2010-04-01/"
 
 // NewTwilioClient creates a new Twilio struct from provided credentials.
 // Not recommended for use in public code, see TwilioClientFromEnvironment
