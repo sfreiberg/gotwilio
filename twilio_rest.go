@@ -24,7 +24,7 @@ type Exception struct {
 	MoreInfo string `json:"more_info"` // Additional info from Twilio
 }
 
-const twilioUrl = "https://api.twilio.com/2010-04-01/"
+const twilioUrl = "https://api.twilio.com/2010-04-01"
 
 // NewTwilioClient creates a new Twilio struct from provided credentials.
 // Not recommended for use in public code, see TwilioClientFromEnvironment
@@ -51,6 +51,17 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	client := &http.Client{}
+	return client.Do(req)
+}
+
+func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
+	req, err := http.NewRequest("GET", twilioUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 
 	client := &http.Client{}
 	return client.Do(req)
