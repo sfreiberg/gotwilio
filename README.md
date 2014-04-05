@@ -107,7 +107,7 @@ package main
 
 import (
 	"fmt"
-	"gotwilio"
+	"github.com/Januzellij/gotwilio"
 )
 
 func main() {

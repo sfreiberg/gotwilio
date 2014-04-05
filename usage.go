@@ -2,7 +2,6 @@ package gotwilio
 
 import (
 	"encoding/json"
-	"log"
 	"net/url"
 )
 
@@ -41,10 +40,14 @@ type UsageFilter struct {
 
 // UsageRecords retreives all UsageRecord's at a subresource if provided, defaulting to the list resource,
 // with the given filter parameters, if provided.
+// The error returned results from a misformatted url, failed http request, or bad JSON.
+// The exception is an error from Twilio.
 func (twilio *Twilio) UsageRecords(subresource string, filter *UsageFilter) (*UsageRecords, *Exception, error) {
-	var usageRecords *UsageRecords
-	var exception *Exception
-	var twilioUrl string
+	var (
+		usageRecords *UsageRecords
+		exception    *Exception
+		twilioUrl    string
+	)
 
 	if subresource != "" {
 		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records/" + subresource
@@ -54,7 +57,7 @@ func (twilio *Twilio) UsageRecords(subresource string, filter *UsageFilter) (*Us
 	if filter != nil {
 		u, urlError := url.Parse(twilioUrl)
 		if urlError != nil {
-			log.Fatalln(urlError)
+			return usageRecords, exception, urlError
 		}
 		q := url.Values{}
 		q.Set("Category", filter.Category)
