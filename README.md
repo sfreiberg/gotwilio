@@ -59,12 +59,16 @@ package main
 import (
 	"github.com/Januzellij/gotwilio"
 	"net/http"
+	"log"
 )
 
 func root(w http.ResponseWriter, r *http.Request) {
-	twilio := NewTwilioClientFromEnvironment()
+	twilio, err := NewTwilioClientFromEnvironment()
+	if err != nil {
+		panic(err)
+	}
 	url := "http://example.com/"
-	err := gotwilio.Validate(r, url, twilio.authToken)
+	err = gotwilio.Validate(r, url, twilio.authToken)
 	if err == nil {
 		// proceed as normal, the request is from Twilio
 	}
