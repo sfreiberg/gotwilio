@@ -49,22 +49,25 @@ func (twilio *Twilio) UsageRecords(subresource string, filter UsageFilter) (*Usa
 	var twilioUrl string
 
 	if subresource != "" {
-		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records/" + subresource + ".json"
+		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records/" + subresource
 	} else {
-		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records.json"
+		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records"
 	}
 	if filter != nil {
 		u, urlError := url.Parse(twilioUrl)
 		if urlError != nil {
 			log.Fatalln(urlError)
 		}
-		q := u.Query()
+		q := url.Values{}
 		q.Set("Category", filter.Category)
 		q.Set("StartDate", filter.StartDate)
 		q.Set("EndDate", filter.EndDate)
 		u.RawQuery = q.Encode()
-		twilioUrl = u.String()
+		twilioUrl = u.String() + ".json"
+	} else {
+		twilioUrl = twilioUrl + ".json"
 	}
+
 	res, err := twilio.get(twilioUrl)
 	if err != nil {
 		return usageRecords, exception, err
