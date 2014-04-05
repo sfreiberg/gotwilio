@@ -59,7 +59,6 @@ package main
 import (
 	"github.com/Januzellij/gotwilio"
 	"net/http"
-	"log"
 )
 
 func root(w http.ResponseWriter, r *http.Request) {
