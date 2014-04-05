@@ -7,10 +7,6 @@ Gotwilio is licensed under a BSD license.
 ## Installation
 To install gotwilio, simply run `go get github.com/Januzellij/gotwilio`, until the original author has merged my pull request.
 
-## Todo
-* Maybe make a TWiML verb interface type?
-* Start implementing the account usage API
-
 ## Getting Started
 Just create a Twilio client with either `NewTwilioClient(accountSid, authToken)` or `NewTwilioClientFromEnvironment()`, and store the accountSid and authToken in `TWILIO_ACCOUNT_SID` and `TWILIO_AUTH_TOKEN` environment variables, respectively.
 

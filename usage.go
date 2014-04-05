@@ -1,23 +1,23 @@
 package gotwilio
 
-// https://twilio-python.readthedocs.org/en/latest/usage/usage.html
-// and https://www.twilio.com/docs/api/rest/usage-records
-
 import (
 	"encoding/json"
-	"net/http"
+	"log"
+	"net/url"
 )
 
+// UsageRecords contains a a list of requested UsageRecord's and metadata
 type UsageRecords struct {
-	FirstPageUrl    string        `json:"first_page_uri"`
+	FirstPageUri    string        `json:"first_page_uri"`
 	End             int           `json:"end"`
-	PreviousPageUrl string        `json:"previous_page_uri"`
-	Url             string        `json:"uri"`
+	PreviousPageUri string        `json:"previous_page_uri"`
+	Uri             string        `json:"uri"`
 	PageSize        int           `json:"page_size"`
 	Start           int           `json:"start"`
 	UsageRecords    []UsageRecord `json:"usage_records"`
 }
 
+// UsageRecord contains all data for a Twilio Usage Record
 type UsageRecord struct {
 	Category    string   `json:"category"`
 	Description string   `json:"description"`
@@ -31,13 +31,40 @@ type UsageRecord struct {
 	Price       *float32 `json:"price,omitempty"`
 	PriceUnit   string   `json:"price_unit"`
 	ApiVersion  string   `json:"api_version"`
-	Url         string   `json:"uri"`
+	Uri         string   `json:"uri"`
 }
 
-func (twilio *Twilio) UsageRecords() (*UsageRecords, *Exception, error) {
+// UsageFilter contains all UsageRecord filter query parameters
+type UsageFilter struct {
+	Category  string
+	StartDate string
+	EndDate   string
+}
+
+// UsageRecords retreives all UsageRecord's at a subresource if provided, defaulting to the list resource,
+// with the given filter parameters, if provided.
+func (twilio *Twilio) UsageRecords(subresource string, filter UsageFilter) (*UsageRecords, *Exception, error) {
 	var usageRecords *UsageRecords
 	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records.json"
+	var twilioUrl string
+
+	if subresource != "" {
+		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records/" + subresource + ".json"
+	} else {
+		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records.json"
+	}
+	if filter != nil {
+		u, urlError := url.Parse(twilioUrl)
+		if urlError != nil {
+			log.Fatalln(urlError)
+		}
+		q := u.Query()
+		q.Set("Category", filter.Category)
+		q.Set("StartDate", filter.StartDate)
+		q.Set("EndDate", filter.EndDate)
+		u.RawQuery = q.Encode()
+		twilioUrl = u.String()
+	}
 	res, err := twilio.get(twilioUrl)
 	if err != nil {
 		return usageRecords, exception, err
@@ -46,7 +73,7 @@ func (twilio *Twilio) UsageRecords() (*UsageRecords, *Exception, error) {
 
 	decoder := json.NewDecoder(res.Body)
 
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode != 200 {
 		exception = new(Exception)
 		err = decoder.Decode(exception)
 
