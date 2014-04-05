@@ -11,9 +11,7 @@ import (
 // Twilio stores basic information important for connecting to the
 // twilio.com REST api such as AccountSid and AuthToken.
 type Twilio struct {
-	AccountSid string
-	AuthToken  string
-	BaseUrl    string
+	AccountSid, AuthToken, BaseUrl string
 }
 
 // Exception is a representation of a twilio exception.

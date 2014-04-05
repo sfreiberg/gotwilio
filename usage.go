@@ -36,14 +36,12 @@ type UsageRecord struct {
 
 // UsageFilter contains all UsageRecord filter query parameters
 type UsageFilter struct {
-	Category  string
-	StartDate string
-	EndDate   string
+	Category, StartDate, EndDate string
 }
 
 // UsageRecords retreives all UsageRecord's at a subresource if provided, defaulting to the list resource,
 // with the given filter parameters, if provided.
-func (twilio *Twilio) UsageRecords(subresource string, filter UsageFilter) (*UsageRecords, *Exception, error) {
+func (twilio *Twilio) UsageRecords(subresource string, filter *UsageFilter) (*UsageRecords, *Exception, error) {
 	var usageRecords *UsageRecords
 	var exception *Exception
 	var twilioUrl string
