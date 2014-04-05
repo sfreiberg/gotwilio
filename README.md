@@ -99,3 +99,27 @@ func main() {
 	}
 }
 ```
+
+## UsageRecord Example
+
+```go
+package main
+
+import (
+	"fmt"
+	"gotwilio"
+)
+
+func main() {
+	twilio, err := gotwilio.NewTwilioClientFromEnvironment()
+	if err == nil {
+		filter := &gotwilio.UsageFilter{StartDate: "2012-6-4", EndDate: "2014-1-1"}
+		records, exception, recordErr := twilio.UsageRecords("Daily", filter)
+		if exception == nil && recordErr == nil {
+			for _, record := range records.UsageRecords {
+				fmt.Printf("Category: %s, Usage: %d \n", record.Category, record.Usage)
+			}
+		}
+	}
+}
+```
