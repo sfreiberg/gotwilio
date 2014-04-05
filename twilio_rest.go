@@ -2,6 +2,7 @@ package gotwilio
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"net/url"
 	"os"
@@ -20,6 +21,10 @@ type Exception struct {
 	Message  string `json:"message"`   // HTTP error message
 	Code     int    `json:"code"`      // Twilio specific error code
 	MoreInfo string `json:"more_info"` // Additional info from Twilio
+}
+
+func (exception *Exception) Error() string {
+	return fmt.Sprintf("Exception returned with status code: %d, message: %s, error code: %d, and info: %s", exception.Status, exception.Message, exception.Code, exception.MoreInfo)
 }
 
 const twilioUrl = "https://api.twilio.com/2010-04-01"
