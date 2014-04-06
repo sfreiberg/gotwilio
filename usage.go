@@ -46,14 +46,13 @@ func (twilio *Twilio) UsageRecords(subresource string, filter *UsageFilter) (*Us
 	var (
 		usageRecords *UsageRecords
 		exception    *Exception
-		twilioUrl    string
 	)
 
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records"
 	if subresource != "" {
-		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records/" + subresource
-	} else {
-		twilioUrl = twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records"
+		twilioUrl = twilioUrl + "/" + subresource
 	}
+
 	if filter != nil {
 		u, urlError := url.Parse(twilioUrl)
 		if urlError != nil {
