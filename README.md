@@ -92,7 +92,7 @@ import (
 func main() {
 	newSay := gotwilio.Say{Text: "test", Voice: "alice"}
 	newPause := gotwilio.Pause{Length: "2"}
-	resp := gotwilio.NewTwimlResponse([]interface{}{newSay, newPause})
+	resp := gotwilio.NewTwimlResponse(newSay, newPause)
 	err := resp.SendTwimlResponse(os.Stdout) // when using Twiml in a real web app, this would actually be written to a http.ResponseWriter.
 	if err != nil {
 		// your verbs were invalid XML
