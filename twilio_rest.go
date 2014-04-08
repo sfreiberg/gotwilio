@@ -24,7 +24,7 @@ type Exception struct {
 }
 
 func (exception *Exception) Error() string {
-	return fmt.Sprintf("Exception returned with status code: %d, message: %s, error code: %d, and info: %s", exception.Status, exception.Message, exception.Code, exception.MoreInfo)
+	return fmt.Sprintf("%s: status code: %d, error code: %d, info: %s", exception.Message, exception.Status, exception.Code, exception.MoreInfo)
 }
 
 const twilioUrl = "https://api.twilio.com/2010-04-01"
@@ -37,7 +37,7 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 
 // NewTwilioClientFromEnvironment creates a new Twilio struct from environment variables.
 // Recommended for use in public code
-func NewTwilioClientFromEnvironment() (*Twilio, error) {
+func NewTwilioClientFromEnv() (*Twilio, error) {
 	accountSid := os.Getenv("TWILIO_ACCOUNT_SID")
 	authToken := os.Getenv("TWILIO_AUTH_TOKEN")
 	if accountSid != "" && authToken != "" {

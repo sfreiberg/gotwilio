@@ -125,8 +125,8 @@ type Dial struct {
 	Clients      []Client `xml:"Client"`
 }
 
-// NewTwimlResponse creates a Response with the provided slice of verbs.
-// Verbs will appear in XML in the order of the provided slice
+// NewTwimlResponse creates a Response with the provided verbs.
+// Verbs will appear in XML in the order provided
 func NewTwimlResponse(verbs ...interface{}) *Response {
 	return &Response{Verbs: verbs}
 }

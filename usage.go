@@ -38,6 +38,8 @@ type UsageFilter struct {
 	Category, StartDate, EndDate string
 }
 
+// ideal api: twilio.UsageRecords(gotwilio.UsageFilter{Category: "test"}).daily()
+
 // UsageRecords retreives all UsageRecord's at a subresource if provided, defaulting to the list resource,
 // with the given filter parameters, if provided.
 // The error returned results from a misformatted url, failed http request, or bad JSON.
@@ -50,6 +52,7 @@ func (twilio *Twilio) UsageRecords(subresource string, filter *UsageFilter) (*Us
 
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records"
 	if subresource != "" {
+		// check the subresource?
 		twilioUrl = twilioUrl + "/" + subresource
 	}
 
