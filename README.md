@@ -62,7 +62,7 @@ import (
 )
 
 func root(w http.ResponseWriter, r *http.Request) {
-	twilio, err := NewTwilioClientFromEnvironment()
+	twilio, err := NewTwilioClientFromEnv()
 	if err != nil {
 		panic(err)
 	}
@@ -111,7 +111,7 @@ import (
 )
 
 func main() {
-	twilio, err := gotwilio.NewTwilioClientFromEnvironment()
+	twilio, err := gotwilio.NewTwilioClientFromEnv()
 	if err == nil {
 		filter := &gotwilio.UsageFilter{StartDate: "2012-6-4", EndDate: "2014-1-1"}
 		records, exception, recordErr := twilio.UsageRecords("Daily", filter)
