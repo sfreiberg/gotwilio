@@ -42,6 +42,19 @@ func TestVoice(t *testing.T) {
 	}
 }
 
+func TestUsage(t *testing.T) {
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	filter := &UsageFilter{StartDate: "2012-6-4", EndDate: "2014-1-1"}
+	_, exc, err := twilio.UsageRecords("Daily", filter)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+}
+
 func TestTwiml(t *testing.T) {
 	var b bytes.Buffer
 	const properResponse = `<?xml version="1.0" encoding="UTF-8"?>` + "\n" +
