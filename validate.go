@@ -65,7 +65,7 @@ func Validate(r *http.Request, url, authToken string) error {
 	// fetch the given twilio signature and compare against our signature
 	twilioSig := r.Header.Get("X-Twilio-Signature")
 
-	if bytes.Equal([]byte(twilioSig), b.Bytes()) == true {
+	if bytes.Equal([]byte(twilioSig), b.Bytes()) {
 		return nil
 	} else {
 		return errors.New("This request was spoofed")
