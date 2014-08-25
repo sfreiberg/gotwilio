@@ -48,7 +48,7 @@ func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (*SmsResponse, *Exception, error) {
 	var smsResponse *SmsResponse
 	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/SMS/Messages.json"
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages.json"
 
 	formValues := url.Values{}
 	formValues.Set("From", from)
