@@ -87,14 +87,32 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	formValues.Set("From", from)
 	formValues.Set("To", to)
 	formValues.Set("Url", callbackParameters.Url)
-	formValues.Set("Method", callbackParameters.Method)
-	formValues.Set("FallbackUrl", callbackParameters.FallbackUrl)
-	formValues.Set("FallbackMethod", callbackParameters.FallbackMethod)
-	formValues.Set("StatusCallback", callbackParameters.StatusCallback)
-	formValues.Set("StatusCallbackMethod", callbackParameters.StatusCallbackMethod)
-	formValues.Set("SendDigits", callbackParameters.SendDigits)
-	formValues.Set("IfMachine", callbackParameters.IfMachine)
-	formValues.Set("Timeout", strconv.Itoa(callbackParameters.Timeout))
+
+	// Optional values
+	if callbackParameters.Method != "" {
+		formValues.Set("Method", callbackParameters.Method)
+	}
+	if callbackParameters.FallbackUrl != "" {
+		formValues.Set("FallbackUrl", callbackParameters.FallbackUrl)
+	}
+	if callbackParameters.FallbackMethod != "" {
+		formValues.Set("FallbackMethod", callbackParameters.FallbackMethod)
+	}
+	if callbackParameters.StatusCallback != "" {
+		formValues.Set("StatusCallback", callbackParameters.StatusCallback)
+	}
+	if callbackParameters.StatusCallbackMethod != "" {
+		formValues.Set("StatusCallbackMethod", callbackParameters.StatusCallbackMethod)
+	}
+	if callbackParameters.SendDigits != "" {
+		formValues.Set("SendDigits", callbackParameters.SendDigits)
+	}
+	if callbackParameters.IfMachine != "" {
+		formValues.Set("IfMachine", callbackParameters.IfMachine)
+	}
+	if callbackParameters.Timeout != 0 {
+		formValues.Set("Timeout", strconv.Itoa(callbackParameters.Timeout))
+	}
 	if callbackParameters.Record {
 		formValues.Set("Record", "true")
 	} else {
