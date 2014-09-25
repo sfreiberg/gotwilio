@@ -43,7 +43,7 @@ func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateSent)
 }
 
-// SendTextMessage uses Twilio to send a text message.
+// SendSMS uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (*SmsResponse, *Exception, error) {
 	var smsResponse *SmsResponse

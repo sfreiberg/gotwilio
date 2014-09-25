@@ -1,6 +1,8 @@
 package gotwilio
 
 import (
+	"bytes"
+	"os"
 	"testing"
 )
 
@@ -8,10 +10,10 @@ var params map[string]string
 
 func init() {
 	params = make(map[string]string)
-	params["SID"] = "AC0f30491286ab4abb4a108abefbd05d8a"
-	params["TOKEN"] = "1dcf52d7a1f3853ed78f0ee20d056dd0"
-	params["FROM"] = "+15005550006"
-	params["TO"] = "+19135551234"
+	params["SID"] = os.Getenv("TWILIO_ACCOUNT_SID")
+	params["TOKEN"] = os.Getenv("TWILIO_AUTH_TOKEN")
+	params["FROM"] = os.Getenv("TWILIO_FROM")
+	params["TO"] = os.Getenv("TWILIO_TO")
 }
 
 func TestSMS(t *testing.T) {
@@ -37,5 +39,35 @@ func TestVoice(t *testing.T) {
 
 	if exc != nil {
 		t.Fatal(exc)
+	}
+}
+
+func TestUsage(t *testing.T) {
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	filter := &UsageFilter{StartDate: "2012-6-4", EndDate: "2014-1-1"}
+	_, exc, err := twilio.UsageRecords("Daily", filter)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+}
+
+func TestTwiml(t *testing.T) {
+	var b bytes.Buffer
+	const properResponse = `<?xml version="1.0" encoding="UTF-8"?>` + "\n" +
+		`<Response><Say voice="alice">test</Say><Pause length="2"></Pause></Response>`
+	newSay := Say{Text: "test", Voice: "alice"}
+	newPause := Pause{Length: "2"}
+	resp := NewTwimlResponse(newSay, newPause)
+	err := resp.SendTwimlResponse(&b)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if b.String() != properResponse {
+		t.Fatalf("Expected: %s, Got: %s", properResponse, b.String())
 	}
 }
