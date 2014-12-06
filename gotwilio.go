@@ -13,6 +13,7 @@ type Twilio struct {
 	AccountSid string
 	AuthToken  string
 	BaseUrl    string
+	HTTPClient *http.Client
 }
 
 // Exception is a representation of a twilio exception.
@@ -26,7 +27,7 @@ type Exception struct {
 // Create a new Twilio struct.
 func NewTwilioClient(accountSid, authToken string) *Twilio {
 	twilioUrl := "https://api.twilio.com/2010-04-01" // Should this be moved into a constant?
-	return &Twilio{accountSid, authToken, twilioUrl}
+	return &Twilio{accountSid, authToken, twilioUrl, http.DefaultClient}
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
@@ -37,6 +38,10 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
-	client := &http.Client{}
+	client := twilio.HTTPClient
+	if client == nil {
+		client = http.DefaultClient
+	}
+
 	return client.Do(req)
 }
