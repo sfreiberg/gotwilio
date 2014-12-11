@@ -17,6 +17,7 @@ type SmsResponse struct {
 	AccountSid  string   `json:"account_sid"`
 	To          string   `json:"to"`
 	From        string   `json:"from"`
+	MediaUrl    string   `json:"media_url"`
 	Body        string   `json:"body"`
 	Status      string   `json:"status"`
 	Direction   string   `json:"direction"`
@@ -45,21 +46,22 @@ func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 
 // SendTextMessage uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
-func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (*SmsResponse, *Exception, error) {
-	var smsResponse *SmsResponse
-	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages.json"
+func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	formValues := initFormValues(from, to, body, "", statusCallback, applicationSid)
+	smsResponse, exception, err = twilio.sendMessage(formValues)
+	return
+}
 
-	formValues := url.Values{}
-	formValues.Set("From", from)
-	formValues.Set("To", to)
-	formValues.Set("Body", body)
-	if statusCallback != "" {
-		formValues.Set("StatusCallback", statusCallback)
-	}
-	if applicationSid != "" {
-		formValues.Set("ApplicationSid", applicationSid)
-	}
+// SendMultimediaMessage uses Twilio to send a multimedia message.
+func (twilio *Twilio) SendMMS(from, to, body, mediaUrl, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	formValues := initFormValues(from, to, body, mediaUrl, statusCallback, applicationSid)
+	smsResponse, exception, err = twilio.sendMessage(formValues)
+	return
+}
+
+// Core method to send message
+func (twilio *Twilio) sendMessage(formValues url.Values) (smsResponse *SmsResponse, exception *Exception, err error) {
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages.json"
 
 	res, err := twilio.post(formValues, twilioUrl)
 	if err != nil {
@@ -84,4 +86,27 @@ func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid str
 	smsResponse = new(SmsResponse)
 	err = json.Unmarshal(responseBody, smsResponse)
 	return smsResponse, exception, err
+}
+
+// Form values initialization
+func initFormValues(from, to, body, mediaUrl, statusCallback, applicationSid string) url.Values {
+	formValues := url.Values{}
+
+	formValues.Set("From", from)
+	formValues.Set("To", to)
+	formValues.Set("Body", body)
+
+	if mediaUrl != "" {
+		formValues.Set("MediaUrl", mediaUrl)
+	}
+
+	if statusCallback != "" {
+		formValues.Set("StatusCallback", statusCallback)
+	}
+
+	if applicationSid != "" {
+		formValues.Set("ApplicationSid", applicationSid)
+	}
+
+	return formValues
 }

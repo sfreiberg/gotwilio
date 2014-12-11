@@ -27,6 +27,19 @@ func TestSMS(t *testing.T) {
 	}
 }
 
+func TestMMS(t *testing.T) {
+	msg := "Welcome to gotwilio"
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, "http://www.google.com/images/logo.png", "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+}
+
 func TestVoice(t *testing.T) {
 	callback := NewCallbackParameters("http://example.com")
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
