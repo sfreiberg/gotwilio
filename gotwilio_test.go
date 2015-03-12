@@ -1,7 +1,6 @@
 package gotwilio
 
 import (
-	"net/http"
 	"testing"
 )
 
@@ -17,7 +16,7 @@ func init() {
 
 func TestSMS(t *testing.T) {
 	msg := "Welcome to gotwilio"
-	twilio := NewTwilioClient(params["SID"], params["TOKEN"], http.DefaultClient)
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
 	_, exc, err := twilio.SendSMS(params["FROM"], params["TO"], msg, "", "")
 	if err != nil {
 		t.Fatal(err)
@@ -30,7 +29,7 @@ func TestSMS(t *testing.T) {
 
 func TestMMS(t *testing.T) {
 	msg := "Welcome to gotwilio"
-	twilio := NewTwilioClient(params["SID"], params["TOKEN"], http.DefaultClient)
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
 	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, "http://www.google.com/images/logo.png", "", "")
 	if err != nil {
 		t.Fatal(err)
@@ -43,7 +42,7 @@ func TestMMS(t *testing.T) {
 
 func TestVoice(t *testing.T) {
 	callback := NewCallbackParameters("http://example.com")
-	twilio := NewTwilioClient(params["SID"], params["TOKEN"], http.DefaultClient)
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
 	_, exc, err := twilio.CallWithUrlCallbacks(params["FROM"], params["TO"], callback)
 	if err != nil {
 		t.Fatal(err)

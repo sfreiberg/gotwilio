@@ -25,7 +25,12 @@ type Exception struct {
 }
 
 // Create a new Twilio struct.
-func NewTwilioClient(accountSid, authToken string, HTTPClient *http.Client) *Twilio {
+func NewTwilioClient(accountSid, authToken string) *Twilio {
+	return NewTwilioClientCustomHTTP(accountSid, authToken, nil)
+}
+
+// Create a new Twilio client, optionally using a custom http.Client
+func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Client) *Twilio {
 	twilioUrl := "https://api.twilio.com/2010-04-01" // Should this be moved into a constant?
 
 	if HTTPClient == nil {
