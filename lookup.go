@@ -38,7 +38,7 @@ func (twilio *Twilio) Lookup(phone string) (lookupResponse *LookupResponse, exce
 		return lookupResponse, exception, err
 	}
 
-	lookupResponse = new(SmsResponse)
+	lookupResponse = new(LookupResponse)
 	err = json.Unmarshal(responseBody, lookupResponse)
 	return lookupResponse, exception, err
 }
