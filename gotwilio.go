@@ -10,10 +10,11 @@ import (
 // Twilio stores basic information important for connecting to the
 // twilio.com REST api such as AccountSid and AuthToken.
 type Twilio struct {
-	AccountSid string
-	AuthToken  string
-	BaseUrl    string
-	HTTPClient *http.Client
+	AccountSid    string
+	AuthToken     string
+	BaseUrl       string
+	LookupBaseUrl string
+	HTTPClient    *http.Client
 }
 
 // Exception is a representation of a twilio exception.
@@ -31,13 +32,15 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 
 // Create a new Twilio client, optionally using a custom http.Client
 func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Client) *Twilio {
-	twilioUrl := "https://api.twilio.com/2010-04-01" // Should this be moved into a constant?
+	// Should these be moved into constants?
+	twilioUrl := "https://api.twilio.com/2010-04-01"
+	twilioLookupUrl := "https://lookups.twilio.com/v1/PhoneNumbers/"
 
 	if HTTPClient == nil {
 		HTTPClient = http.DefaultClient
 	}
 
-	return &Twilio{accountSid, authToken, twilioUrl, HTTPClient}
+	return &Twilio{accountSid, authToken, twilioUrl, twilioLookupUrl, HTTPClient}
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
@@ -47,6 +50,21 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+	client := twilio.HTTPClient
+	if client == nil {
+		client = http.DefaultClient
+	}
+
+	return client.Do(req)
+}
+
+func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
+	req, err := http.NewRequest("GET", twilioUrl, strings.NewReader(""))
+	if err != nil {
+		return nil, err
+	}
+	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 
 	client := twilio.HTTPClient
 	if client == nil {
