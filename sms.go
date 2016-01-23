@@ -47,14 +47,28 @@ func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 // SendTextMessage uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
-	formValues := initFormValues(from, to, body, "", statusCallback, applicationSid)
+	formValues := initFormValues(to, body, "", statusCallback, applicationSid)
+	formValues.Set("From", from)
+
+	smsResponse, exception, err = twilio.sendMessage(formValues)
+	return
+}
+
+// SendSMSWithCopilot uses Twilio Copilot to send a text message.
+// See https://www.twilio.com/docs/api/rest/sending-messages-copilot
+func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	formValues := initFormValues(to, body, "", statusCallback, applicationSid)
+	formValues.Set("MessagingServiceSid", messagingServiceSid)
+
 	smsResponse, exception, err = twilio.sendMessage(formValues)
 	return
 }
 
 // SendMultimediaMessage uses Twilio to send a multimedia message.
 func (twilio *Twilio) SendMMS(from, to, body, mediaUrl, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
-	formValues := initFormValues(from, to, body, mediaUrl, statusCallback, applicationSid)
+	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
+	formValues.Set("From", from)
+
 	smsResponse, exception, err = twilio.sendMessage(formValues)
 	return
 }
@@ -89,10 +103,9 @@ func (twilio *Twilio) sendMessage(formValues url.Values) (smsResponse *SmsRespon
 }
 
 // Form values initialization
-func initFormValues(from, to, body, mediaUrl, statusCallback, applicationSid string) url.Values {
+func initFormValues(to, body, mediaUrl, statusCallback, applicationSid string) url.Values {
 	formValues := url.Values{}
 
-	formValues.Set("From", from)
 	formValues.Set("To", to)
 	formValues.Set("Body", body)
 
