@@ -11,6 +11,7 @@ import (
 // twilio.com REST api such as AccountSid and AuthToken.
 type Twilio struct {
 	AccountSid string
+	UserSid    string
 	AuthToken  string
 	BaseUrl    string
 	HTTPClient *http.Client
@@ -37,7 +38,7 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 		HTTPClient = http.DefaultClient
 	}
 
-	return &Twilio{accountSid, authToken, twilioUrl, HTTPClient}
+	return &Twilio{accountSid, accountSid, authToken, twilioUrl, HTTPClient}
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
@@ -45,7 +46,7 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	if err != nil {
 		return nil, err
 	}
-	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
+	req.SetBasicAuth(twilio.UserSid, twilio.AuthToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	client := twilio.HTTPClient
