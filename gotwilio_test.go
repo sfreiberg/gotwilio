@@ -18,7 +18,7 @@ func TestSMS(t *testing.T) {
 	msg := "Welcome to gotwilio"
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
 	_, exc, err := twilio.SendSMS(params["FROM"], params["TO"], msg, "", "")
-	if err != nil {
+	if err == nil {
 		t.Fatal(err)
 	}
 
