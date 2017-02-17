@@ -54,6 +54,36 @@ func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid str
 	return
 }
 
+// GetSMS uses Twilio to get information about a text message.
+// See https://www.twilio.com/docs/api/rest/sms for more information.
+func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/SMS/Messages/" + sid + ".json"
+
+	res, err := twilio.get(twilioUrl)
+	if err != nil {
+		return smsResponse, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return smsResponse, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return smsResponse, exception, err
+	}
+
+	smsResponse = new(SmsResponse)
+	err = json.Unmarshal(responseBody, smsResponse)
+	return smsResponse, exception, err
+}
+
 // SendSMSWithCopilot uses Twilio Copilot to send a text message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
 func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
