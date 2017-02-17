@@ -62,7 +62,6 @@ func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
 		return nil, err
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	client := twilio.HTTPClient
 	if client == nil {
