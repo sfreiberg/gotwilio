@@ -11,16 +11,18 @@ import (
 // These are the paramters to use when you want Twilio to use callback urls.
 // See http://www.twilio.com/docs/api/rest/making-calls for more info.
 type CallbackParameters struct {
-	Url                  string // Required
-	Method               string // Optional
-	FallbackUrl          string // Optional
-	FallbackMethod       string // Optional
-	StatusCallback       string // Optional
-	StatusCallbackMethod string // Optional
-	SendDigits           string // Optional
-	IfMachine            string // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
-	Timeout              int    // Optional
-	Record               bool   // Optional
+	Url                     string // Required
+	Method                  string // Optional
+	FallbackUrl             string // Optional
+	FallbackMethod          string // Optional
+	StatusCallback          string // Optional
+	StatusCallbackMethod    string // Optional
+	SendDigits              string // Optional
+	IfMachine               string // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
+	Timeout                 int    // Optional
+	Record                  bool   // Optional
+	MachineDetection        string // Optional
+	MachineDetectionTimeout int    // Optional
 }
 
 // VoiceResponse contains the details about successful voice calls.
@@ -113,6 +115,16 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	if callbackParameters.Timeout != 0 {
 		formValues.Set("Timeout", strconv.Itoa(callbackParameters.Timeout))
 	}
+	if callbackParameters.MachineDetection != "" {
+		formValues.Set("MachineDetection", callbackParameters.MachineDetection)
+	}
+	if callbackParameters.MachineDetectionTimeout != 0 {
+		formValues.Set(
+			"MachineDetectionTimeout",
+			strconv.Itoa(callbackParameters.MachineDetectionTimeout),
+		)
+	}
+
 	if callbackParameters.Record {
 		formValues.Set("Record", "true")
 	} else {
