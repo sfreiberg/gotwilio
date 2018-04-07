@@ -70,3 +70,18 @@ func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
 
 	return client.Do(req)
 }
+
+func (twilio *Twilio) delete(twilioUrl string) (*http.Response, error) {
+	req, err := http.NewRequest("DELETE", twilioUrl, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
+
+	client := twilio.HTTPClient
+	if client == nil {
+		client = http.DefaultClient
+	}
+
+	return client.Do(req)
+}
