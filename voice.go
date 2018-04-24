@@ -11,19 +11,22 @@ import (
 // These are the paramters to use when you want Twilio to use callback urls.
 // See http://www.twilio.com/docs/api/rest/making-calls for more info.
 type CallbackParameters struct {
-	Url                     string   // Required
-	Method                  string   // Optional
-	FallbackUrl             string   // Optional
-	FallbackMethod          string   // Optional
-	StatusCallback          string   // Optional
-	StatusCallbackMethod    string   // Optional
-	StatusCallbackEvent     []string // Optional
-	SendDigits              string   // Optional
-	IfMachine               string   // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
-	Timeout                 int      // Optional
-	Record                  bool     // Optional
-	MachineDetection        string   // Optional
-	MachineDetectionTimeout int      // Optional
+	Url                           string   // Required
+	Method                        string   // Optional
+	FallbackUrl                   string   // Optional
+	FallbackMethod                string   // Optional
+	StatusCallback                string   // Optional
+	StatusCallbackMethod          string   // Optional
+	StatusCallbackEvent           []string // Optional
+	SendDigits                    string   // Optional
+	IfMachine                     string   // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
+	Timeout                       int      // Optional
+	Record                        bool     // Optional
+	RecordingChannels             string   // Optional
+	RecordingStatusCallback       string   // Optional
+	RecordingStatusCallbackMethod string   // Optional
+	MachineDetection              string   // Optional
+	MachineDetectionTimeout       int      // Optional
 }
 
 // VoiceResponse contains the details about successful voice calls.
@@ -131,6 +134,16 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 
 	if callbackParameters.Record {
 		formValues.Set("Record", "true")
+
+		if callbackParameters.RecordingChannels != "" {
+			formValues.Set("RecordingChannels", callbackParameters.RecordingChannels)
+		}
+		if callbackParameters.RecordingStatusCallback != "" {
+			formValues.Set("RecordingStatusCallback", callbackParameters.RecordingStatusCallback)
+		}
+		if callbackParameters.RecordingStatusCallbackMethod != "" {
+			formValues.Set("RecordingStatusCallbackMethod", callbackParameters.RecordingStatusCallbackMethod)
+		}
 	} else {
 		formValues.Set("Record", "false")
 	}
