@@ -52,3 +52,51 @@ func TestVoice(t *testing.T) {
 		t.Fatal(exc)
 	}
 }
+
+func TestProxyServiceCRUD(t *testing.T) {
+	t.Skip("Skipping as default test")
+
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+
+	req := ProxyServiceRequest{
+		UniqueName:  "Test Service Name",
+		CallbackURL: "https://www.example.com/",
+	}
+
+	resp, exc, err := twilio.NewProxyService(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	serviceID := resp.Sid
+
+	resp, exc, err = twilio.GetProxyService(serviceID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	req.OutOfSessionCallbackURL = "https://www.example.com/out"
+	resp, exc, err = twilio.UpdateProxyService(serviceID, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	exc, err = twilio.DeleteProxyService(serviceID)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+}
