@@ -100,3 +100,76 @@ func TestProxyServiceCRUD(t *testing.T) {
 	}
 
 }
+
+func TestProxySessionCRUD(t *testing.T) {
+	t.Skip("Skipping as default test")
+
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	// New Service to attach Session
+	sreq := ProxyServiceRequest{
+		UniqueName:  "Test Service Name",
+		CallbackURL: "https://www.example.com/",
+	}
+
+	service, exc, err := twilio.NewProxyService(sreq)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	// Create Session
+	req := ProxySessionRequest{
+		UniqueName: "First Session Name",
+		Mode:       "message-only",
+	}
+
+	session, exc, err := twilio.NewProxySession(service.Sid, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	// Get Session
+	session, exc, err = twilio.GetProxySession(service.Sid, session.Sid)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	// Update Session
+	req.Status = "closed"
+	session, exc, err = twilio.UpdateProxySession(service.Sid, session.Sid, req)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	// Delete Session
+	exc, err = twilio.DeleteProxySession(service.Sid, session.Sid)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+	// Cleanup Service
+	exc, err = twilio.DeleteProxyService(service.Sid)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+
+}
