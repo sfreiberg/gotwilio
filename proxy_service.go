@@ -43,6 +43,124 @@ type ProxyService struct {
 	} `json:"links"`
 }
 
+// https://www.twilio.com/docs/proxy/api/proxy-webhooks
+
+// https://www.twilio.com/docs/proxy/api/proxy-webhooks#callbackurl
+// These webhooks are fired for each new interaction and are informational only.
+type ProxyCallbackWebhook struct {
+	InteractionAccountSid  string    `json:"interactionAccountSid"`
+	InteractionServiceSid  string    `json:"interactionServiceSid"`
+	InteractionSessionSid  string    `json:"interactionSessionSid"`
+	InteractionSid         string    `json:"interactionSid"`
+	InteractionData        string    `json:"interactionData"`
+	InteractionType        string    `json:"interactionType"`
+	InteractionDateUpdated time.Time `json:"interactionDateUpdated"`
+	InteractionDateCreated time.Time `json:"interactionDateCreated"`
+
+	OutboundResourceSid    string `json:"outboundResourceSid"`
+	OutboundResourceStatus string `json:"outboundResourceStatus"`
+	OutboundParticipantSid string `json:"outboundParticipantSid"`
+	OutboundResourceType   string `json:"outboundResourceType"`
+	OutboundResourceURL    string `json:"outboundResourceUrl"`
+
+	InboundParticipantSid string `json:"inboundParticipantSid"`
+	InboundResourceSid    string `json:"inboundResourceSid"`
+	InboundResourceStatus string `json:"inboundResourceStatus"`
+	InboundResourceType   string `json:"inboundResourceType"`
+	InboundResourceURL    string `json:"inboundResourceUrl"`
+}
+
+// https://www.twilio.com/docs/proxy/api/proxy-webhooks#interceptcallbackurl
+// Fires on each interaction. If responded to with a 403 to this webhook we
+// will abort/block the interaction. Any other status or timeout the interaction continues
+type ProxyInterceptCallbackWebhook struct {
+	InteractionSid         string    `json:"interactionSid"`
+	InteractionSessionSid  string    `json:"interactionSessionSid"`
+	InteractionData        string    `json:"interactionData"`
+	InteractionServiceSid  string    `json:"interactionServiceSid"`
+	InteractionType        string    `json:"interactionType"`
+	InteractionAccountSid  string    `json:"interactionAccountSid"`
+	InboundParticipantSid  string    `json:"inboundParticipantSid"`
+	InboundResourceStatus  string    `json:"inboundResourceStatus"`
+	InboundResourceType    string    `json:"inboundResourceType"`
+	InboundResourceSid     string    `json:"inboundResourceSid"`
+	InboundResourceURL     string    `json:"inboundResourceUrl"`
+	InteractionDateUpdated time.Time `json:"interactionDateUpdated"`
+	InteractionDateCreated time.Time `json:"interactionDateCreated"`
+}
+
+// https://www.twilio.com/docs/proxy/api/proxy-webhooks#outofsessioncallbackurl
+// A URL to send webhooks to when an action (inbound call or SMS) occurs where
+// there is no session or a closed session. If your server (or a Twilio function)
+// responds with valid TwiML, this will be processed.
+// This means it is possible to e.g. play a message for a call, send an automated
+// text message response, or redirect a call to another number.
+type ProxyOutOfSessionCallbackWebhook struct {
+	AccountSid          string    `json:"AccountSid"`
+	SessionUniqueName   string    `json:"sessionUniqueName"`
+	SessionAccountSid   string    `json:"sessionAccountSid"`
+	SessionServiceSid   string    `json:"sessionServiceSid"`
+	SessionSid          string    `json:"sessionSid"`
+	SessionStatus       string    `json:"sessionStatus"`
+	SessionMode         string    `json:"sessionMode"`
+	SessionDateCreated  time.Time `json:"sessionDateCreated"`
+	SessionDateUpdated  time.Time `json:"sessionDateUpdated"`
+	SessionDateEnded    time.Time `json:"sessionDateEnded"`
+	SessionClosedReason string    `json:"sessionClosedReason"`
+
+	To          string `json:"To"`
+	ToCity      string `json:"ToCity"`
+	ToState     string `json:"ToState"`
+	ToZip       string `json:"ToZip"`
+	ToCountry   string `json:"ToCountry"`
+	From        string `json:"From"`
+	FromCity    string `json:"FromCity"`
+	FromState   string `json:"FromState"`
+	FromZip     string `json:"FromZip"`
+	FromCountry string `json:"FromCountry"`
+
+	InboundParticipantSid                string    `json:"inboundParticipantSid"`
+	InboundParticipantIdentifier         string    `json:"inboundParticipantIdentifier"`
+	InboundParticipantFriendlyName       string    `json:"inboundParticipantFriendlyName"`
+	InboundParticipantProxyIdentifier    string    `json:"inboundParticipantProxyIdentifier"`
+	InboundParticipantProxyIdentifierSid string    `json:"inboundParticipantProxyIdentifierSid"`
+	InboundParticipantAccountSid         string    `json:"inboundParticipantAccountSid"`
+	InboundParticipantServiceSid         string    `json:"inboundParticipantServiceSid"`
+	InboundParticipantSessionSid         string    `json:"inboundParticipantSessionSid"`
+	InboundParticipantDateCreated        time.Time `json:"inboundParticipantDateCreated"`
+	InboundParticipantDateUpdated        time.Time `json:"inboundParticipantDateUpdated"`
+
+	OutboundParticipantSid                string    `json:"outboundParticipantSid"`
+	OutboundParticipantIdentifier         string    `json:"outboundParticipantIdentifier"`
+	OutboundParticipantFriendlyName       string    `json:"outboundParticipantFriendlyName"`
+	OutboundParticipantProxyIdentifier    string    `json:"outboundParticipantProxyIdentifier"`
+	OutboundParticipantProxyIdentifierSid string    `json:"outboundParticipantProxyIdentifierSid"`
+	OutboundParticipantAccountSid         string    `json:"outboundParticipantAccountSid"`
+	OutboundParticipantServiceSid         string    `json:"outboundParticipantServiceSid"`
+	OutboundParticipantSessionSid         string    `json:"outboundParticipantSessionSid"`
+	OutboundParticipantDateCreated        time.Time `json:"outboundParticipantDateCreated"`
+	OutboundParticipantDateUpdated        time.Time `json:"outboundParticipantDateUpdated"`
+
+	CallSid    string `json:"CallSid"`
+	CallStatus string `json:"CallStatus"`
+
+	Caller        string `json:"Caller"`
+	CallerCity    string `json:"CallerCity"`
+	CallerState   string `json:"CallerState"`
+	CallerZip     string `json:"CallerZip"`
+	CallerCountry string `json:"CallerCountry"`
+
+	Called        string `json:"Called"`
+	CalledCity    string `json:"CalledCity"`
+	CalledState   string `json:"CalledState"`
+	CalledZip     string `json:"CalledZip"`
+	CalledCountry string `json:"CalledCountry"`
+
+	Direction  string `json:"Direction"`
+	AddOns     string `json:"AddOns"`
+	APIVersion string `json:"ApiVersion"`
+}
+
 // Create a new Twilio Service
 func (twilio *Twilio) NewProxyService(service ProxyServiceRequest) (response *ProxyService, exception *Exception, err error) {
 
