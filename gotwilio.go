@@ -37,6 +37,10 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 
 // Create a new Twilio client, optionally using a custom http.Client
 func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Client) *Twilio {
+	if HTTPClient == nil {
+		HTTPClient = defaultClient()
+	}
+
 	return &Twilio{accountSid, authToken, baseURL, HTTPClient}
 }
 
@@ -47,8 +51,12 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	client := twilio.HTTPClient
+	if client == nil {
+		client = defaultClient()
+	}
 
-	return twilio.do(req)
+	return client.Do(req)
 }
 
 func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
@@ -57,8 +65,12 @@ func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
 		return nil, err
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
+	client := twilio.HTTPClient
+	if client == nil {
+		client = defaultClient()
+	}
 
-	return twilio.do(req)
+	return client.Do(req)
 }
 
 func (twilio *Twilio) delete(twilioUrl string) (*http.Response, error) {
@@ -67,11 +79,6 @@ func (twilio *Twilio) delete(twilioUrl string) (*http.Response, error) {
 		return nil, err
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
-
-	return twilio.do(req)
-}
-
-func (twilio *Twilio) do(req *http.Request) (*http.Response, error) {
 	client := twilio.HTTPClient
 	if client == nil {
 		client = defaultClient()
