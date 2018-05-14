@@ -5,6 +5,12 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"time"
+)
+
+const (
+	baseURL       = "https://api.twilio.com/2010-04-01"
+	clientTimeout = time.Second * 30
 )
 
 // Twilio stores basic information important for connecting to the
@@ -31,13 +37,11 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 
 // Create a new Twilio client, optionally using a custom http.Client
 func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Client) *Twilio {
-	twilioUrl := "https://api.twilio.com/2010-04-01" // Should this be moved into a constant?
-
 	if HTTPClient == nil {
-		HTTPClient = http.DefaultClient
+		HTTPClient = defaultClient()
 	}
 
-	return &Twilio{accountSid, authToken, twilioUrl, HTTPClient}
+	return &Twilio{accountSid, authToken, baseURL, HTTPClient}
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
@@ -47,10 +51,9 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
 	client := twilio.HTTPClient
 	if client == nil {
-		client = http.DefaultClient
+		client = defaultClient()
 	}
 
 	return client.Do(req)
@@ -62,10 +65,9 @@ func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
 		return nil, err
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
-
 	client := twilio.HTTPClient
 	if client == nil {
-		client = http.DefaultClient
+		client = defaultClient()
 	}
 
 	return client.Do(req)
@@ -77,11 +79,18 @@ func (twilio *Twilio) delete(twilioUrl string) (*http.Response, error) {
 		return nil, err
 	}
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
-
 	client := twilio.HTTPClient
 	if client == nil {
-		client = http.DefaultClient
+		client = defaultClient()
 	}
 
 	return client.Do(req)
+}
+
+func defaultClient() *http.Client {
+	client := http.Client{
+		Timeout: clientTimeout,
+	}
+
+	return &client
 }
