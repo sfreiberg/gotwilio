@@ -13,6 +13,11 @@ const (
 	clientTimeout = time.Second * 30
 )
 
+// The default http.Client that is used if none is specified
+var defaultClient = &http.Client{
+	Timeout: time.Second * 30,
+}
+
 // Twilio stores basic information important for connecting to the
 // twilio.com REST api such as AccountSid and AuthToken.
 type Twilio struct {
@@ -38,7 +43,7 @@ func NewTwilioClient(accountSid, authToken string) *Twilio {
 // Create a new Twilio client, optionally using a custom http.Client
 func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Client) *Twilio {
 	if HTTPClient == nil {
-		HTTPClient = defaultClient()
+		HTTPClient = defaultClient
 	}
 
 	return &Twilio{accountSid, authToken, baseURL, HTTPClient}
@@ -53,7 +58,7 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	client := twilio.HTTPClient
 	if client == nil {
-		client = defaultClient()
+		client = defaultClient
 	}
 
 	return client.Do(req)
@@ -67,7 +72,7 @@ func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	client := twilio.HTTPClient
 	if client == nil {
-		client = defaultClient()
+		client = defaultClient
 	}
 
 	return client.Do(req)
@@ -81,16 +86,8 @@ func (twilio *Twilio) delete(twilioUrl string) (*http.Response, error) {
 	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
 	client := twilio.HTTPClient
 	if client == nil {
-		client = defaultClient()
+		client = defaultClient
 	}
 
 	return client.Do(req)
-}
-
-func defaultClient() *http.Client {
-	client := http.Client{
-		Timeout: clientTimeout,
-	}
-
-	return &client
 }
