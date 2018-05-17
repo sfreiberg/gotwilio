@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"encoding/json"
 	"net/url"
 	"time"
 
@@ -16,6 +17,10 @@ func init() {
 
 func DecodeWebhook(data url.Values, out interface{}) error {
 	return formDecoder.Decode(out, data)
+}
+
+type InteractionData struct {
+	Body string `json:"body"`
 }
 
 // https://www.twilio.com/docs/proxy/api/proxy-webhooks
@@ -43,6 +48,12 @@ type ProxyCallbackWebhook struct {
 	InteractionSid         string    `form:"interactionSid"`
 }
 
+func (p ProxyCallbackWebhook) GetInteractionData() (InteractionData, error) {
+	var out InteractionData
+	err := json.Unmarshal([]byte(p.InteractionData), &out)
+	return out, err
+}
+
 // https://www.twilio.com/docs/proxy/api/proxy-webhooks#interceptcallbackurl
 // Fires on each interaction. If responded to with a 403 to this webhook we
 // will abort/block the interaction. Any other status or timeout the interaction continues
@@ -60,6 +71,12 @@ type ProxyInterceptCallbackWebhook struct {
 	InboundResourceSid     string    `form:"inboundResourceSid"`
 	InteractionSessionSid  string    `form:"interactionSessionSid"`
 	InteractionSid         string    `form:"interactionSid"`
+}
+
+func (p ProxyInterceptCallbackWebhook) GetInteractionData() (InteractionData, error) {
+	var out InteractionData
+	err := json.Unmarshal([]byte(p.InteractionData), &out)
+	return out, err
 }
 
 // https://www.twilio.com/docs/proxy/api/proxy-webhooks#outofsessioncallbackurl
