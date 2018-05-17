@@ -87,7 +87,6 @@ func (p ProxyInterceptCallbackWebhook) GetInteractionData() (InteractionData, er
 // text message response, or redirect a call to another number.
 type ProxyOutOfSessionCallbackWebhook struct {
 	AccountSid          string    `form:"AccountSid"`
-	Body                string    `form:"Body"`
 	SessionUniqueName   string    `form:"sessionUniqueName"`
 	SessionAccountSid   string    `form:"sessionAccountSid"`
 	SessionServiceSid   string    `form:"sessionServiceSid"`
@@ -98,6 +97,10 @@ type ProxyOutOfSessionCallbackWebhook struct {
 	SessionDateUpdated  time.Time `form:"sessionDateUpdated"`
 	SessionDateEnded    time.Time `form:"sessionDateEnded"`
 	SessionClosedReason string    `form:"sessionClosedReason"`
+
+	// SMS Specific
+	Body   string `form:"Body"`
+	SmsSid string `form:"SmsSid"`
 
 	To          string `form:"To"`
 	ToCity      string `form:"ToCity"`
