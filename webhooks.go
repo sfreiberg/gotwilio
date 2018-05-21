@@ -86,21 +86,28 @@ func (p ProxyInterceptCallbackWebhook) GetInteractionData() (InteractionData, er
 // This means it is possible to e.g. play a message for a call, send an automated
 // text message response, or redirect a call to another number.
 type ProxyOutOfSessionCallbackWebhook struct {
-	AccountSid          string    `form:"AccountSid"`
-	SessionUniqueName   string    `form:"sessionUniqueName"`
-	SessionAccountSid   string    `form:"sessionAccountSid"`
-	SessionServiceSid   string    `form:"sessionServiceSid"`
-	SessionSid          string    `form:"sessionSid"`
-	SessionStatus       string    `form:"sessionStatus"`
-	SessionMode         string    `form:"sessionMode"`
-	SessionDateCreated  time.Time `form:"sessionDateCreated"`
-	SessionDateUpdated  time.Time `form:"sessionDateUpdated"`
-	SessionDateEnded    time.Time `form:"sessionDateEnded"`
-	SessionClosedReason string    `form:"sessionClosedReason"`
+	AccountSid                 string    `form:"AccountSid"`
+	SessionUniqueName          string    `form:"sessionUniqueName"`
+	SessionAccountSid          string    `form:"sessionAccountSid"`
+	SessionServiceSid          string    `form:"sessionServiceSid"`
+	SessionSid                 string    `form:"sessionSid"`
+	SessionStatus              string    `form:"sessionStatus"`
+	SessionMode                string    `form:"sessionMode"`
+	SessionDateCreated         time.Time `form:"sessionDateCreated"`
+	SessionDateStarted         time.Time `form:"sessionDateStarted"`
+	SessionDateUpdated         time.Time `form:"sessionDateUpdated"`
+	SessionDateEnded           time.Time `form:"sessionDateEnded"`
+	SessionDateLastInteraction time.Time `form:"sessionDateLastInteraction"`
+	SessionClosedReason        string    `form:"sessionClosedReason"`
 
 	// SMS Specific
-	Body   string `form:"Body"`
-	SmsSid string `form:"SmsSid"`
+	Body          string `form:"Body"`
+	SmsSid        string `form:"SmsSid"`
+	MessageSid    string `form:"MessageSid"`
+	NumMedia      string `form:"NumMedia"`
+	NumSegments   string `form:"NumSegments"`
+	SmsStatus     string `form:"SmsStatus"`
+	SmsMessageSid string `form:"SmsMessageSid"`
 
 	To          string `form:"To"`
 	ToCity      string `form:"ToCity"`
