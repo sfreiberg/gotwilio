@@ -45,7 +45,7 @@ type VoiceResponse struct {
 	Status         string   `json:"status"`
 	StartTime      string   `json:"start_time"`
 	EndTime        string   `json:"end_time"`
-	Duration       int      `json:"duration"`
+	Duration       int      `json:"duration,string"`
 	Price          *float32 `json:"price,omitempty"`
 	Direction      string   `json:"direction"`
 	AnsweredBy     string   `json:"answered_by"`
