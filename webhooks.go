@@ -99,6 +99,7 @@ type ProxyOutOfSessionCallbackWebhook struct {
 	SessionDateEnded           time.Time `form:"sessionDateEnded"`
 	SessionDateLastInteraction time.Time `form:"sessionDateLastInteraction"`
 	SessionClosedReason        string    `form:"sessionClosedReason"`
+	TTL                        string    `form:"ttl"`
 
 	// SMS Specific
 	Body          string `form:"Body"`
