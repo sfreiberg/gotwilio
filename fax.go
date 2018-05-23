@@ -94,6 +94,8 @@ func (t *Twilio) GetFax(faxSid string) (*FaxResource, *Exception, error) {
 	if err != nil {
 		return nil, nil, err
 	}
+	defer resp.Body.Close()
+
 	respBody, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return nil, nil, err
