@@ -2,6 +2,7 @@ package gotwilio
 
 import (
 	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -44,7 +45,7 @@ type VoiceResponse struct {
 	Status         string   `json:"status"`
 	StartTime      string   `json:"start_time"`
 	EndTime        string   `json:"end_time"`
-	Duration       int      `json:"duration"`
+	Duration       int      `json:"duration,string"`
 	Price          *float32 `json:"price,omitempty"`
 	Direction      string   `json:"direction"`
 	AnsweredBy     string   `json:"answered_by"`
@@ -55,6 +56,8 @@ type VoiceResponse struct {
 	CallerName     string   `json:"caller_name"`
 	Uri            string   `json:"uri"`
 	// TODO: handle SubresourceUris
+	// TODO: handle annotation
+	// TODO: handle price_unit
 }
 
 // Returns VoiceResponse.DateCreated as a time.Time object
@@ -85,6 +88,34 @@ func (vr *VoiceResponse) EndTimeAsTime() (time.Time, error) {
 // CallbackParameters.Timeout set to 60.
 func NewCallbackParameters(url string) *CallbackParameters {
 	return &CallbackParameters{Url: url, Timeout: 60}
+}
+
+// GetCall uses Twilio to get information about a voice call.
+// See https://www.twilio.com/docs/voice/api/call
+func (twilio *Twilio) GetCall(sid string) (*VoiceResponse, *Exception, error) {
+	var voiceResponse *VoiceResponse
+	var exception *Exception
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls/" + sid + ".json"
+
+	res, err := twilio.get(twilioUrl)
+	if err != nil {
+		return nil, nil, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return nil, nil, err
+	}
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+		return nil, exception, err
+	}
+
+	voiceResponse = new(VoiceResponse)
+	err = json.Unmarshal(responseBody, voiceResponse)
+	return voiceResponse, nil, err
 }
 
 // Place a voice call with a list of callbacks specified.
