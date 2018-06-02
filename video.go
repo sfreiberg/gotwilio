@@ -132,6 +132,38 @@ func (twilio *Twilio) CreateVideoRoom(options *createRoomOptions) (videoResponse
 	return videoResponse, exception, err
 }
 
+// GetVideoRoom retrievs a single video session
+// by name or by Sid.
+// See https://www.twilio.com/docs/video/api/rooms-resource
+// for more information.
+func (twilio *Twilio) GetVideoRoom(nameOrSid string) (videoResponse *VideoResponse, exception *Exception, err error) {
+	twilioUrl := twilio.VideoUrl + "/v1/Rooms/" + nameOrSid
+
+	res, err := twilio.get(twilioUrl)
+	if err != nil {
+		return videoResponse, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return videoResponse, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return videoResponse, exception, err
+	}
+
+	videoResponse = new(VideoResponse)
+	err = json.Unmarshal(responseBody, videoResponse)
+	return videoResponse, exception, err
+}
+
 func createRoomOptionsToFormValues(options *createRoomOptions) url.Values {
 	formValues := url.Values{}
 	formValues.Set("EnableTurn", fmt.Sprintf("%t", options.EnableTurn))
