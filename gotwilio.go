@@ -10,6 +10,7 @@ import (
 
 const (
 	baseURL       = "https://api.twilio.com/2010-04-01"
+	videoURL      = "https://video.twilio.com"
 	clientTimeout = time.Second * 30
 )
 
@@ -24,6 +25,7 @@ type Twilio struct {
 	AccountSid string
 	AuthToken  string
 	BaseUrl    string
+	VideoUrl   string
 	HTTPClient *http.Client
 }
 
@@ -46,7 +48,7 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 		HTTPClient = defaultClient
 	}
 
-	return &Twilio{accountSid, authToken, baseURL, HTTPClient}
+	return &Twilio{accountSid, authToken, baseURL, videoURL, HTTPClient}
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
