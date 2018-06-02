@@ -53,7 +53,21 @@ const (
 	H264 VideoCodecs = "H264"
 )
 
-// VideoResponse is returned after a room is created
+// ListVideoResponse is returned when listing rooms
+type ListVideoReponse struct {
+	Rooms []*VideoResponse `json:"rooms"`
+	Meta  struct {
+		Page            int64  `json:"page"`
+		PageSize        int64  `json:"page_size"`
+		FirstPageUrl    string `json:"first_page_url"`
+		PreviousPageUrl string `json:"previous_page_url"`
+		NextPageUrl     string `json:"next_page_url"`
+		Url             string `json:"url"`
+		Key             string `json:"key"`
+	} `json:"meta"`
+}
+
+// VideoResponse is returned for a single room
 type VideoResponse struct {
 	AccountSid                  string        `json:"account_sid"`
 	DateCreated                 time.Time     `json:"date_created"`
@@ -99,6 +113,15 @@ var DefaultVideoRoomOptions = &createRoomOptions{
 	VideoCodecs:                 []VideoCodecs{H264},
 }
 
+// ListVideoRoomOptions are the options to query
+// for a list of video rooms.
+type ListVideoRoomOptions struct {
+	DateCreatedAfter  time.Time   `json:"DateCreatedAfter"`
+	DateCreatedBefore time.Time   `json:"DateCreatedBefore"`
+	Status            VideoStatus `json:"Status"`
+	UniqueName        string      `json:"EnableUniqueNameTurn"`
+}
+
 // CreateVideoRoom creates a video communication session
 // for participants to connect to.
 // See https://www.twilio.com/docs/video/api/rooms-resource
@@ -128,6 +151,56 @@ func (twilio *Twilio) CreateVideoRoom(options *createRoomOptions) (videoResponse
 	}
 
 	videoResponse = new(VideoResponse)
+	err = json.Unmarshal(responseBody, videoResponse)
+	return videoResponse, exception, err
+}
+
+// DateCreatedAfter  time.Time   `json:"DateCreatedAfter"`
+// DateCreatedBefore time.Time   `json:"DateCreatedBefore"`
+// Status            VideoStatus `json:"Status"`
+// UniqueName        string      `json:"EnableUniqueNameTurn"`
+
+// ListVideoRooms returns a list of all video rooms.
+// See https://www.twilio.com/docs/video/api/rooms-resource
+// for more information.
+func (twilio *Twilio) ListVideoRooms(options *ListVideoRoomOptions) (videoResponse *ListVideoReponse, exception *Exception, err error) {
+	q := &url.Values{}
+	if !options.DateCreatedAfter.Equal(time.Time{}) {
+		q.Set("DateCreatedAfter", options.DateCreatedAfter.Format(time.RFC3339))
+	}
+	if !options.DateCreatedBefore.Equal(time.Time{}) {
+		q.Set("DateCreatedBefore", options.DateCreatedBefore.Format(time.RFC3339))
+	}
+	if options.Status != "" {
+		q.Set("Status", fmt.Sprintf("%s", options.Status))
+	}
+	if options.UniqueName != "" {
+		q.Set("UniqueName", options.UniqueName)
+	}
+
+	twilioUrl := twilio.VideoUrl + "/v1/Rooms?" + q.Encode()
+
+	res, err := twilio.get(twilioUrl)
+	if err != nil {
+		return videoResponse, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return videoResponse, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return videoResponse, exception, err
+	}
+
+	videoResponse = new(ListVideoReponse)
 	err = json.Unmarshal(responseBody, videoResponse)
 	return videoResponse, exception, err
 }
