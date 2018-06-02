@@ -66,16 +66,16 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 
 ## Video example
 
-package main
+	package main
 
-import (
-	"github.com/sfreiberg/gotwilio"
-)
+	import (
+		"github.com/sfreiberg/gotwilio"
+	)
 
-func main() {
-	accountSid := "ABC123..........ABC123"
-	authToken := "ABC123..........ABC123"
-	twilio := gotwilio.NewTwilioClient(accountSid, authToken)
+	func main() {
+		accountSid := "ABC123..........ABC123"
+		authToken := "ABC123..........ABC123"
+		twilio := gotwilio.NewTwilioClient(accountSid, authToken)
 
-	twilio.CreateVideoRoom(gotwilio.DefaultVideoRoomOptions)
-}
+		twilio.CreateVideoRoom(gotwilio.DefaultVideoRoomOptions)
+	}
