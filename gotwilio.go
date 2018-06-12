@@ -24,6 +24,7 @@ var defaultClient = &http.Client{
 type Twilio struct {
 	AccountSid string
 	AuthToken  string
+	APIKeySid  string
 	BaseUrl    string
 	VideoUrl   string
 	HTTPClient *http.Client
@@ -48,7 +49,13 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 		HTTPClient = defaultClient
 	}
 
-	return &Twilio{accountSid, authToken, baseURL, videoURL, HTTPClient}
+	return &Twilio{
+		AccountSid: accountSid,
+		AuthToken:  authToken,
+		BaseUrl:    baseURL,
+		VideoUrl:   videoURL,
+		HTTPClient: HTTPClient,
+	}
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
