@@ -13,9 +13,9 @@ import (
 // See https://www.twilio.com/docs/iam/access-tokens
 // for further details.
 type AccessToken struct {
-	AccountSid string
-	APIKeySid  string
-	AuthSecret string
+	AccountSid   string
+	APIKeySid    string
+	APIKeySecret string
 
 	NotBefore time.Time
 	ExpiresAt time.Time
@@ -44,9 +44,9 @@ func (g *VideoGrant) grantName() string {
 // for a short period of time.
 func (twilio *Twilio) NewAccessToken() *AccessToken {
 	return &AccessToken{
-		AccountSid: twilio.AccountSid,
-		APIKeySid:  twilio.APIKeySid,
-		AuthSecret: twilio.AuthToken,
+		AccountSid:   twilio.AccountSid,
+		APIKeySid:    twilio.APIKeySid,
+		APIKeySecret: twilio.APIKeySecret,
 	}
 }
 
@@ -56,11 +56,11 @@ func (a *AccessToken) AddGrant(grant Grant) *AccessToken {
 	return a
 }
 
-// Sign the Access Token to provide a JSON Web Token
-// to the user.
+// ToJWT creates a JSON Web Token from the Access Token
+// to use in the Client SDKs.
 // See https://en.wikipedia.org/wiki/JSON_Web_Token
 // for the standard format.
-func (a *AccessToken) Sign() (string, error) {
+func (a *AccessToken) ToJWT() (string, error) {
 	claims := &twilioClaims{
 		jwt.StandardClaims{
 			Id:        a.APIKeySid + fmt.Sprintf("-%d", time.Now().UnixNano()),
@@ -82,7 +82,7 @@ func (a *AccessToken) Sign() (string, error) {
 		"cty": "twilio-fpa;v=1",
 	}
 
-	ss, err := token.SignedString([]byte(a.AuthSecret))
+	ss, err := token.SignedString([]byte(a.APIKeySecret))
 
 	return ss, err
 }
