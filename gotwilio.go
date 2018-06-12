@@ -27,6 +27,9 @@ type Twilio struct {
 	BaseUrl    string
 	VideoUrl   string
 	HTTPClient *http.Client
+
+	APIKeySid    string
+	APIKeySecret string
 }
 
 // Exception is a representation of a twilio exception.
@@ -48,7 +51,19 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 		HTTPClient = defaultClient
 	}
 
-	return &Twilio{accountSid, authToken, baseURL, videoURL, HTTPClient}
+	return &Twilio{
+		AccountSid: accountSid,
+		AuthToken:  authToken,
+		BaseUrl:    baseURL,
+		VideoUrl:   videoURL,
+		HTTPClient: HTTPClient,
+	}
+}
+
+func (twilio *Twilio) WithAPIKey(apiKeySid string, apiKeySecret string) *Twilio {
+	twilio.APIKeySid = apiKeySid
+	twilio.APIKeySecret = apiKeySecret
+	return twilio
 }
 
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
