@@ -11,8 +11,8 @@ var SessionSid = ""
 
 func init() {
 	params = make(map[string]string)
-	params["SID"] = "AC0f30491286ab4abb4a108abefbd05d8a"
-	params["TOKEN"] = "1dcf52d7a1f3853ed78f0ee20d056dd0"
+	params["SID"] = ""
+	params["TOKEN"] = ""
 	params["FROM"] = "+15005550006"
 	params["TO"] = "+19135551234"
 }
