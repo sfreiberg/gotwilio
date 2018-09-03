@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-// SmsResponse is returned after a text/sms message is posted to Twilio
 type PricingResponse struct {
 	Country           string             `json:"country"`
 	ISOCountry        string             `json:"iso_country"`
@@ -30,7 +29,6 @@ type Price struct {
 	CurrentPrice string `json:"current_price"`
 }
 
-//
 func (twilio *Twilio) GetPricing(countryISO string) (pricingResponse *PricingResponse, exception *Exception, err error) {
 	pricingUrl := twilio.PricingUrl + "/Messaging/Countries/" + strings.ToUpper(countryISO)
 
