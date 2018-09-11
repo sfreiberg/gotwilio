@@ -257,7 +257,7 @@ func (twilio *Twilio) EndVideoRoom(nameOrSid string) (videoResponse *VideoRespon
 		return videoResponse, exception, err
 	}
 
-	if res.StatusCode != http.StatusOK {
+	if res.StatusCode < 200 || res.StatusCode > 299 {
 		exception = new(Exception)
 		err = json.Unmarshal(responseBody, exception)
 
