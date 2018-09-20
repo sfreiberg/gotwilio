@@ -13,6 +13,7 @@ var formDecoder *schema.Decoder
 func init() {
 	formDecoder = schema.NewDecoder()
 	formDecoder.SetAliasTag("form")
+	formDecoder.IgnoreUnknownKeys(true)
 }
 
 func DecodeWebhook(data url.Values, out interface{}) error {
