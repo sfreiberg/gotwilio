@@ -66,12 +66,20 @@ func (twilio *Twilio) WithAPIKey(apiKeySid string, apiKeySecret string) *Twilio 
 	return twilio
 }
 
+func (twilio *Twilio) getBasicAuthCredentials() (string, string) {
+	if twilio.APIKeySid != "" {
+		return twilio.APIKeySid, twilio.APIKeySecret
+	}
+
+	return twilio.AccountSid, twilio.AuthToken
+}
+
 func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
 	req, err := http.NewRequest("POST", twilioUrl, strings.NewReader(formValues.Encode()))
 	if err != nil {
 		return nil, err
 	}
-	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
+	req.SetBasicAuth(twilio.getBasicAuthCredentials())
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 
 	return twilio.do(req)
@@ -82,7 +90,7 @@ func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
+	req.SetBasicAuth(twilio.getBasicAuthCredentials())
 
 	return twilio.do(req)
 }
@@ -92,7 +100,7 @@ func (twilio *Twilio) delete(twilioUrl string) (*http.Response, error) {
 	if err != nil {
 		return nil, err
 	}
-	req.SetBasicAuth(twilio.AccountSid, twilio.AuthToken)
+	req.SetBasicAuth(twilio.getBasicAuthCredentials())
 
 	return twilio.do(req)
 }
