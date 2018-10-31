@@ -11,6 +11,7 @@ import (
 const (
 	baseURL       = "https://api.twilio.com/2010-04-01"
 	videoURL      = "https://video.twilio.com"
+	lookupURL     = "https://lookups.twilio.com/v1/PhoneNumbers"
 	clientTimeout = time.Second * 30
 )
 
@@ -26,6 +27,7 @@ type Twilio struct {
 	AuthToken  string
 	BaseUrl    string
 	VideoUrl   string
+	LookupUrl  string
 	HTTPClient *http.Client
 
 	APIKeySid    string
@@ -56,6 +58,7 @@ func NewTwilioClientCustomHTTP(accountSid, authToken string, HTTPClient *http.Cl
 		AuthToken:  authToken,
 		BaseUrl:    baseURL,
 		VideoUrl:   videoURL,
+		LookupUrl:  lookupURL,
 		HTTPClient: HTTPClient,
 	}
 }
