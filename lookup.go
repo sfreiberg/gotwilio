@@ -6,6 +6,16 @@ import (
 	"net/http"
 )
 
+var LookupType = struct {
+	Carrier    string
+	CallerName string
+	Fraud      string
+}{
+	Carrier:    "carrier",
+	CallerName: "caller-name",
+	Fraud:      "fraud",
+}
+
 type LookupResponse struct {
 	CallerName struct {
 		CallerName string      `json:"caller_name"`
@@ -43,8 +53,15 @@ type LookupResponse struct {
 
 // LookupPhone uses the Twilio lookup API to request additional data about a phone number
 // See https://www.twilio.com/docs/lookup/api
-func (twilio *Twilio) LookupPhone(phone string) (lookupResponse *LookupResponse, err error) {
+func (twilio *Twilio) LookupPhone(phone string, types ...string) (lookupResponse *LookupResponse, err error) {
 	twilioUrl := twilio.LookupUrl + "/" + phone
+
+	if len(types) != 0 {
+		twilioUrl += "?Type=" + types[0]
+		for _, t := range types[1:] {
+			twilioUrl += "&Type=" + t
+		}
+	}
 
 	res, err := twilio.get(twilioUrl)
 	if err != nil {
