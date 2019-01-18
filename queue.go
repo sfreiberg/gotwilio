@@ -6,6 +6,10 @@ import (
 	"net/url"
 )
 
+const (
+	ErrorQueueAlreadyExists ExceptionCode = 22003
+)
+
 type QueueResponse struct {
 	Sid          string `json:"sid"`
 	FriendlyName string `json:"friendly_name"`
