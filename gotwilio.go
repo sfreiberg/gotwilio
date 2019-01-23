@@ -4,6 +4,7 @@ package gotwilio
 import (
 	"net/http"
 	"net/url"
+	"path"
 	"strings"
 	"time"
 )
@@ -112,4 +113,9 @@ func (twilio *Twilio) do(req *http.Request) (*http.Response, error) {
 	}
 
 	return client.Do(req)
+}
+
+// Build path to a resource within the Twilio account
+func (twilio *Twilio) buildUrl(resourcePath string) string {
+	return twilio.BaseUrl + "/" + path.Join("Accounts", twilio.AccountSid, resourcePath)
 }
