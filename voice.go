@@ -192,6 +192,11 @@ func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid stri
 	return twilio.voicePost("Calls.json", formValues)
 }
 
+// Update an existing call
+func (twilio *Twilio) CallUpdate(callSid string, formValues url.Values) (*VoiceResponse, *Exception, error) {
+	return twilio.voicePost("Calls/"+callSid+".json", formValues)
+}
+
 // This is a private method that has the common bits for placing or updating a voice call.
 func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*VoiceResponse, *Exception, error) {
 	var voiceResponse *VoiceResponse
