@@ -19,7 +19,7 @@ type QueueResponse struct {
 func (twilio *Twilio) CreateQueue(friendlyName string) (*QueueResponse, *Exception, error) {
 	var queueResponse *QueueResponse
 	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Queues.json"
+	twilioUrl := twilio.buildUrl("Queues.json")
 
 	formValues := url.Values{}
 	formValues.Set("FriendlyName", friendlyName)
