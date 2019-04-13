@@ -26,25 +26,25 @@ type SmsResponse struct {
 	Url         string  `json:"uri"`
 }
 
-// Returns SmsResponse.DateCreated as a time.Time object
+// DateCreatedAsTime returns SmsResponse.DateCreated as a time.Time object
 // instead of a string.
 func (sms *SmsResponse) DateCreatedAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateCreated)
 }
 
-// Returns SmsResponse.DateUpdate as a time.Time object
+// DateUpdateAsTime returns SmsResponse.DateUpdate as a time.Time object
 // instead of a string.
 func (sms *SmsResponse) DateUpdateAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateUpdate)
 }
 
-// Returns SmsResponse.DateSent as a time.Time object
+// DateSentAsTime returns SmsResponse.DateSent as a time.Time object
 // instead of a string.
 func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateSent)
 }
 
-// SendTextMessage uses Twilio to send a text message.
+// SendSMS uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, "", statusCallback, applicationSid)
@@ -94,7 +94,7 @@ func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCa
 	return
 }
 
-// SendMultimediaMessage uses Twilio to send a multimedia message.
+// SendMMS uses Twilio to send a multimedia message.
 func (twilio *Twilio) SendMMS(from, to, body, mediaUrl, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
 	formValues.Set("From", from)

@@ -85,7 +85,7 @@ type ProxyMessage struct {
 	Callback string // Webhook url to handle processed record.
 }
 
-// Add Participant to Session
+// AddParticipant adds Participant to Session
 func (session *ProxySession) AddParticipant(req ParticipantRequest) (response Participant, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", session.ServiceSid, "Sessions", session.Sid, "Participants")
