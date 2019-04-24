@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"strconv"
 	"time"
+
+	"bytes"
 )
 
 // These are the paramters to use when you want Twilio to use callback urls.
@@ -199,21 +201,30 @@ func (twilio *Twilio) CallUpdate(callSid string, formValues url.Values) (*VoiceR
 
 // This is a private method that has the common bits for placing or updating a voice call.
 func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*VoiceResponse, *Exception, error) {
-	var voiceResponse *VoiceResponse
-	var exception *Exception
+	var (
+		voiceResponse *VoiceResponse
+		exception     *Exception
+	)
 
 	twilioUrl := twilio.buildUrl(resourcePath)
 	res, err := twilio.post(formValues, twilioUrl)
 	if err != nil {
 		return voiceResponse, exception, err
 	}
+
 	defer res.Body.Close()
 
-	decoder := json.NewDecoder(res.Body)
+	body := new(bytes.Buffer)
+	_, err = body.ReadFrom(res.Body)
+	if err != nil {
+		return voiceResponse, exception, err
+	}
 
-	if res.StatusCode != http.StatusCreated {
+	responseStr := body.String()
+
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusAccepted && res.StatusCode != http.StatusCreated {
 		exception = new(Exception)
-		err = decoder.Decode(exception)
+		err = json.Unmarshal([]byte(responseStr), exception)
 
 		// We aren't checking the error because we don't actually care.
 		// It's going to be passed to the client either way.
@@ -221,6 +232,6 @@ func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*Vo
 	}
 
 	voiceResponse = new(VoiceResponse)
-	err = decoder.Decode(voiceResponse)
+	err = json.Unmarshal([]byte(responseStr), voiceResponse)
 	return voiceResponse, exception, err
 }
