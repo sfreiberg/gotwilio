@@ -32,32 +32,32 @@ type CallbackParameters struct {
 
 // VoiceResponse contains the details about successful voice calls.
 type VoiceResponse struct {
-	Sid            string   `json:"sid"`
-	DateCreated    string   `json:"date_created"`
-	DateUpdated    string   `json:"date_updated"`
-	ParentCallSid  string   `json:"parent_call_sid"`
-	AccountSid     string   `json:"account_sid"`
-	To             string   `json:"to"`
-	ToFormatted    string   `json:"to_formatted"`
-	From           string   `json:"from"`
-	FromFormatted  string   `json:"from_formatted"`
-	PhoneNumberSid string   `json:"phone_number_sid"`
-	Status         string   `json:"status"`
-	StartTime      string   `json:"start_time"`
-	EndTime        string   `json:"end_time"`
-	Duration       int      `json:"duration,string"`
-	Price          *float32 `json:"price,omitempty"`
-	Direction      string   `json:"direction"`
-	AnsweredBy     string   `json:"answered_by"`
-	ApiVersion     string   `json:"api_version"`
-	Annotation     string   `json:"annotation"`
-	ForwardedFrom  string   `json:"forwarded_from"`
-	GroupSid       string   `json:"group_sid"`
-	CallerName     string   `json:"caller_name"`
-	Uri            string   `json:"uri"`
+	Sid            string  `json:"sid"`
+	DateCreated    string  `json:"date_created"`
+	DateUpdated    string  `json:"date_updated"`
+	ParentCallSid  string  `json:"parent_call_sid"`
+	AccountSid     string  `json:"account_sid"`
+	To             string  `json:"to"`
+	ToFormatted    string  `json:"to_formatted"`
+	From           string  `json:"from"`
+	FromFormatted  string  `json:"from_formatted"`
+	PhoneNumberSid string  `json:"phone_number_sid"`
+	Status         string  `json:"status"`
+	StartTime      string  `json:"start_time"`
+	EndTime        string  `json:"end_time"`
+	Duration       int     `json:"duration,string"`
+	PriceUnit      string  `json:"price_unit"`
+	Price          *string `json:"price,omitempty"`
+	Direction      string  `json:"direction"`
+	AnsweredBy     string  `json:"answered_by"`
+	ApiVersion     string  `json:"api_version"`
+	Annotation     string  `json:"annotation"`
+	ForwardedFrom  string  `json:"forwarded_from"`
+	GroupSid       string  `json:"group_sid"`
+	CallerName     string  `json:"caller_name"`
+	Uri            string  `json:"uri"`
 	// TODO: handle SubresourceUris
 	// TODO: handle annotation
-	// TODO: handle price_unit
 }
 
 // DateCreatedAsTime returns VoiceResponse.DateCreated as a time.Time object
