@@ -12,22 +12,25 @@ import (
 // These are the paramters to use when you want Twilio to use callback urls.
 // See http://www.twilio.com/docs/api/rest/making-calls for more info.
 type CallbackParameters struct {
-	Url                           string   // Required
-	Method                        string   // Optional
-	FallbackUrl                   string   // Optional
-	FallbackMethod                string   // Optional
-	StatusCallback                string   // Optional
-	StatusCallbackMethod          string   // Optional
-	StatusCallbackEvent           []string // Optional
-	SendDigits                    string   // Optional
-	IfMachine                     string   // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
-	Timeout                       int      // Optional
-	Record                        bool     // Optional
-	RecordingChannels             string   // Optional
-	RecordingStatusCallback       string   // Optional
-	RecordingStatusCallbackMethod string   // Optional
-	MachineDetection              string   // Optional
-	MachineDetectionTimeout       int      // Optional
+	Url                                string   // Required
+	Method                             string   // Optional
+	FallbackUrl                        string   // Optional
+	FallbackMethod                     string   // Optional
+	StatusCallback                     string   // Optional
+	StatusCallbackMethod               string   // Optional
+	StatusCallbackEvent                []string // Optional
+	SendDigits                         string   // Optional
+	IfMachine                          string   // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
+	Timeout                            int      // Optional
+	Record                             bool     // Optional
+	RecordingChannels                  string   // Optional
+	RecordingStatusCallback            string   // Optional
+	RecordingStatusCallbackMethod      string   // Optional
+	MachineDetection                   string   // Optional
+	MachineDetectionTimeout            int      // Optional
+	MachineDetectionSpeechThreshold    int      // Optional
+	MachineDetectionSpeechEndThreshold int      // Optional
+	MachineDetectionSilenceTimeout     int      // Optional
 }
 
 // VoiceResponse contains the details about successful voice calls.
@@ -160,6 +163,24 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 		formValues.Set(
 			"MachineDetectionTimeout",
 			strconv.Itoa(callbackParameters.MachineDetectionTimeout),
+		)
+	}
+	if callbackParameters.MachineDetectionSpeechThreshold != 0 {
+		formValues.Set(
+			"MachineDetectionSpeechThreshold",
+			strconv.Itoa(callbackParameters.MachineDetectionSpeechThreshold),
+		)
+	}
+	if callbackParameters.MachineDetectionSpeechEndThreshold != 0 {
+		formValues.Set(
+			"MachineDetectionSpeechEndThreshold",
+			strconv.Itoa(callbackParameters.MachineDetectionSpeechEndThreshold),
+		)
+	}
+	if callbackParameters.MachineDetectionSilenceTimeout != 0 {
+		formValues.Set(
+			"MachineDetectionSilenceTimeout",
+			strconv.Itoa(callbackParameters.MachineDetectionSilenceTimeout),
 		)
 	}
 
