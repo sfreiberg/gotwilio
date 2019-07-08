@@ -168,19 +168,19 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	if callbackParameters.MachineDetectionSpeechThreshold != 0 {
 		formValues.Set(
 			"MachineDetectionSpeechThreshold",
-			strconv.Itoa(callbackParameters.MachineDetectionSpeechThreshold)
+			strconv.Itoa(callbackParameters.MachineDetectionSpeechThreshold),
 		)
 	}
 	if callbackParameters.MachineDetectionSpeechEndThreshold != 0 {
 		formValues.Set(
 			"MachineDetectionSpeechEndThreshold",
-			strconv.Itoa(callbackParameters.MachineDetectionSpeechEndThreshold)
+			strconv.Itoa(callbackParameters.MachineDetectionSpeechEndThreshold),
 		)
 	}
 	if callbackParameters.MachineDetectionSilenceTimeout != 0 {
 		formValues.Set(
 			"MachineDetectionSilenceTimeout",
-			strconv.Itoa(callbackParameters.MachineDetectionSilenceTimeout)
+			strconv.Itoa(callbackParameters.MachineDetectionSilenceTimeout),
 		)
 	}
 
