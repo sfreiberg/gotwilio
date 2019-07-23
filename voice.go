@@ -7,8 +7,6 @@ import (
 	"net/url"
 	"strconv"
 	"time"
-
-	"bytes"
 )
 
 // These are the paramters to use when you want Twilio to use callback urls.
@@ -211,17 +209,11 @@ func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*Vo
 	}
 	defer res.Body.Close()
 
-	body := new(bytes.Buffer)
-	_, err = body.ReadFrom(res.Body)
-	if err != nil {
-		return voiceResponse, exception, err
-	}
-
-	responseStr := body.String()
+	decoder := json.NewDecoder(res.Body)
 
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusAccepted && res.StatusCode != http.StatusCreated {
 		exception = new(Exception)
-		err = json.Unmarshal([]byte(responseStr), exception)
+		err = decoder.Decode(exception)
 
 		// We aren't checking the error because we don't actually care.
 		// It's going to be passed to the client either way.
@@ -229,6 +221,6 @@ func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*Vo
 	}
 
 	voiceResponse = new(VoiceResponse)
-	err = json.Unmarshal([]byte(responseStr), voiceResponse)
+	err = decoder.Decode(voiceResponse)
 	return voiceResponse, exception, err
 }
