@@ -211,7 +211,7 @@ func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*Vo
 
 	decoder := json.NewDecoder(res.Body)
 
-	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusAccepted && res.StatusCode != http.StatusCreated {
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
 		exception = new(Exception)
 		err = decoder.Decode(exception)
 
