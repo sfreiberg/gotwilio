@@ -200,7 +200,7 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 		formValues.Set("Record", "false")
 	}
 
-	return twilio.voicePost(formValues)
+	return twilio.voicePost("Calls.json", formValues)
 }
 
 // Place a voice call with an ApplicationSid specified.
@@ -210,15 +210,20 @@ func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid stri
 	formValues.Set("To", to)
 	formValues.Set("ApplicationSid", applicationSid)
 
-	return twilio.voicePost(formValues)
+	return twilio.voicePost("Calls.json", formValues)
 }
 
-// This is a private method that has the common bits for making a voice call.
-func (twilio *Twilio) voicePost(formValues url.Values) (*VoiceResponse, *Exception, error) {
+// Update an existing call
+func (twilio *Twilio) CallUpdate(callSid string, formValues url.Values) (*VoiceResponse, *Exception, error) {
+	return twilio.voicePost("Calls/"+callSid+".json", formValues)
+}
+
+// This is a private method that has the common bits for placing or updating a voice call.
+func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*VoiceResponse, *Exception, error) {
 	var voiceResponse *VoiceResponse
 	var exception *Exception
-	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls.json"
 
+	twilioUrl := twilio.buildUrl(resourcePath)
 	res, err := twilio.post(formValues, twilioUrl)
 	if err != nil {
 		return voiceResponse, exception, err
@@ -227,7 +232,7 @@ func (twilio *Twilio) voicePost(formValues url.Values) (*VoiceResponse, *Excepti
 
 	decoder := json.NewDecoder(res.Body)
 
-	if res.StatusCode != http.StatusCreated {
+	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
 		exception = new(Exception)
 		err = decoder.Decode(exception)
 

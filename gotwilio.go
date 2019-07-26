@@ -4,6 +4,7 @@ package gotwilio
 import (
 	"net/http"
 	"net/url"
+	"path"
 	"strings"
 	"time"
 )
@@ -34,10 +35,10 @@ type Twilio struct {
 
 // Exception is a representation of a twilio exception.
 type Exception struct {
-	Status   int    `json:"status"`    // HTTP specific error code
-	Message  string `json:"message"`   // HTTP error message
-	Code     int    `json:"code"`      // Twilio specific error code
-	MoreInfo string `json:"more_info"` // Additional info from Twilio
+	Status   int           `json:"status"`    // HTTP specific error code
+	Message  string        `json:"message"`   // HTTP error message
+	Code     ExceptionCode `json:"code"`      // Twilio specific error code
+	MoreInfo string        `json:"more_info"` // Additional info from Twilio
 }
 
 // Create a new Twilio struct.
@@ -112,4 +113,9 @@ func (twilio *Twilio) do(req *http.Request) (*http.Response, error) {
 	}
 
 	return client.Do(req)
+}
+
+// Build path to a resource within the Twilio account
+func (twilio *Twilio) buildUrl(resourcePath string) string {
+	return twilio.BaseUrl + "/" + path.Join("Accounts", twilio.AccountSid, resourcePath)
 }
