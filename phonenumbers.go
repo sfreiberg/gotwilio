@@ -3,7 +3,8 @@ package gotwilio
 import (
 	"encoding/json"
 	"net/url"
-	"strconv"
+
+	"github.com/google/go-querystring/query"
 )
 
 // Boolean is a custom ternary nullable bool type
@@ -45,39 +46,29 @@ func (t PhoneNumberType) String() string {
 
 // AvailablePhoneNumbersOptions are all of the options that can be passed to an GetAvailablePhoneNumber query.
 type AvailablePhoneNumbersOptions struct {
-	AreaCode                      string
-	Contains                      string
-	SMSEnabled                    Boolean
-	MMSEnabled                    Boolean
-	VoiceEnabled                  Boolean
-	FaxEnabled                    Boolean
-	ExcludeAllAddressRequired     Boolean
-	ExcludeLocalAddressRequired   Boolean
-	ExcludeForeignAddressRequired Boolean
-	Beta                          Boolean
-	NearNumber                    string
-	NearLatLong                   string
-	Distance                      int
-	InPostalCode                  string
-	InRegion                      string
-	InRateCenter                  string
-	InLATA                        string
-	InLocality                    string
+	AreaCode                      string  `url:"area_code,omitempty"`
+	Contains                      string  `url:"contains,omitempty"`
+	SMSEnabled                    Boolean `url:"sms_enabled,omitempty"`
+	MMSEnabled                    Boolean `url:"mms_enabled,omitempty"`
+	VoiceEnabled                  Boolean `url:"voice_enabled,omitempty"`
+	FaxEnabled                    Boolean `url:"fax_enabled,omitempty"`
+	ExcludeAllAddressRequired     Boolean `url:"exclude_all_address_required,omitempty"`
+	ExcludeLocalAddressRequired   Boolean `url:"exclude_local_address_required,omitempty"`
+	ExcludeForeignAddressRequired Boolean `url:"exclude_foreign_address_required,omitempty"`
+	Beta                          Boolean `url:"beta,omitempty"`
+	NearNumber                    string  `url:"near_number,omitempty"`
+	NearLatLong                   string  `url:"near_lat_long,omitempty"`
+	Distance                      int     `url:"distance,omitempty"`
+	InPostalCode                  string  `url:"in_postal_code,omitempty"`
+	InRegion                      string  `url:"in_region,omitempty"`
+	InRateCenter                  string  `url:"in_rate_center,omitempty"`
+	InLATA                        string  `url:"in_lata,omitempty"`
+	InLocality                    string  `url:"in_locality,omitempty"`
 }
 
 // ToQueryString converts the provided options to a query string to be used in the outbound HTTP request.
-func (o AvailablePhoneNumbersOptions) ToQueryString() url.Values {
-	values := url.Values{}
-
-	if o.AreaCode != "" {
-		values.Set("area_code", o.AreaCode)
-	}
-
-	if o.SMSEnabled != nil {
-		values.Set("sms_enabled", strconv.FormatBool(*o.SMSEnabled))
-	}
-
-	return values
+func (o AvailablePhoneNumbersOptions) ToQueryString() (url.Values, error) {
+	return query.Values(o)
 }
 
 // AvailablePhoneNumber represents a Twilio phone number available for purchase
