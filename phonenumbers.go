@@ -2,6 +2,7 @@ package gotwilio
 
 import (
 	"encoding/json"
+	"net/http"
 	"net/url"
 
 	"github.com/google/go-querystring/query"
@@ -46,24 +47,24 @@ func (t PhoneNumberType) String() string {
 
 // AvailablePhoneNumbersOptions are all of the options that can be passed to an GetAvailablePhoneNumber query.
 type AvailablePhoneNumbersOptions struct {
-	AreaCode                      string  `url:"area_code,omitempty"`
-	Contains                      string  `url:"contains,omitempty"`
-	SMSEnabled                    Boolean `url:"sms_enabled,omitempty"`
-	MMSEnabled                    Boolean `url:"mms_enabled,omitempty"`
-	VoiceEnabled                  Boolean `url:"voice_enabled,omitempty"`
-	FaxEnabled                    Boolean `url:"fax_enabled,omitempty"`
-	ExcludeAllAddressRequired     Boolean `url:"exclude_all_address_required,omitempty"`
-	ExcludeLocalAddressRequired   Boolean `url:"exclude_local_address_required,omitempty"`
-	ExcludeForeignAddressRequired Boolean `url:"exclude_foreign_address_required,omitempty"`
-	Beta                          Boolean `url:"beta,omitempty"`
-	NearNumber                    string  `url:"near_number,omitempty"`
-	NearLatLong                   string  `url:"near_lat_long,omitempty"`
-	Distance                      int     `url:"distance,omitempty"`
-	InPostalCode                  string  `url:"in_postal_code,omitempty"`
-	InRegion                      string  `url:"in_region,omitempty"`
-	InRateCenter                  string  `url:"in_rate_center,omitempty"`
-	InLATA                        string  `url:"in_lata,omitempty"`
-	InLocality                    string  `url:"in_locality,omitempty"`
+	AreaCode                      string  `url:",omitempty"`
+	Contains                      string  `url:",omitempty"`
+	SMSEnabled                    Boolean `url:"SmsEnabled,omitempty"`
+	MMSEnabled                    Boolean `url:"MmsEnabled,omitempty"`
+	VoiceEnabled                  Boolean `url:",omitempty"`
+	FaxEnabled                    Boolean `url:",omitempty"`
+	ExcludeAllAddressRequired     Boolean `url:",omitempty"`
+	ExcludeLocalAddressRequired   Boolean `url:",omitempty"`
+	ExcludeForeignAddressRequired Boolean `url:",omitempty"`
+	Beta                          Boolean `url:",omitempty"`
+	NearNumber                    string  `url:",omitempty"`
+	NearLatLong                   string  `url:",omitempty"`
+	Distance                      int     `url:",omitempty"`
+	InPostalCode                  string  `url:",omitempty"`
+	InRegion                      string  `url:",omitempty"`
+	InRateCenter                  string  `url:",omitempty"`
+	InLATA                        string  `url:"InLata,omitempty"`
+	InLocality                    string  `url:",omitempty"`
 }
 
 // ToQueryString converts the provided options to a query string to be used in the outbound HTTP request.
@@ -93,17 +94,104 @@ type AvailablePhoneNumber struct {
 }
 
 // GetAvailablePhoneNumbers retrieves list of available phone numbers
-func (twilio *Twilio) GetAvailablePhoneNumbers(numberType PhoneNumberType, country string, options AvailablePhoneNumbersOptions) ([]*AvailablePhoneNumber, error) {
+func (twilio *Twilio) GetAvailablePhoneNumbers(numberType PhoneNumberType, country string, options AvailablePhoneNumbersOptions) ([]*AvailablePhoneNumber, *Exception, error) {
+	// build initial request
 	resourceName := country + "/" + numberType.String() + ".json"
-	res, err := twilio.get(twilio.buildUrl("AvailablePhoneNumbers/" + resourceName))
+	req, err := http.NewRequest(http.MethodGet, twilio.buildUrl("AvailablePhoneNumbers/"+resourceName), nil)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
+	}
+
+	// authenticate
+	req.SetBasicAuth(twilio.getBasicAuthCredentials())
+
+	// set query string
+	queryValues, err := query.Values(options)
+	if err != nil {
+		return nil, nil, err
+	}
+	req.URL.RawQuery = queryValues.Encode()
+
+	// perform request
+	res, err := twilio.do(req)
+	if err != nil {
+		return nil, nil, err
 	}
 
 	decoder := json.NewDecoder(res.Body)
+	if res.StatusCode != http.StatusOK {
+		exception := new(Exception)
+		err = decoder.Decode(exception)
+		return nil, exception, err
+	}
+
+	// decode response
 	availablePhoneNumberResponse := new(struct {
 		AvailablePhoneNumbers []*AvailablePhoneNumber `json:"available_phone_numbers"`
 	})
 	decoder.Decode(availablePhoneNumberResponse)
-	return availablePhoneNumberResponse.AvailablePhoneNumbers, nil
+	return availablePhoneNumberResponse.AvailablePhoneNumbers, nil, nil
+}
+
+// IncomingPhoneNumber represents a phone number resource owned by the calling account in Twilio
+type IncomingPhoneNumber struct {
+	SID          string `json:"sid"`
+	PhoneNumber  string `url:",omitempty" json:"phone_number"`
+	AreaCode     string `url:",omitempty"`
+	FriendlyName string `url:",omitempty" json:"friendly_name"`
+
+	SMSApplicationSID string `url:"SmsApplicationSid,omitempty" json:"sms_application_sid"`
+	SMSMethod         string `url:"SmsMethod,omitempty" json:"sms_method"`
+	SMSURL            string `url:"SmsUrl,omitempty" json:"sms_url"`
+	SMSFallbackMethod string `url:"SmsFallbackMethod,omitempty" json:"sms_fallback_method"`
+	SMSFallbackURL    string `url:"SmsFallbackUrl,omitempty" json:"sms_fallback_url"`
+
+	StatusCallback       string `url:",omitempty" json:"status_callback"`
+	StatusCallbackMethod string `url:",omitempty" json:"status_callback_method"`
+
+	VoiceApplicationSID string  `url:"VoiceApplicationSid,omitempty"`
+	VoiceMethod         string  `url:",omitempty"`
+	VoiceURL            string  `url:"VoiceUrl,omitempty"`
+	VoiceFallbackMethod string  `url:",omitempty"`
+	VoiceFallbackURL    string  `url:"VoiceFallbackUrl,omitempty"`
+	VoiceCallerIDLookup Boolean `url:",omitempty"`
+
+	// Either "Active" or "Inactive"
+	EmergencyStatus    string `url:",omitempty"`
+	EmergencyStatusSID string `url:"EmergencyStatusSid,omitempty"`
+
+	TrunkSID    string `url:"TrunkSid,omitempty"`
+	IdentitySID string `url:"IdentitySid,omitempty"`
+	AddressSID  string `url:"AddressSid,omitempty"`
+
+	// Either "fax" or "voice". Defaults to "voice"
+	VoiceReceiveMode string `url:",omitempty"`
+}
+
+// CreateIncomingPhoneNumber creates an IncomingPhoneNumber resource via the Twilio REST API.
+// https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#create-an-incomingphonenumber-resource
+func (twilio *Twilio) CreateIncomingPhoneNumber(options IncomingPhoneNumber) (*IncomingPhoneNumber, *Exception, error) {
+	// convert options to HTTP form
+	form, err := query.Values(options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	res, err := twilio.post(form, twilio.buildUrl("IncomingPhoneNumbers.json"))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	decoder := json.NewDecoder(res.Body)
+
+	// handle NULL response
+	if res.StatusCode != http.StatusCreated {
+		exception := new(Exception)
+		err = decoder.Decode(exception)
+		return nil, exception, err
+	}
+
+	incomingPhoneNumber := new(IncomingPhoneNumber)
+	err = decoder.Decode(incomingPhoneNumber)
+	return incomingPhoneNumber, nil, err
 }

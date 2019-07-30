@@ -14,28 +14,39 @@ var (
 	testTwilioAuthToken  = os.Getenv("TWILIO_AUTH_TOKEN")
 )
 
+func initTestTwilioClient() *Twilio {
+	return NewTwilioClient(testTwilioAccountSID, testTwilioAuthToken)
+}
+
+func validateTwilioException(t *testing.T, e *Exception) {
+	if e != nil {
+		t.Errorf("twilio exception. status: %d, message: %s, code: %d, more_info: %s", e.Status, e.Message, e.Code, e.MoreInfo)
+	}
+}
+
 func TestGetAvailablePhoneNumbers(t *testing.T) {
 	log.SetLevel(log.DebugLevel)
 
-	client := NewTwilioClient(testTwilioAccountSID, testTwilioAuthToken)
-
 	options := AvailablePhoneNumbersOptions{
-		AreaCode:   "415",
+		AreaCode:   "925",
 		SMSEnabled: True,
 	}
 
 	// get available phone numbers
-	res, err := client.GetAvailablePhoneNumbers(PhoneNumberTollFree, "US", options)
+	client := initTestTwilioClient()
+	res, exception, err := client.GetAvailablePhoneNumbers(PhoneNumberLocal, "US", options)
+	validateTwilioException(t, exception)
 	assert.NoError(t, err)
 	assert.NotNil(t, res)
 
 	for _, availablePhoneNumber := range res {
+		log.Debug(availablePhoneNumber.PhoneNumber)
 		assert.NotNil(t, availablePhoneNumber)
 		assert.NotEmpty(t, availablePhoneNumber.PhoneNumber)
 	}
 }
 
-func TestToQueryString(t *testing.T) {
+func TestAvailablePhoneNumberOptionsToQueryString(t *testing.T) {
 	log.SetLevel(log.DebugLevel)
 
 	options := AvailablePhoneNumbersOptions{
@@ -50,7 +61,21 @@ func TestToQueryString(t *testing.T) {
 	assert.Empty(t, queryString.Get("in_region"))
 
 	// test our ternary boolean
-	assert.Equal(t, "true", queryString.Get("sms_enabled"))
-	assert.Equal(t, "false", queryString.Get("voice_enabled"))
-	assert.Empty(t, queryString.Get("mms_enabled"))
+	assert.Equal(t, "true", queryString.Get("SmsEnabled"))
+	assert.Equal(t, "false", queryString.Get("VoiceEnabled"))
+	assert.Empty(t, queryString.Get("MmsEnabled"))
+}
+
+func TestCreateIncomingPhoneNumber(t *testing.T) {
+	log.SetLevel(log.DebugLevel)
+
+	client := initTestTwilioClient()
+	phoneNumber := IncomingPhoneNumber{
+		AreaCode: "925",
+	}
+
+	number, exception, err := client.CreateIncomingPhoneNumber(phoneNumber)
+	validateTwilioException(t, exception)
+	assert.NoError(t, err)
+	assert.NotNil(t, number)
 }
