@@ -72,6 +72,7 @@ func (twilio *Twilio) NewAccessToken() *AccessToken {
 		AccountSid:   twilio.AccountSid,
 		APIKeySid:    twilio.APIKeySid,
 		APIKeySecret: twilio.APIKeySecret,
+		NotBefore:    time.Now(),
 	}
 }
 
