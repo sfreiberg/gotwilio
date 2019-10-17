@@ -26,7 +26,31 @@ type AccessToken struct {
 // Grant is a perimssion given to the Access Token.
 // Types include Chat, Video etc.
 type Grant interface {
-	grantName() string
+	GrantName() string
+}
+
+// VoiceGrant is the permission to use the Voice API and act as a Twilio Client.
+type VoiceGrant struct {
+	Incoming          VoiceGrantIncoming `json:"incoming,omitempty"`
+	Outgoing          VoiceGrantOutgoing `json:"outgoing,omitempty"`
+	EndpointID        string             `json:"endpoint_id,omitempty"`
+	PushCredentialSID string             `json:"push_credential_sid,omitempty"`
+}
+
+// GrantName is the key to identify this as a Voice grant.
+func (g VoiceGrant) GrantName() string {
+	return "voice"
+}
+
+// VoiceGrantIncoming represents the incoming options for a voice grant.
+type VoiceGrantIncoming struct {
+	Allow bool `json:"allow"`
+}
+
+// VoiceGrantOutgoing represents the outgoing options for a voice grant.
+type VoiceGrantOutgoing struct {
+	ApplicationSID string                 `json:"application_sid,omitempty"`
+	Params         map[string]interface{} `json:"params,omitempty"`
 }
 
 // VideoGrant is the permission to use the Video API
@@ -35,7 +59,8 @@ type VideoGrant struct {
 	Room string `json:"room,omitempty"`
 }
 
-func (g *VideoGrant) grantName() string {
+// GrantName is the key to identify this as a Video grant.
+func (g *VideoGrant) GrantName() string {
 	return "video"
 }
 
@@ -47,6 +72,7 @@ func (twilio *Twilio) NewAccessToken() *AccessToken {
 		AccountSid:   twilio.AccountSid,
 		APIKeySid:    twilio.APIKeySid,
 		APIKeySecret: twilio.APIKeySecret,
+		NotBefore:    time.Now(),
 	}
 }
 
@@ -103,7 +129,7 @@ func (g *grantsClaim) MarshalJSON() ([]byte, error) {
 	data := make(map[string]interface{})
 	data["identity"] = g.Identity
 	for _, grant := range g.Grants {
-		data[grant.grantName()] = grant
+		data[grant.GrantName()] = grant
 	}
 	return json.Marshal(data)
 }
