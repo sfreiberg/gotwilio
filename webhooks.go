@@ -162,3 +162,60 @@ type ProxyOutOfSessionCallbackWebhook struct {
 	AddOns     string `form:"AddOns"`
 	APIVersion string `form:"ApiVersion"`
 }
+
+// https://www.twilio.com/docs/sms/twiml#request-parameters
+// SMS webhooks received from inbound SMS messages. If your
+// server (or a Twilio function) responds with valid TwiML,
+// this will be processed.
+// This means it is possible to send an automated text
+// message response back.
+type SMSWebhook struct {
+	AccountSid string `json:"AccountSid"`
+	APIVersion string `json:"ApiVersion"`
+
+	// SMS Specific
+	Body          string `json:"Body"`
+	SmsSid        string `json:"SmsSid"`
+	MessageSid    string `json:"MessageSid"`
+	NumMedia      string `json:"NumMedia"`
+	NumSegments   string `json:"NumSegments"`
+	SmsStatus     string `json:"SmsStatus"`
+	SmsMessageSid string `json:"SmsMessageSid"`
+
+	To          string `json:"To"`
+	ToCity      string `json:"ToCity"`
+	ToState     string `json:"ToState"`
+	ToZip       string `json:"ToZip"`
+	ToCountry   string `json:"ToCountry"`
+	From        string `json:"From"`
+	FromCity    string `json:"FromCity"`
+	FromState   string `json:"FromState"`
+	FromZip     string `json:"FromZip"`
+	FromCountry string `json:"FromCountry"`
+
+	// The ContentTypes for the Media stored at MediaUrl{N}.
+	// The order of MediaContentType{N} matches the order of MediaUrl{N}
+	// Let's define 10 items to be safe
+	MediaContentType0  string `json:"MediaContentType0"`
+	MediaUrl0          string `json:"MediaUrl0"`
+	MediaContentType1  string `json:"MediaContentType1"`
+	MediaUrl1          string `json:"MediaUrl1"`
+	MediaContentType2  string `json:"MediaContentType2"`
+	MediaUrl2          string `json:"MediaUrl2"`
+	MediaContentType3  string `json:"MediaContentType3"`
+	MediaUrl3          string `json:"MediaUrl3"`
+	MediaContentType4  string `json:"MediaContentType4"`
+	MediaUrl4          string `json:"MediaUrl4"`
+	MediaContentType5  string `json:"MediaContentType5"`
+	MediaUrl5          string `json:"MediaUrl5"`
+	MediaContentType6  string `json:"MediaContentType6"`
+	MediaUrl6          string `json:"MediaUrl6"`
+	MediaContentType7  string `json:"MediaContentType7"`
+	MediaUrl7          string `json:"MediaUrl7"`
+	MediaContentType8  string `json:"MediaContentType8"`
+	MediaUrl8          string `json:"MediaUrl8"`
+	MediaContentType9  string `json:"MediaContentType9"`
+	MediaUrl9          string `json:"MediaUrl9"`
+	MediaContentType10 string `json:"MediaContentType10"`
+	MediaUrl10         string `json:"MediaUrl10"`
+}
