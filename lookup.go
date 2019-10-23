@@ -40,7 +40,6 @@ func (twilio *Twilio) SubmitLookup(req LookupReq) (Lookup, error) {
 	if err := encoder.Encode(req, values); err != nil {
 		return Lookup{}, err
 	}
-	fmt.Println(req)
 
 	url := fmt.Sprintf("%s/PhoneNumbers/%s?%s", twilio.LookupURL, req.PhoneNumber, values.Encode())
 	res := Lookup{}
