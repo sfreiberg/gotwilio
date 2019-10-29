@@ -29,7 +29,7 @@ func TestGetAvailablePhoneNumbers(t *testing.T) {
 
 	options := AvailablePhoneNumbersOptions{
 		AreaCode:   "925",
-		SMSEnabled: True,
+		SMSEnabled: NewBoolean(true),
 	}
 
 	// get available phone numbers
@@ -51,8 +51,8 @@ func TestAvailablePhoneNumberOptionsToQueryString(t *testing.T) {
 
 	options := AvailablePhoneNumbersOptions{
 		AreaCode:     "415",
-		SMSEnabled:   True,
-		VoiceEnabled: False,
+		SMSEnabled:   NewBoolean(true),
+		VoiceEnabled: NewBoolean(false),
 	}
 
 	queryString, err := options.ToQueryString()

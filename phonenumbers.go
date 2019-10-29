@@ -29,24 +29,24 @@ func (t PhoneNumberType) String() string {
 
 // AvailablePhoneNumbersOptions are all of the options that can be passed to an GetAvailablePhoneNumber query.
 type AvailablePhoneNumbersOptions struct {
-	AreaCode                      string  `url:",omitempty"`
-	Contains                      string  `url:",omitempty"`
-	SMSEnabled                    Boolean `url:"SmsEnabled,omitempty"`
-	MMSEnabled                    Boolean `url:"MmsEnabled,omitempty"`
-	VoiceEnabled                  Boolean `url:",omitempty"`
-	FaxEnabled                    Boolean `url:",omitempty"`
-	ExcludeAllAddressRequired     Boolean `url:",omitempty"`
-	ExcludeLocalAddressRequired   Boolean `url:",omitempty"`
-	ExcludeForeignAddressRequired Boolean `url:",omitempty"`
-	Beta                          Boolean `url:",omitempty"`
-	NearNumber                    string  `url:",omitempty"`
-	NearLatLong                   string  `url:",omitempty"`
-	Distance                      int     `url:",omitempty"`
-	InPostalCode                  string  `url:",omitempty"`
-	InRegion                      string  `url:",omitempty"`
-	InRateCenter                  string  `url:",omitempty"`
-	InLATA                        string  `url:"InLata,omitempty"`
-	InLocality                    string  `url:",omitempty"`
+	AreaCode                      string `url:",omitempty"`
+	Contains                      string `url:",omitempty"`
+	SMSEnabled                    *bool  `url:"SmsEnabled,omitempty"`
+	MMSEnabled                    *bool  `url:"MmsEnabled,omitempty"`
+	VoiceEnabled                  *bool  `url:",omitempty"`
+	FaxEnabled                    *bool  `url:",omitempty"`
+	ExcludeAllAddressRequired     *bool  `url:",omitempty"`
+	ExcludeLocalAddressRequired   *bool  `url:",omitempty"`
+	ExcludeForeignAddressRequired *bool  `url:",omitempty"`
+	Beta                          *bool  `url:",omitempty"`
+	NearNumber                    string `url:",omitempty"`
+	NearLatLong                   string `url:",omitempty"`
+	Distance                      int    `url:",omitempty"`
+	InPostalCode                  string `url:",omitempty"`
+	InRegion                      string `url:",omitempty"`
+	InRateCenter                  string `url:",omitempty"`
+	InLATA                        string `url:"InLata,omitempty"`
+	InLocality                    string `url:",omitempty"`
 }
 
 // ToQueryString converts the provided options to a query string to be used in the outbound HTTP request.
@@ -131,12 +131,12 @@ type IncomingPhoneNumber struct {
 	StatusCallback       string `url:",omitempty" json:"status_callback"`
 	StatusCallbackMethod string `url:",omitempty" json:"status_callback_method"`
 
-	VoiceApplicationSID string  `url:"VoiceApplicationSid,omitempty"`
-	VoiceMethod         string  `url:",omitempty"`
-	VoiceURL            string  `url:"VoiceUrl,omitempty"`
-	VoiceFallbackMethod string  `url:",omitempty"`
-	VoiceFallbackURL    string  `url:"VoiceFallbackUrl,omitempty"`
-	VoiceCallerIDLookup Boolean `url:",omitempty"`
+	VoiceApplicationSID string `url:"VoiceApplicationSid,omitempty"`
+	VoiceMethod         string `url:",omitempty"`
+	VoiceURL            string `url:"VoiceUrl,omitempty"`
+	VoiceFallbackMethod string `url:",omitempty"`
+	VoiceFallbackURL    string `url:"VoiceFallbackUrl,omitempty"`
+	VoiceCallerIDLookup *bool  `url:",omitempty"`
 
 	// Either "Active" or "Inactive"
 	EmergencyStatus    string `url:",omitempty"`
