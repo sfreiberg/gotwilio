@@ -2,6 +2,7 @@ package gotwilio
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -42,6 +43,16 @@ func (sms *SmsResponse) DateUpdateAsTime() (time.Time, error) {
 // instead of a string.
 func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateSent)
+}
+
+func whatsapp(phone string) string {
+	return fmt.Sprintf("whatsapp:%s", phone)
+}
+
+// SendWhatsApp uses Twilio to send a WhatsApp message.
+// See https://www.twilio.com/docs/sms/whatsapp/tutorial/send-and-receive-media-messages-whatsapp-python
+func (twilio *Twilio) SendWhatsApp(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendSMS(whatsapp(from), whatsapp(to), body, statusCallback, applicationSid)
 }
 
 // SendSMS uses Twilio to send a text message.
