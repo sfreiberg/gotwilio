@@ -74,11 +74,22 @@ func TestCreateUpdateDeleteIncomingPhoneNumber(t *testing.T) {
 		AreaCode: "925",
 	}
 
+	// create
 	number, exception, err := client.CreateIncomingPhoneNumber(phoneNumber)
 	validateTwilioException(t, exception)
 	assert.NoError(t, err)
 	assert.NotNil(t, number)
 
+	// update
+	number, exception, err = client.UpdateIncomingPhoneNumber(number.SID, IncomingPhoneNumber{
+		FriendlyName: "test name",
+	})
+	validateTwilioException(t, exception)
+	assert.NoError(t, err)
+	assert.NotNil(t, number)
+	assert.Equal(t, "test name", number.FriendlyName)
+
+	// delete
 	exception, err = client.DeleteIncomingPhoneNumber(number.SID)
 	validateTwilioException(t, exception)
 	assert.NoError(t, err)

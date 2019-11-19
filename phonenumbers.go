@@ -178,6 +178,34 @@ func (twilio *Twilio) CreateIncomingPhoneNumber(options IncomingPhoneNumber) (*I
 	return incomingPhoneNumber, nil, err
 }
 
+// UpdateIncomingPhoneNumber updates an IncomingPhoneNumber resource via the Twilio REST API.
+// https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#update-an-incomingphonenumber-resource
+func (twilio *Twilio) UpdateIncomingPhoneNumber(sid string, options IncomingPhoneNumber) (*IncomingPhoneNumber, *Exception, error) {
+	// convert options to HTTP form
+	form, err := query.Values(options)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	res, err := twilio.post(form, twilio.buildUrl("IncomingPhoneNumbers/"+sid+".json"))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	decoder := json.NewDecoder(res.Body)
+
+	// handle NULL response
+	if res.StatusCode != http.StatusOK {
+		exception := new(Exception)
+		err = decoder.Decode(exception)
+		return nil, exception, err
+	}
+
+	incomingPhoneNumber := new(IncomingPhoneNumber)
+	err = decoder.Decode(incomingPhoneNumber)
+	return incomingPhoneNumber, nil, err
+}
+
 // DeleteIncomingPhoneNumber deletes an IncomingPhoneNumber resource via the Twilio REST API.
 // https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#delete-an-incomingphonenumber-resource
 func (twilio *Twilio) DeleteIncomingPhoneNumber(sid string) (*Exception, error) {
