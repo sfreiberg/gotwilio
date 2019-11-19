@@ -66,7 +66,7 @@ func TestAvailablePhoneNumberOptionsToQueryString(t *testing.T) {
 	assert.Empty(t, queryString.Get("MmsEnabled"))
 }
 
-func TestCreateIncomingPhoneNumber(t *testing.T) {
+func TestCreateUpdateDeleteIncomingPhoneNumber(t *testing.T) {
 	log.SetLevel(log.DebugLevel)
 
 	client := initTestTwilioClient()
@@ -78,4 +78,8 @@ func TestCreateIncomingPhoneNumber(t *testing.T) {
 	validateTwilioException(t, exception)
 	assert.NoError(t, err)
 	assert.NotNil(t, number)
+
+	exception, err = client.DeleteIncomingPhoneNumber(number.SID)
+	validateTwilioException(t, exception)
+	assert.NoError(t, err)
 }

@@ -177,3 +177,22 @@ func (twilio *Twilio) CreateIncomingPhoneNumber(options IncomingPhoneNumber) (*I
 	err = decoder.Decode(incomingPhoneNumber)
 	return incomingPhoneNumber, nil, err
 }
+
+// DeleteIncomingPhoneNumber deletes an IncomingPhoneNumber resource via the Twilio REST API.
+// https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#delete-an-incomingphonenumber-resource
+func (twilio *Twilio) DeleteIncomingPhoneNumber(sid string) (*Exception, error) {
+	resourceName := sid + ".json"
+	res, err := twilio.delete(twilio.buildUrl("IncomingPhoneNumbers/" + resourceName))
+	if err != nil {
+		return nil, err
+	}
+
+	if res.StatusCode != http.StatusNoContent {
+		exception := new(Exception)
+		decoder := json.NewDecoder(res.Body)
+		err = decoder.Decode(exception)
+		return exception, err
+	}
+
+	return nil, nil
+}
