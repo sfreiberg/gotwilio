@@ -13,6 +13,18 @@ type Conference struct {
 	Region       string `json:"region"`
 }
 
+// ConferenceParticipant refers to a participant in a Twilio Voice Conference.
+type ConferenceParticipant struct {
+	From                 string `json:"from"`
+	To                   string `json:"to"`
+	StatusCallback       string `json:"status_callback"`
+	StatusCallbackMethod string `json:"status_callback_method"`
+	StatusCallbackEvent  string `json:"status_callback_event,omitempty"`
+	Timeout              int    `json:"timeout"`
+	Record               bool   `json:"record"`
+	Muted                bool   `json:"muted"`
+}
+
 // GetConference fetches details for a single conference instance
 // https://www.twilio.com/docs/voice/api/conference-resource#fetch-a-conference-resource
 func (twilio *Twilio) GetConference(conferenceSid string) (*Conference, *Exception, error) {
