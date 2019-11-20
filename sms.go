@@ -44,6 +44,16 @@ func (sms *SmsResponse) DateSentAsTime() (time.Time, error) {
 	return time.Parse(time.RFC1123Z, sms.DateSent)
 }
 
+func whatsapp(phone string) string {
+	return "whatsapp:" + phone
+}
+
+// SendWhatsApp uses Twilio to send a WhatsApp message.
+// See https://www.twilio.com/docs/sms/whatsapp/tutorial/send-and-receive-media-messages-whatsapp-python
+func (twilio *Twilio) SendWhatsApp(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendSMS(whatsapp(from), whatsapp(to), body, statusCallback, applicationSid)
+}
+
 // SendSMS uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {

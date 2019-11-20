@@ -39,8 +39,8 @@ type FaxResource struct {
 	From       string  `json:"from"`
 	To         string  `json:"to"`
 	Direction  string  `json:"direction"`
-	NumPages   uint    `json:"num_pages,string"`
-	Duration   uint    `json:"duration,string"`
+	NumPages   uint    `json:"num_pages"`
+	Duration   uint    `json:"duration"`
 	MediaSid   string  `json:"media_sid"`
 	MediaUrl   string  `json:"media_url"`
 	Status     string  `json:"status"`
