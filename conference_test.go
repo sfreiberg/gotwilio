@@ -45,8 +45,8 @@ func TestTwilio_Conference(t *testing.T) {
 		From:    testPhoneNumberFrom,
 		To:      testPhoneNumberTo,
 		Timeout: 15,
-		Record:  false,
-		Muted:   false,
+		Record:  NewBoolean(false),
+		Muted:   NewBoolean(false),
 	})
 	validateTwilioException(t, exception)
 	assert.NoError(t, err)
