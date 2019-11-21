@@ -42,11 +42,11 @@ func TestTwilio_Conference(t *testing.T) {
 
 	// add participant to call
 	participant, exception, err := client.AddConferenceParticipant(conf.Sid, &ConferenceParticipantOptions{
-		From:                 testPhoneNumberFrom,
-		To:                   testPhoneNumberTo,
-		Timeout:              15,
-		Record:               false,
-		Muted:                false,
+		From:    testPhoneNumberFrom,
+		To:      testPhoneNumberTo,
+		Timeout: 15,
+		Record:  false,
+		Muted:   false,
 	})
 	validateTwilioException(t, exception)
 	assert.NoError(t, err)
