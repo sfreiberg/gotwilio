@@ -17,9 +17,9 @@ type Conference struct {
 
 // ConferenceOptions are used for updating Conferences
 type ConferenceOptions struct {
-	Status         string `url:"Status,omitempty"`
-	AnnounceURL    string `url:"AnnounceURL,omitempty"`
-	AnnounceMethod string `url:"AnnounceMethod,omitempty"`
+	Status         string `url:"status,omitempty"`
+	AnnounceURL    string `url:"announceURL,omitempty"`
+	AnnounceMethod string `url:"announceMethod,omitempty"`
 }
 
 // ConferenceParticipant represents a Participant in responses from the Twilio API
@@ -37,14 +37,37 @@ type ConferenceParticipant struct {
 
 // ConferenceParticipantOptions are used for creating and updating Conference Participants.
 type ConferenceParticipantOptions struct {
-	From                 string `url:"From,omitempty"`
-	To                   string `url:"To,omitempty"`
-	StatusCallback       string `url:"StatusCallback,omitempty"`
-	StatusCallbackMethod string `url:"StatusCallbackMethod,omitempty"`
-	StatusCallbackEvent  string `url:"StatusCallbackEvent,omitempty"`
-	Timeout              int    `url:"Timeout,omitempty"`
-	Record               bool   `url:"Record,omitempty"`
-	Muted                bool   `url:"Muted,omitempty"`
+	From                                    string `url:"from,omitempty"`
+	To                                      string `url:"to,omitempty"`
+	StatusCallback                          string `url:"statusCallback,omitempty"`
+	StatusCallbackMethod                    string `url:"statusCallbackMethod,omitempty"`
+	StatusCallbackEvent                     string `url:"statusCallbackEvent,omitempty"`
+	Timeout                                 int    `url:"timeout"`
+	Record                                  *bool  `url:"record,omitempty"`
+	Muted                                   *bool  `url:"muted,omitempty"`
+	Beep                                    *bool  `url:"beep,omitempty"`
+	StartConferenceOnEnter                  *bool  `url:"startConferenceOnEnter,omitempty"`
+	EndConferenceOnExit                     *bool  `url:"endConferenceOnExit,omitempty"`
+	WaitURL                                 string `url:"waitURL,omitempty"`
+	WaitMethod                              string `url:"waitMethod,omitempty"`
+	EarlyMedia                              string `url:"earlyMedia,omitempty"`
+	MaxParticipants                         int    `url:"maxParticipants"`
+	ConferenceRecord                        string `url:"conferenceRecord,omitempty"`
+	ConferenceTrim                          string `url:"conferenceTrim,omitempty"`
+	ConferenceStatusCallback                string `url:"conferenceStatusCallback,omitempty"`
+	ConferenceStatusCallbackMethod          string `url:"conferenceStatusCallbackMethod,omitempty"`
+	ConferenceStatusCallbackEvent           string `url:"conferenceStatusCallbackEvent,omitempty"`
+	RecordingChannels                       string `url:"recordingChannels,omitempty"`
+	RecordingStatusCallback                 string `url:"recordingStatusCallback,omitempty"`
+	RecordingStatusCallbackMethod           string `url:"recordingStatusCallbackMethod,omitempty"`
+	RecordingStatusCallbackEvent            string `url:"recordingStatusCallbackEvent,omitempty"`
+	SipAuthUsername                         string `url:"sipAuthUsername,omitempty"`
+	SipAuthPassword                         string `url:"sipAuthPassword,omitempty"`
+	Region                                  string `url:"region,omitempty"`
+	ConferenceRecordingStatusCallback       string `url:"conferenceRecordingStatusCallback,omitempty"`
+	ConferenceRecordingStatusCallbackMethod string `url:"conferenceRecordingStatusCallbackMethod,omitempty"`
+	Coaching                                *bool  `url:"coaching,omitempty"`
+	CallSidToCoach                          string `url:"callSidToCoach,omitempty"`
 }
 
 // GetConference fetches details for a single conference instance

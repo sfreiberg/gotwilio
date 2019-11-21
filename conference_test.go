@@ -70,7 +70,7 @@ func TestTwilio_Conference(t *testing.T) {
 
 	// update the participant
 	_, exception, err = client.UpdateConferenceParticipant(conf.Sid, participant.CallSid, &ConferenceParticipantOptions{
-		Muted: true,
+		Muted: NewBoolean(true),
 	})
 	validateTwilioException(t, exception)
 	assert.NoError(t, err)
