@@ -50,7 +50,7 @@ type ConferenceParticipantOptions struct {
 	EndConferenceOnExit                     *bool  `url:"endConferenceOnExit,omitempty"`
 	WaitURL                                 string `url:"waitURL,omitempty"`
 	WaitMethod                              string `url:"waitMethod,omitempty"`
-	EarlyMedia                              string `url:"earlyMedia,omitempty"`
+	EarlyMedia                              *bool  `url:"earlyMedia,omitempty"`
 	MaxParticipants                         int    `url:"maxParticipants"`
 	ConferenceRecord                        string `url:"conferenceRecord,omitempty"`
 	ConferenceTrim                          string `url:"conferenceTrim,omitempty"`
