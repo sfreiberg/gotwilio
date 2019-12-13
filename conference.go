@@ -18,7 +18,7 @@ type Conference struct {
 // ConferenceOptions are used for updating Conferences
 type ConferenceOptions struct {
 	Status         string `url:"Status,omitempty"`
-	AnnounceURL    string `url:"AnnounceURL,omitempty"`
+	AnnounceURL    string `url:"AnnounceUrl,omitempty"`
 	AnnounceMethod string `url:"AnnounceMethod,omitempty"`
 }
 
