@@ -17,9 +17,9 @@ type Conference struct {
 
 // ConferenceOptions are used for updating Conferences
 type ConferenceOptions struct {
-	Status         string `url:"status,omitempty"`
-	AnnounceURL    string `url:"announceURL,omitempty"`
-	AnnounceMethod string `url:"announceMethod,omitempty"`
+	Status         string `url:"Status,omitempty"`
+	AnnounceURL    string `url:"AnnounceURL,omitempty"`
+	AnnounceMethod string `url:"AnnounceMethod,omitempty"`
 }
 
 // ConferenceParticipant represents a Participant in responses from the Twilio API
