@@ -13,11 +13,12 @@ import (
 // https://www.twilio.com/docs/proxy/api/pb-proxy-session
 
 type ProxySessionRequest struct {
-	Status     string    // default: open, other values: closed	optional
-	UniqueName string    // optional
-	TTL        int       // default: 0 (No TTL)	optional
-	DateExpiry time.Time // optional
-	Mode       string    // default: voice-and-message, other values: voice-only, message-only	optional
+	Status       string                // default: open, other values: closed	optional
+	UniqueName   string                // optional
+	TTL          int                   // default: 0 (No TTL)	optional
+	DateExpiry   time.Time             // optional
+	Mode         string                // default: voice-and-message, other values: voice-only, message-only	optional
+	Participants []*ParticipantRequest // optional, The Participant objects to include in the new session.
 }
 
 type ProxySession struct {
@@ -116,7 +117,11 @@ func (twilio *Twilio) UpdateProxySession(serviceID, sessionID string, req ProxyS
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", serviceID, "Sessions", sessionID)
 
-	res, err := twilio.post(proxySessionFormValues(req), twilioUrl)
+	formValue, err := proxySessionFormValues(req)
+	if err != nil {
+		return response, exception, err
+	}
+	res, err := twilio.post(formValue, twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -168,7 +173,7 @@ func (twilio *Twilio) DeleteProxySession(serviceID, sessionID string) (exception
 }
 
 // Form values initialization
-func proxySessionFormValues(req ProxySessionRequest) url.Values {
+func proxySessionFormValues(req ProxySessionRequest) (url.Values, error) {
 	formValues := url.Values{}
 
 	formValues.Set("UniqueName", req.UniqueName)
@@ -184,6 +189,13 @@ func proxySessionFormValues(req ProxySessionRequest) url.Values {
 	if req.Mode != "" {
 		formValues.Set("Mode", req.Mode)
 	}
+	for _, participant := range req.Participants {
+		jsonByte, err := json.Marshal(participant)
+		if err != nil {
+			return nil, err
+		}
+		formValues.Set("Participants", string(jsonByte))
+	}
 
-	return formValues
+	return formValues, nil
 }
