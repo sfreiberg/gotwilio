@@ -113,6 +113,16 @@ func (twilio *Twilio) SendMMS(from, to, body, mediaUrl, statusCallback, applicat
 	return
 }
 
+// SendMMSWithCopilot uses Twilio Copilot to send a multimedia message.
+// See https://www.twilio.com/docs/api/rest/sending-messages-copilot
+func (twilio *Twilio) SendMMSWithCopilot(messagingServiceSid, to, body, mediaUrl, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
+	formValues.Set("MessagingServiceSid", messagingServiceSid)
+
+	smsResponse, exception, err = twilio.sendMessage(formValues)
+	return
+}
+
 // Core method to send message
 func (twilio *Twilio) sendMessage(formValues url.Values) (smsResponse *SmsResponse, exception *Exception, err error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages.json"
