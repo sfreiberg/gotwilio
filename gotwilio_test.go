@@ -57,6 +57,24 @@ func TestMMSMultipleFiles(t *testing.T) {
 	}
 }
 
+func TestMMSTooManyFiles(t *testing.T) {
+	msg := "Welcome to gotwilio"
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	var files []string
+	for i := 0; i < 11; i++ {
+		files = append(files, "http://www.google.com/images/logo.png")
+	}
+	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, files, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Test for code for too many files
+	if exc == nil || int(exc.Code) != 21623 {
+		t.Fatal(exc)
+	}
+}
+
 func TestVoice(t *testing.T) {
 	callback := NewCallbackParameters("http://example.com")
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
