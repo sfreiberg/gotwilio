@@ -18,6 +18,7 @@ type SmsResponse struct {
 	To          string  `json:"to"`
 	From        string  `json:"from"`
 	MediaUrl    string  `json:"media_url"`
+	NumMedia    string  `json:"num_media"`
 	Body        string  `json:"body"`
 	Status      string  `json:"status"`
 	Direction   string  `json:"direction"`
@@ -105,7 +106,7 @@ func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCa
 }
 
 // SendMMS uses Twilio to send a multimedia message.
-func (twilio *Twilio) SendMMS(from, to, body, mediaUrl, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) SendMMS(from, to, body string, mediaUrl interface{}, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
 	formValues.Set("From", from)
 
@@ -115,7 +116,7 @@ func (twilio *Twilio) SendMMS(from, to, body, mediaUrl, statusCallback, applicat
 
 // SendMMSWithCopilot uses Twilio Copilot to send a multimedia message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
-func (twilio *Twilio) SendMMSWithCopilot(messagingServiceSid, to, body, mediaUrl, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) SendMMSWithCopilot(messagingServiceSid, to, body string, mediaUrl interface{}, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
 	formValues.Set("MessagingServiceSid", messagingServiceSid)
 
@@ -153,14 +154,23 @@ func (twilio *Twilio) sendMessage(formValues url.Values) (smsResponse *SmsRespon
 }
 
 // Form values initialization
-func initFormValues(to, body, mediaUrl, statusCallback, applicationSid string) url.Values {
+func initFormValues(to, body string, mediaUrl interface{}, statusCallback, applicationSid string) url.Values {
 	formValues := url.Values{}
 
 	formValues.Set("To", to)
 	formValues.Set("Body", body)
 
-	if mediaUrl != "" {
-		formValues.Set("MediaUrl", mediaUrl)
+	switch m := mediaUrl.(type) {
+	case string:
+		if m != ""{
+			formValues.Set("MediaUrl", m)
+		}
+	case []string:
+		if len(m) > 0 {
+			for _, value := range m {
+				formValues.Add("MediaUrl", value)
+			}
+		}
 	}
 
 	if statusCallback != "" {

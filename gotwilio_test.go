@@ -43,6 +43,20 @@ func TestMMS(t *testing.T) {
 	}
 }
 
+func TestMMSMultipleFiles(t *testing.T) {
+	msg := "Welcome to gotwilio"
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	files := []string{"http://www.google.com/images/logo.png", "http://www.google.com/images/logo.png"}
+	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, files, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+}
+
 func TestVoice(t *testing.T) {
 	callback := NewCallbackParameters("http://example.com")
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
