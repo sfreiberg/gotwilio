@@ -17,7 +17,6 @@ type SmsResponse struct {
 	AccountSid  string  `json:"account_sid"`
 	To          string  `json:"to"`
 	From        string  `json:"from"`
-	MediaUrl    string  `json:"media_url"`
 	NumMedia    string  `json:"num_media"`
 	Body        string  `json:"body"`
 	Status      string  `json:"status"`
