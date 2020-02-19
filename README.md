@@ -42,7 +42,8 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 		from := "+15555555555"
 		to := "+15555555555"
 		message := "Welcome to gotwilio!"
-		twilio.SendMMS(from, to, message, "http://host/myimage.gif", "", "")
+		mediaUrl := []string{"http://host/myimage.gif"}
+		twilio.SendMMS(from, to, message, mediaUrl, "", "")
 	}
 
 ## Voice Example
