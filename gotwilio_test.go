@@ -33,7 +33,8 @@ func TestSMS(t *testing.T) {
 func TestMMS(t *testing.T) {
 	msg := "Welcome to gotwilio"
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
-	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, "http://www.google.com/images/logo.png", "", "")
+	file := []string{"http://www.google.com/images/logo.png"}
+	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, file, "", "")
 	if err != nil {
 		t.Fatal(err)
 	}

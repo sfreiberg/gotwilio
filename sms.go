@@ -57,7 +57,7 @@ func (twilio *Twilio) SendWhatsApp(from, to, body, statusCallback, applicationSi
 // SendSMS uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
-	formValues := initFormValues(to, body, "", statusCallback, applicationSid)
+	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("From", from)
 
 	smsResponse, exception, err = twilio.sendMessage(formValues)
@@ -97,7 +97,7 @@ func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *E
 // SendSMSWithCopilot uses Twilio Copilot to send a text message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
 func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
-	formValues := initFormValues(to, body, "", statusCallback, applicationSid)
+	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("MessagingServiceSid", messagingServiceSid)
 
 	smsResponse, exception, err = twilio.sendMessage(formValues)
@@ -105,7 +105,7 @@ func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCa
 }
 
 // SendMMS uses Twilio to send a multimedia message.
-func (twilio *Twilio) SendMMS(from, to, body string, mediaUrl interface{}, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) SendMMS(from, to, body string, mediaUrl []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
 	formValues.Set("From", from)
 
@@ -115,7 +115,7 @@ func (twilio *Twilio) SendMMS(from, to, body string, mediaUrl interface{}, statu
 
 // SendMMSWithCopilot uses Twilio Copilot to send a multimedia message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
-func (twilio *Twilio) SendMMSWithCopilot(messagingServiceSid, to, body string, mediaUrl interface{}, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) SendMMSWithCopilot(messagingServiceSid, to, body string, mediaUrl []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
 	formValues.Set("MessagingServiceSid", messagingServiceSid)
 
@@ -153,22 +153,15 @@ func (twilio *Twilio) sendMessage(formValues url.Values) (smsResponse *SmsRespon
 }
 
 // Form values initialization
-func initFormValues(to, body string, mediaUrl interface{}, statusCallback, applicationSid string) url.Values {
+func initFormValues(to, body string, mediaUrl []string, statusCallback, applicationSid string) url.Values {
 	formValues := url.Values{}
 
 	formValues.Set("To", to)
 	formValues.Set("Body", body)
 
-	switch m := mediaUrl.(type) {
-	case string:
-		if m != ""{
-			formValues.Set("MediaUrl", m)
-		}
-	case []string:
-		if len(m) > 0 {
-			for _, value := range m {
-				formValues.Add("MediaUrl", value)
-			}
+	if len(mediaUrl) > 0 {
+		for _, value := range mediaUrl {
+			formValues.Add("MediaUrl", value)
 		}
 	}
 
