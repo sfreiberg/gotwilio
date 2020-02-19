@@ -33,7 +33,7 @@ func TestSMS(t *testing.T) {
 func TestMMS(t *testing.T) {
 	msg := "Welcome to gotwilio"
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
-	file := []string{"http://www.google.com/images/logo.png"}
+	file := []string{"https://www.google.com/images/logo.png"}
 	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, file, "", "")
 	if err != nil {
 		t.Fatal(err)
@@ -47,7 +47,7 @@ func TestMMS(t *testing.T) {
 func TestMMSMultipleFiles(t *testing.T) {
 	msg := "Welcome to gotwilio"
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
-	files := []string{"http://www.google.com/images/logo.png", "http://www.google.com/images/logo.png"}
+	files := []string{"https://www.google.com/images/logo.png", "https://www.google.com/images/logo.png"}
 	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, files, "", "")
 	if err != nil {
 		t.Fatal(err)
@@ -63,7 +63,7 @@ func TestMMSTooManyFiles(t *testing.T) {
 	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
 	var files []string
 	for i := 0; i < 11; i++ {
-		files = append(files, "http://www.google.com/images/logo.png")
+		files = append(files, "https://www.google.com/images/logo.png")
 	}
 	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, files, "", "")
 	if err != nil {
