@@ -3,8 +3,9 @@ package gotwilio
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/google/go-querystring/query"
 	"net/http"
+
+	"github.com/google/go-querystring/query"
 )
 
 // Conference represents a Twilio Voice conference call
@@ -121,6 +122,33 @@ func (twilio *Twilio) UpdateConference(conferenceSid string, options *Conference
 	c := new(Conference)
 	err = decoder.Decode(c)
 	return c, nil, err
+}
+
+type getParticipantsResponse struct {
+	Participants []*ConferenceParticipant `json:"participants"`
+}
+
+// GetConferenceParticipants fetches details for all conference participants resource
+// https://www.twilio.com/docs/voice/api/conference-participant-resource#read-multiple-participant-resources
+func (twilio *Twilio) GetConferenceParticipants(conferenceSid string) ([]*ConferenceParticipant, *Exception, error) {
+	res, err := twilio.get(twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants.json", conferenceSid)))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	decoder := json.NewDecoder(res.Body)
+
+	// handle NULL response
+	if res.StatusCode != http.StatusOK {
+		exception := new(Exception)
+		err = decoder.Decode(exception)
+		return nil, exception, err
+	}
+
+	conf := new(getParticipantsResponse)
+	err = decoder.Decode(conf)
+
+	return conf.Participants, nil, err
 }
 
 // GetConferenceParticipant fetches details for a conference participant resource
