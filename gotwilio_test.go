@@ -15,6 +15,11 @@ func init() {
 	params["TOKEN"] = "1dcf52d7a1f3853ed78f0ee20d056dd0"
 	params["FROM"] = "+15005550006"
 	params["TO"] = "+19135551234"
+	params["WHATSAPP"] = "" // if empty, will skip WhatsApp tests
+	// setup a WhatsApp sandbox in the Twilio console
+	// and add the setup the WHATSAPP_FROM adn WHATSAPP_TO numbers
+	params["WHATSAPP_FROM"] = ""
+	params["WHATSAPP_TO"] = ""
 }
 
 func TestSMS(t *testing.T) {
@@ -72,6 +77,43 @@ func TestMMSTooManyFiles(t *testing.T) {
 
 	// Test for code for too many files
 	if exc == nil || int(exc.Code) != 21623 {
+		t.Fatal(exc)
+	}
+}
+
+func TestWhatsApp(t *testing.T) {
+	if len(params["WHATSAPP"]) == 0 {
+		t.Skip("skipping WhatsApp test")
+	}
+
+	msg := "Welcome to gotwilio from WhatsApp"
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	_, exc, err := twilio.SendWhatsApp(params["WHATSAPP_FROM"], params["WHATSAPP_TO"], msg, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
+		t.Fatal(exc)
+	}
+}
+
+func TestWhatsAppMedia(t *testing.T) {
+	if len(params["WHATSAPP"]) == 0 {
+		t.Skip("skipping WhatsApp test")
+	}
+
+	msg := "Welcome to gotwilio from WhatsApp Media, here's a cute cat picture"
+	twilio := NewTwilioClient(params["SID"], params["TOKEN"])
+	file := []string{
+		"https://bit.ly/3bZY1oV", // cute cat photo
+	}
+	_, exc, err := twilio.SendWhatsAppMedia(params["WHATSAPP_FROM"], params["WHATSAPP_TO"], msg, file, "", "")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	if exc != nil {
 		t.Fatal(exc)
 	}
 }

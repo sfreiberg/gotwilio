@@ -54,6 +54,15 @@ func (twilio *Twilio) SendWhatsApp(from, to, body, statusCallback, applicationSi
 	return twilio.SendSMS(whatsapp(from), whatsapp(to), body, statusCallback, applicationSid)
 }
 
+// SendWhatsAppMedia uses Twilio to send a WhatsApp message with Media enabled.
+// See https://www.twilio.com/docs/sms/whatsapp/tutorial/send-and-receive-media-messages-whatsapp-python
+func (twilio *Twilio) SendWhatsAppMedia(from, to, body string, mediaURL []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	formValues := initFormValues(whatsapp(to), body, mediaURL, statusCallback, applicationSid)
+	formValues.Set("From", whatsapp(from))
+
+	return twilio.sendMessage(formValues)
+}
+
 // SendSMS uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
