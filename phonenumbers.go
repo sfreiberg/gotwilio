@@ -150,6 +150,53 @@ type IncomingPhoneNumber struct {
 	VoiceReceiveMode string `url:",omitempty"`
 }
 
+type GetIncomingPhoneNumbersRequest struct {
+	Beta         *bool  `url:"Beta,omitempty"`
+	FriendlyName string `url:"FriendlyName,omitempty"`
+	PhoneNumber  string `url:"PhoneNumber,omitempty"`
+	Origin       string `url:"Origin,omitempty"`
+}
+
+type getIncomingPhoneNumbersResponse struct {
+	IncomingPhoneNumbers []*IncomingPhoneNumber `json:"incoming_phone_numbers"`
+}
+
+// GetIncomingPhoneNumbers reads multiple IncomingPhoneNumbers from the Twilio REST API, with optional filtering
+// https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#read-multiple-incomingphonenumber-resources
+func (twilio *Twilio) GetIncomingPhoneNumbers(request GetIncomingPhoneNumbersRequest) ([]*IncomingPhoneNumber, *Exception, error) {
+	// convert request to url.Values for encoding into querystring
+	form, err := query.Values(request)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// build URL with query string
+	endpoint := twilio.buildUrl("IncomingPhoneNumbers.json")
+	reqURL, err := url.Parse(endpoint)
+	if err != nil {
+		return nil, nil, err
+	}
+	reqURL.RawQuery = form.Encode()
+
+	res, err := twilio.get(reqURL.String())
+	if err != nil {
+		return nil, nil, err
+	}
+
+	decoder := json.NewDecoder(res.Body)
+
+	// handle NULL response
+	if res.StatusCode != http.StatusOK {
+		exception := new(Exception)
+		err = decoder.Decode(exception)
+		return nil, exception, err
+	}
+
+	response := new(getIncomingPhoneNumbersResponse)
+	err = decoder.Decode(&response)
+	return response.IncomingPhoneNumbers, nil, err
+}
+
 // CreateIncomingPhoneNumber creates an IncomingPhoneNumber resource via the Twilio REST API.
 // https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#create-an-incomingphonenumber-resource
 func (twilio *Twilio) CreateIncomingPhoneNumber(options IncomingPhoneNumber) (*IncomingPhoneNumber, *Exception, error) {
