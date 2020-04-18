@@ -162,7 +162,7 @@ type getIncomingPhoneNumbersResponse struct {
 }
 
 // GetIncomingPhoneNumbers reads multiple IncomingPhoneNumbers from the Twilio REST API, with optional filtering
-// https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#create-an-incomingphonenumber-resource
+// https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#read-multiple-incomingphonenumber-resources
 func (twilio *Twilio) GetIncomingPhoneNumbers(request GetIncomingPhoneNumbersRequest) ([]*IncomingPhoneNumber, *Exception, error) {
 	// convert request to url.Values for encoding into querystring
 	form, err := query.Values(request)
