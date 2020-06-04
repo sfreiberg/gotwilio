@@ -62,7 +62,7 @@ type ConferenceParticipantOptions struct {
 	ConferenceTrim                          string   `url:"ConferenceTrim,omitempty"`
 	ConferenceStatusCallback                string   `url:"ConferenceStatusCallback,omitempty"`
 	ConferenceStatusCallbackMethod          string   `url:"ConferenceStatusCallbackMethod,omitempty"`
-	ConferenceStatusCallbackEvent           string   `url:"ConferenceStatusCallbackEvent,omitempty"`
+	ConferenceStatusCallbackEvent           []string `url:"ConferenceStatusCallbackEvent,omitempty"`
 	RecordingChannels                       string   `url:"RecordingChannels,omitempty"`
 	RecordingStatusCallback                 string   `url:"RecordingStatusCallback,omitempty"`
 	RecordingStatusCallbackMethod           string   `url:"RecordingStatusCallbackMethod,omitempty"`
