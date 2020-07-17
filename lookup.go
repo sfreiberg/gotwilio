@@ -18,6 +18,11 @@ type LookupReq struct {
 // Lookup Go-representation of Twilio REST API's lookup.
 // https://www.twilio.com/docs/api/rest/lookups
 type Lookup struct {
+	CallerName *struct {
+		ErrorCode  *int   `json:"error_code"`
+		CallerName string `json:"caller_name"`
+		CallerType string `json:"caller_type"`
+	} `json:"caller_name"`
 	Carrier *struct {
 		ErrorCode         *int   `json:"error_code"`
 		MobileCountryCode string `json:"mobile_country_code"`
