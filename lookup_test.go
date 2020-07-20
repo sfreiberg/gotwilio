@@ -31,7 +31,11 @@ func TestLookup(t *testing.T) {
 // Example from https://www.twilio.com/docs/usage/api/usage-record:
 const testLookupResponse = `
 {
-	"caller_name": null,
+	"caller_name": {
+		"error_code": null,
+		"caller_name": "My Business, INC",
+		"caller_type": "CONSUMER",
+	},
 	"carrier": {
 	  "error_code": null,
 	  "mobile_country_code": "310",
