@@ -3,8 +3,14 @@ package gotwilio
 import (
 	"fmt"
 	"net/url"
+	"strings"
 
 	"github.com/gorilla/schema"
+)
+
+const (
+	// LookupTypeString format for rquest type
+	LookupTypeString = "Type"
 )
 
 // LookupReq Go-representation of Twilio REST API's lookup request.
@@ -18,6 +24,11 @@ type LookupReq struct {
 // Lookup Go-representation of Twilio REST API's lookup.
 // https://www.twilio.com/docs/api/rest/lookups
 type Lookup struct {
+	CallerName *struct {
+		ErrorCode  *int   `json:"error_code"`
+		CallerName string `json:"caller_name"`
+		CallerType string `json:"caller_type"`
+	} `json:"caller_name"`
 	Carrier *struct {
 		ErrorCode         *int   `json:"error_code"`
 		MobileCountryCode string `json:"mobile_country_code"`
@@ -41,7 +52,19 @@ func (twilio *Twilio) SubmitLookup(req LookupReq) (Lookup, error) {
 		return Lookup{}, err
 	}
 
-	url := fmt.Sprintf("%s/PhoneNumbers/%s?%s", twilio.LookupURL, req.PhoneNumber, values.Encode())
+	// check for multiple types
+	var types string
+	for _, t := range strings.Split(values.Get(LookupTypeString), ",") {
+		types += fmt.Sprintf("%s=%s&", LookupTypeString, strings.TrimSpace(t))
+	}
+
+	// remove trailing '&'
+	types = strings.TrimRight(types, "&")
+
+	// remove req.Type value
+	values.Del(LookupTypeString)
+
+	url := fmt.Sprintf("%s/PhoneNumbers/%s?%s&%s", twilio.LookupURL, req.PhoneNumber, values.Encode(), types)
 	res := Lookup{}
 	err := twilio.getJSON(url, &res)
 	return res, err
