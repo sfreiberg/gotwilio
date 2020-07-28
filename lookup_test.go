@@ -64,7 +64,7 @@ func TestLookupMultipleTypes(t *testing.T) {
 	twilio.LookupURL = srv.URL
 	req := &LookupReq{
 		PhoneNumber: "+11231231234",
-		Type:        "carrier,caller-name",
+		Types:       []string{"carrier", "caller-name"},
 	}
 	lookup, err := twilio.SubmitLookup(*req)
 	if err != nil {
