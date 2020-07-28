@@ -9,8 +9,11 @@ import (
 )
 
 const (
-	// LookupTypeString format for rquest type
+	// LookupTypeString format for single request type
 	LookupTypeString = "Type"
+
+	// LookupTypesString format for multiple request types
+	LookupTypesString = "Types"
 )
 
 // LookupReq Go-representation of Twilio REST API's lookup request.
@@ -18,6 +21,7 @@ const (
 type LookupReq struct {
 	PhoneNumber string
 	Type        string
+	Types       []string
 	CountryCode string
 }
 
@@ -54,15 +58,16 @@ func (twilio *Twilio) SubmitLookup(req LookupReq) (Lookup, error) {
 
 	// check for multiple types
 	var types string
-	for _, t := range strings.Split(values.Get(LookupTypeString), ",") {
-		types += fmt.Sprintf("%s=%s&", LookupTypeString, strings.TrimSpace(t))
+	if len(req.Types) > 0 {
+		types = fmt.Sprintf("%s=%s", LookupTypeString, strings.Join(req.Types, "&Type="))
+		values.Del(LookupTypeString)
+	} else {
+		types = fmt.Sprintf("%s=%s", LookupTypeString, values.Get(LookupTypeString))
 	}
-
-	// remove trailing '&'
-	types = strings.TrimRight(types, "&")
 
 	// remove req.Type value
 	values.Del(LookupTypeString)
+	values.Del(LookupTypesString)
 
 	url := fmt.Sprintf("%s/PhoneNumbers/%s?%s&%s", twilio.LookupURL, req.PhoneNumber, values.Encode(), types)
 	res := Lookup{}
