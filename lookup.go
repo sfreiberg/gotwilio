@@ -60,7 +60,6 @@ func (twilio *Twilio) SubmitLookup(req LookupReq) (Lookup, error) {
 	var types string
 	if len(req.Types) > 0 {
 		types = fmt.Sprintf("%s=%s", LookupTypeString, strings.Join(req.Types, "&Type="))
-		values.Del(LookupTypeString)
 	} else {
 		types = fmt.Sprintf("%s=%s", LookupTypeString, values.Get(LookupTypeString))
 	}
