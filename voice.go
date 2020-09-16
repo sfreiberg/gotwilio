@@ -31,6 +31,7 @@ type CallbackParameters struct {
 	MachineDetectionSpeechThreshold    int      // Optional
 	MachineDetectionSpeechEndThreshold int      // Optional
 	MachineDetectionSilenceTimeout     int      // Optional
+	Twiml                              string   // Optional
 }
 
 // VoiceResponse contains the details about successful voice calls.
@@ -198,6 +199,10 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 		}
 	} else {
 		formValues.Set("Record", "false")
+	}
+
+	if callbackParameters.Twiml != "" {
+		formValues.Set("Twiml", callbackParameters.Twiml)
 	}
 
 	return twilio.voicePost("Calls.json", formValues)

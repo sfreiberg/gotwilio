@@ -153,5 +153,10 @@ func (twilio *Twilio) do(req *http.Request) (*http.Response, error) {
 
 // Build path to a resource within the Twilio account
 func (twilio *Twilio) buildUrl(resourcePath string) string {
-	return twilio.BaseUrl + "/" + path.Join("Accounts", twilio.AccountSid, resourcePath)
+	return twilio.buildUrlWithAcct(twilio.AccountSid, resourcePath)
+}
+
+// Build path to a resource with provided Twilio account
+func (twilio *Twilio) buildUrlWithAcct(acctSid, resourcePath string) string {
+	return twilio.BaseUrl + "/" + path.Join("Accounts", acctSid, resourcePath)
 }
