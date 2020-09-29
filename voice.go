@@ -20,7 +20,6 @@ type CallbackParameters struct {
 	StatusCallbackMethod               string   // Optional
 	StatusCallbackEvent                []string // Optional
 	SendDigits                         string   // Optional
-	IfMachine                          string   // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
 	Timeout                            int      // Optional
 	Record                             bool     // Optional
 	RecordingChannels                  string   // Optional
@@ -149,9 +148,6 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	}
 	if callbackParameters.SendDigits != "" {
 		formValues.Set("SendDigits", callbackParameters.SendDigits)
-	}
-	if callbackParameters.IfMachine != "" {
-		formValues.Set("IfMachine", callbackParameters.IfMachine)
 	}
 	if callbackParameters.Timeout != 0 {
 		formValues.Set("Timeout", strconv.Itoa(callbackParameters.Timeout))
