@@ -5,3 +5,9 @@ package gotwilio
 func NewBoolean(value bool) *bool {
 	return &value
 }
+
+// Option contains a key/value pair to define optional request parameters.
+type Option struct {
+	Key   string
+	Value string
+}
