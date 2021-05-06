@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -20,11 +21,13 @@ type ListResources struct {
 	Messages []*SmsResponse `json:"messages"`
 
 	t *Twilio
+	ctx context.Context
 }
 
-func (t *Twilio) newListResources() *ListResources {
+func (t *Twilio) newListResources(ctx context.Context) *ListResources {
 	lr := new(ListResources)
 	lr.t = t
+	lr.ctx = ctx
 	return lr
 }
 
@@ -33,7 +36,7 @@ func (l *ListResources) hasNext() bool {
 }
 
 func (l *ListResources) next() (*Exception, error) {
-	resp, err := l.t.get(l.NextPageUri)
+	resp, err := l.t.get(l.ctx, l.NextPageUri)
 	if err != nil {
 		return nil, err
 	}

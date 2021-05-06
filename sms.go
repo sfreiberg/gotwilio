@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -67,15 +68,23 @@ func (twilio *Twilio) SendWhatsApp(from, to, body, statusCallback, applicationSi
 // SendWhatsAppMedia uses Twilio to send a WhatsApp message with Media enabled.
 // See https://www.twilio.com/docs/sms/whatsapp/tutorial/send-and-receive-media-messages-whatsapp-python
 func (twilio *Twilio) SendWhatsAppMedia(from, to, body string, mediaURL []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendWhatsAppMediaWithContext(context.Background(), from, to, body, mediaURL, statusCallback, applicationSid)
+}
+
+func (twilio *Twilio) SendWhatsAppMediaWithContext(ctx context.Context, from, to, body string, mediaURL []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(whatsapp(to), body, mediaURL, statusCallback, applicationSid)
 	formValues.Set("From", whatsapp(from))
 
-	return twilio.sendMessage(formValues)
+	return twilio.sendMessage(ctx, formValues)
 }
 
 // SendSMS uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string, opts ...*Option) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendSMSWithContext(context.Background(), from, to, body, statusCallback, applicationSid, opts...)
+}
+
+func (twilio *Twilio) SendSMSWithContext(ctx context.Context, from, to, body, statusCallback, applicationSid string, opts ...*Option) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("From", from)
 
@@ -85,16 +94,20 @@ func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid str
 		}
 	}
 
-	smsResponse, exception, err = twilio.sendMessage(formValues)
+	smsResponse, exception, err = twilio.sendMessage(ctx, formValues)
 	return
 }
 
 // GetSMS uses Twilio to get information about a text message.
 // See https://www.twilio.com/docs/api/rest/sms for more information.
 func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.GetSMSWithContext(context.Background(), sid)
+}
+
+func (twilio *Twilio) GetSMSWithContext(ctx context.Context, sid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/SMS/Messages/" + sid + ".json"
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return smsResponse, exception, err
 	}
@@ -122,37 +135,49 @@ func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *E
 // SendSMSWithCopilot uses Twilio Copilot to send a text message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
 func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendSMSWithCopilotWithContext(context.Background(), messagingServiceSid, to, body, statusCallback, applicationSid)
+}
+
+func (twilio *Twilio) SendSMSWithCopilotWithContext(ctx context.Context, messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("MessagingServiceSid", messagingServiceSid)
 
-	smsResponse, exception, err = twilio.sendMessage(formValues)
+	smsResponse, exception, err = twilio.sendMessage(ctx, formValues)
 	return
 }
 
 // SendMMS uses Twilio to send a multimedia message.
 func (twilio *Twilio) SendMMS(from, to, body string, mediaUrl []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendMMSWithContext(context.Background(), from, to, body, mediaUrl, statusCallback, applicationSid)
+}
+
+func (twilio *Twilio) SendMMSWithContext(ctx context.Context, from, to, body string, mediaUrl []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
 	formValues.Set("From", from)
 
-	smsResponse, exception, err = twilio.sendMessage(formValues)
+	smsResponse, exception, err = twilio.sendMessage(ctx, formValues)
 	return
 }
 
 // SendMMSWithCopilot uses Twilio Copilot to send a multimedia message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
 func (twilio *Twilio) SendMMSWithCopilot(messagingServiceSid, to, body string, mediaUrl []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendMMSWithCopilotWithContext(context.Background(), messagingServiceSid, to, body, mediaUrl, statusCallback, applicationSid)
+}
+
+func (twilio *Twilio) SendMMSWithCopilotWithContext(ctx context.Context, messagingServiceSid, to, body string, mediaUrl []string, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, mediaUrl, statusCallback, applicationSid)
 	formValues.Set("MessagingServiceSid", messagingServiceSid)
 
-	smsResponse, exception, err = twilio.sendMessage(formValues)
+	smsResponse, exception, err = twilio.sendMessage(ctx, formValues)
 	return
 }
 
 // Core method to send message
-func (twilio *Twilio) sendMessage(formValues url.Values) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) sendMessage(ctx context.Context, formValues url.Values) (smsResponse *SmsResponse, exception *Exception, err error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages.json"
 
-	res, err := twilio.post(formValues, twilioUrl)
+	res, err := twilio.post(ctx, formValues, twilioUrl)
 	if err != nil {
 		return smsResponse, exception, err
 	}
