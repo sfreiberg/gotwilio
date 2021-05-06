@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -164,6 +165,10 @@ type getIncomingPhoneNumbersResponse struct {
 // GetIncomingPhoneNumbers reads multiple IncomingPhoneNumbers from the Twilio REST API, with optional filtering
 // https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#read-multiple-incomingphonenumber-resources
 func (twilio *Twilio) GetIncomingPhoneNumbers(request GetIncomingPhoneNumbersRequest) ([]*IncomingPhoneNumber, *Exception, error) {
+	return twilio.GetIncomingPhoneNumbersWithContext(context.Background(), request)
+}
+
+func (twilio *Twilio) GetIncomingPhoneNumbersWithContext(ctx context.Context, request GetIncomingPhoneNumbersRequest) ([]*IncomingPhoneNumber, *Exception, error) {
 	// convert request to url.Values for encoding into querystring
 	form, err := query.Values(request)
 	if err != nil {
@@ -178,7 +183,7 @@ func (twilio *Twilio) GetIncomingPhoneNumbers(request GetIncomingPhoneNumbersReq
 	}
 	reqURL.RawQuery = form.Encode()
 
-	res, err := twilio.get(reqURL.String())
+	res, err := twilio.get(ctx, reqURL.String())
 	if err != nil {
 		return nil, nil, err
 	}
@@ -200,13 +205,17 @@ func (twilio *Twilio) GetIncomingPhoneNumbers(request GetIncomingPhoneNumbersReq
 // CreateIncomingPhoneNumber creates an IncomingPhoneNumber resource via the Twilio REST API.
 // https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#create-an-incomingphonenumber-resource
 func (twilio *Twilio) CreateIncomingPhoneNumber(options IncomingPhoneNumber) (*IncomingPhoneNumber, *Exception, error) {
+	return twilio.CreateIncomingPhoneNumberWithContext(context.Background(), options)
+}
+
+func (twilio *Twilio) CreateIncomingPhoneNumberWithContext(ctx context.Context, options IncomingPhoneNumber) (*IncomingPhoneNumber, *Exception, error) {
 	// convert options to HTTP form
 	form, err := query.Values(options)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := twilio.post(form, twilio.buildUrl("IncomingPhoneNumbers.json"))
+	res, err := twilio.post(ctx, form, twilio.buildUrl("IncomingPhoneNumbers.json"))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -228,13 +237,17 @@ func (twilio *Twilio) CreateIncomingPhoneNumber(options IncomingPhoneNumber) (*I
 // UpdateIncomingPhoneNumber updates an IncomingPhoneNumber resource via the Twilio REST API.
 // https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#update-an-incomingphonenumber-resource
 func (twilio *Twilio) UpdateIncomingPhoneNumber(sid string, options IncomingPhoneNumber) (*IncomingPhoneNumber, *Exception, error) {
+	return twilio.UpdateIncomingPhoneNumberWithContext(context.Background(), sid, options)
+}
+
+func (twilio *Twilio) UpdateIncomingPhoneNumberWithContext(ctx context.Context, sid string, options IncomingPhoneNumber) (*IncomingPhoneNumber, *Exception, error) {
 	// convert options to HTTP form
 	form, err := query.Values(options)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := twilio.post(form, twilio.buildUrl("IncomingPhoneNumbers/"+sid+".json"))
+	res, err := twilio.post(ctx, form, twilio.buildUrl("IncomingPhoneNumbers/"+sid+".json"))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -256,8 +269,12 @@ func (twilio *Twilio) UpdateIncomingPhoneNumber(sid string, options IncomingPhon
 // DeleteIncomingPhoneNumber deletes an IncomingPhoneNumber resource via the Twilio REST API.
 // https://www.twilio.com/docs/phone-numbers/api/incomingphonenumber-resource#delete-an-incomingphonenumber-resource
 func (twilio *Twilio) DeleteIncomingPhoneNumber(sid string) (*Exception, error) {
+	return twilio.DeleteIncomingPhoneNumberWithContext(context.Background(), sid)
+}
+
+func (twilio *Twilio) DeleteIncomingPhoneNumberWithContext(ctx context.Context, sid string) (*Exception, error) {
 	resourceName := sid + ".json"
-	res, err := twilio.delete(twilio.buildUrl("IncomingPhoneNumbers/" + resourceName))
+	res, err := twilio.delete(ctx, twilio.buildUrl("IncomingPhoneNumbers/" + resourceName))
 	if err != nil {
 		return nil, err
 	}

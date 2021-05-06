@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -79,7 +80,11 @@ type ConferenceParticipantOptions struct {
 // GetConference fetches details for a single conference instance
 // https://www.twilio.com/docs/voice/api/conference-resource#fetch-a-conference-resource
 func (twilio *Twilio) GetConference(conferenceSid string) (*Conference, *Exception, error) {
-	res, err := twilio.get(twilio.buildUrl(fmt.Sprintf("Conferences/%s.json", conferenceSid)))
+	return twilio.GetConferenceWithContext(context.Background(), conferenceSid)
+}
+
+func (twilio *Twilio) GetConferenceWithContext(ctx context.Context, conferenceSid string) (*Conference, *Exception, error) {
+	res, err := twilio.get(ctx, twilio.buildUrl(fmt.Sprintf("Conferences/%s.json", conferenceSid)))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -101,12 +106,16 @@ func (twilio *Twilio) GetConference(conferenceSid string) (*Conference, *Excepti
 // UpdateConference to end it or play an announcement
 // https://www.twilio.com/docs/voice/api/conference-resource#update-a-conference-resource
 func (twilio *Twilio) UpdateConference(conferenceSid string, options *ConferenceOptions) (*Conference, *Exception, error) {
+	return twilio.UpdateConferenceWithContext(context.Background(), conferenceSid, options)
+}
+
+func (twilio *Twilio) UpdateConferenceWithContext(ctx context.Context, conferenceSid string, options *ConferenceOptions) (*Conference, *Exception, error) {
 	form, err := query.Values(options)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := twilio.post(form, twilio.buildUrl(fmt.Sprintf("Conferences/%s.json", conferenceSid)))
+	res, err := twilio.post(ctx, form, twilio.buildUrl(fmt.Sprintf("Conferences/%s.json", conferenceSid)))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -131,7 +140,11 @@ type getParticipantsResponse struct {
 // GetConferenceParticipants fetches details for all conference participants resource
 // https://www.twilio.com/docs/voice/api/conference-participant-resource#read-multiple-participant-resources
 func (twilio *Twilio) GetConferenceParticipants(conferenceSid string) ([]*ConferenceParticipant, *Exception, error) {
-	res, err := twilio.get(twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants.json", conferenceSid)))
+	return twilio.GetConferenceParticipantsWithContext(context.Background(), conferenceSid)
+}
+
+func (twilio *Twilio) GetConferenceParticipantsWithContext(ctx context.Context, conferenceSid string) ([]*ConferenceParticipant, *Exception, error) {
+	res, err := twilio.get(ctx, twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants.json", conferenceSid)))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -154,7 +167,11 @@ func (twilio *Twilio) GetConferenceParticipants(conferenceSid string) ([]*Confer
 // GetConferenceParticipant fetches details for a conference participant resource
 // https://www.twilio.com/docs/voice/api/conference-participant-resource#fetch-a-participant-resource
 func (twilio *Twilio) GetConferenceParticipant(conferenceSid, callSid string) (*ConferenceParticipant, *Exception, error) {
-	res, err := twilio.get(twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants/%s.json", conferenceSid, callSid)))
+	return twilio.GetConferenceParticipantWithContext(context.Background(), conferenceSid, callSid)
+}
+
+func (twilio *Twilio) GetConferenceParticipantWithContext(ctx context.Context, conferenceSid, callSid string) (*ConferenceParticipant, *Exception, error) {
+	res, err := twilio.get(ctx, twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants/%s.json", conferenceSid, callSid)))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -176,12 +193,16 @@ func (twilio *Twilio) GetConferenceParticipant(conferenceSid, callSid string) (*
 // AddConferenceParticipant adds a Participant to a conference by dialing out a new call
 // https://www.twilio.com/docs/voice/api/conference-participant-resource#create-a-participant-agent-conference-only
 func (twilio *Twilio) AddConferenceParticipant(conferenceSid string, participant *ConferenceParticipantOptions) (*ConferenceParticipant, *Exception, error) {
+	return twilio.AddConferenceParticipantWithContext(context.Background(), conferenceSid, participant)
+}
+
+func (twilio *Twilio) AddConferenceParticipantWithContext(ctx context.Context, conferenceSid string, participant *ConferenceParticipantOptions) (*ConferenceParticipant, *Exception, error) {
 	form, err := query.Values(participant)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := twilio.post(form, twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants.json", conferenceSid)))
+	res, err := twilio.post(ctx, form, twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants.json", conferenceSid)))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -202,12 +223,16 @@ func (twilio *Twilio) AddConferenceParticipant(conferenceSid string, participant
 // UpdateConferenceParticipant
 // https://www.twilio.com/docs/voice/api/conference-participant-resource#create-a-participant-agent-conference-only
 func (twilio *Twilio) UpdateConferenceParticipant(conferenceSid string, callSid string, participant *ConferenceParticipantOptions) (*ConferenceParticipant, *Exception, error) {
+	return twilio.UpdateConferenceParticipantWithContext(context.Background(), conferenceSid, callSid, participant)
+}
+
+func (twilio *Twilio) UpdateConferenceParticipantWithContext(ctx context.Context, conferenceSid string, callSid string, participant *ConferenceParticipantOptions) (*ConferenceParticipant, *Exception, error) {
 	form, err := query.Values(participant)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	res, err := twilio.post(form, twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants/%s.json", conferenceSid, callSid)))
+	res, err := twilio.post(ctx, form, twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants/%s.json", conferenceSid, callSid)))
 	if err != nil {
 		return nil, nil, err
 	}
@@ -227,7 +252,11 @@ func (twilio *Twilio) UpdateConferenceParticipant(conferenceSid string, callSid 
 
 // DeleteConferenceParticipant
 func (twilio *Twilio) DeleteConferenceParticipant(conferenceSid string, callSid string) (*Exception, error) {
-	res, err := twilio.delete(twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants/%s.json", conferenceSid, callSid)))
+	return twilio.DeleteConferenceParticipantWithContext(context.Background(), conferenceSid, callSid)
+}
+
+func (twilio *Twilio) DeleteConferenceParticipantWithContext(ctx context.Context, conferenceSid string, callSid string) (*Exception, error) {
+	res, err := twilio.delete(ctx, twilio.buildUrl(fmt.Sprintf("Conferences/%s/Participants/%s.json", conferenceSid, callSid)))
 	if err != nil {
 		return nil, err
 	}

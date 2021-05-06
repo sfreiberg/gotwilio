@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"net/url"
@@ -17,6 +18,10 @@ type QueueResponse struct {
 }
 
 func (twilio *Twilio) CreateQueue(friendlyName string) (*QueueResponse, *Exception, error) {
+	return twilio.CreateQueueWithContext(context.Background(), friendlyName)
+}
+
+func (twilio *Twilio) CreateQueueWithContext(ctx context.Context, friendlyName string) (*QueueResponse, *Exception, error) {
 	var queueResponse *QueueResponse
 	var exception *Exception
 	twilioUrl := twilio.buildUrl("Queues.json")
@@ -24,7 +29,7 @@ func (twilio *Twilio) CreateQueue(friendlyName string) (*QueueResponse, *Excepti
 	formValues := url.Values{}
 	formValues.Set("FriendlyName", friendlyName)
 
-	res, err := twilio.post(formValues, twilioUrl)
+	res, err := twilio.post(ctx, formValues, twilioUrl)
 	if err != nil {
 		return queueResponse, exception, err
 	}
