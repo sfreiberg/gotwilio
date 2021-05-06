@@ -2,6 +2,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -87,10 +88,14 @@ type ProxyMessage struct {
 
 // Add Participant to Session
 func (session *ProxySession) AddParticipant(req ParticipantRequest) (response Participant, exception *Exception, err error) {
+	return session.AddParticipantWithContext(context.Background(), req)
+}
+
+func (session *ProxySession) AddParticipantWithContext(ctx context.Context, req ParticipantRequest) (response Participant, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", session.ServiceSid, "Sessions", session.Sid, "Participants")
 
-	res, err := session.twilio.post(participantFormValues(req), twilioUrl)
+	res, err := session.twilio.post(ctx, participantFormValues(req), twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -116,10 +121,14 @@ func (session *ProxySession) AddParticipant(req ParticipantRequest) (response Pa
 }
 
 func (session *ProxySession) ListParticipants() (response []Participant, exception *Exception, err error) {
+	return session.ListParticipantsWithContext(context.Background())
+}
+
+func (session *ProxySession) ListParticipantsWithContext(ctx context.Context) (response []Participant, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", session.ServiceSid, "Sessions", session.Sid, "Participants")
 
-	res, err := session.twilio.get(twilioUrl)
+	res, err := session.twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -146,10 +155,14 @@ func (session *ProxySession) ListParticipants() (response []Participant, excepti
 }
 
 func (session *ProxySession) GetParticipant(participantID string) (response Participant, exception *Exception, err error) {
+	return session.GetParticipantWithContext(context.Background(), participantID)
+}
+
+func (session *ProxySession) GetParticipantWithContext(ctx context.Context, participantID string) (response Participant, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", session.ServiceSid, "Sessions", session.Sid, "Participants", participantID)
 
-	res, err := session.twilio.get(twilioUrl)
+	res, err := session.twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -177,10 +190,14 @@ func (session *ProxySession) GetParticipant(participantID string) (response Part
 // Participants cannot be changed once added. To add a new Participant, delete a Participant and add a new one.
 
 func (session *ProxySession) DeleteParticipant(participantID string) (exception *Exception, err error) {
+	return session.DeleteParticipantWithContext(context.Background(), participantID)
+}
+
+func (session *ProxySession) DeleteParticipantWithContext(ctx context.Context, participantID string) (exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", session.ServiceSid, "Sessions", session.Sid, "Participants", participantID)
 
-	res, err := session.twilio.delete(twilioUrl)
+	res, err := session.twilio.delete(ctx, twilioUrl)
 	if err != nil {
 		return exception, err
 	}
@@ -201,6 +218,10 @@ func (session *ProxySession) DeleteParticipant(participantID string) (exception 
 //// INTERACTIONS
 
 func (session *ProxySession) CreateInteraction(participantSid string, msg ProxyMessage) (response Interaction, exception *Exception, err error) {
+	return session.CreateInteractionWithContext(context.Background(), participantSid, msg)
+}
+
+func (session *ProxySession) CreateInteractionWithContext(ctx context.Context, participantSid string, msg ProxyMessage) (response Interaction, exception *Exception, err error) {
 	if msg.Body == "" {
 		return response, exception, errors.New("Message Body Must exist")
 	}
@@ -217,7 +238,7 @@ func (session *ProxySession) CreateInteraction(participantSid string, msg ProxyM
 		formValues.Set("Callback", msg.Callback)
 	}
 
-	res, err := session.twilio.post(formValues, twilioUrl)
+	res, err := session.twilio.post(ctx, formValues, twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -242,10 +263,14 @@ func (session *ProxySession) CreateInteraction(participantSid string, msg ProxyM
 }
 
 func (session *ProxySession) GetInteractions() (response InteractionList, exception *Exception, err error) {
+	return session.GetInteractionsWithContext(context.Background())
+}
+
+func (session *ProxySession) GetInteractionsWithContext(ctx context.Context) (response InteractionList, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", session.ServiceSid, "Sessions", session.Sid, "Interactions")
 
-	res, err := session.twilio.get(twilioUrl)
+	res, err := session.twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}

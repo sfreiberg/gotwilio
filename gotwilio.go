@@ -2,6 +2,7 @@
 package gotwilio
 
 import (
+	"context"
 	"net/http"
 	"net/url"
 	"strings"
@@ -74,8 +75,8 @@ func (twilio *Twilio) getBasicAuthCredentials() (string, string) {
 	return twilio.AccountSid, twilio.AuthToken
 }
 
-func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Response, error) {
-	req, err := http.NewRequest("POST", twilioUrl, strings.NewReader(formValues.Encode()))
+func (twilio *Twilio) post(ctx context.Context, formValues url.Values, twilioUrl string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, "POST", twilioUrl, strings.NewReader(formValues.Encode()))
 	if err != nil {
 		return nil, err
 	}
@@ -85,8 +86,8 @@ func (twilio *Twilio) post(formValues url.Values, twilioUrl string) (*http.Respo
 	return twilio.do(req)
 }
 
-func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
-	req, err := http.NewRequest("GET", twilioUrl, nil)
+func (twilio *Twilio) get(ctx context.Context, twilioUrl string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, "GET", twilioUrl, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -95,8 +96,8 @@ func (twilio *Twilio) get(twilioUrl string) (*http.Response, error) {
 	return twilio.do(req)
 }
 
-func (twilio *Twilio) delete(twilioUrl string) (*http.Response, error) {
-	req, err := http.NewRequest("DELETE", twilioUrl, nil)
+func (twilio *Twilio) delete(ctx context.Context, twilioUrl string) (*http.Response, error) {
+	req, err := http.NewRequestWithContext(ctx, "DELETE", twilioUrl, nil)
 	if err != nil {
 		return nil, err
 	}
