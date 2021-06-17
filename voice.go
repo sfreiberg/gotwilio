@@ -20,7 +20,6 @@ type CallbackParameters struct {
 	StatusCallbackMethod               string   // Optional
 	StatusCallbackEvent                []string // Optional
 	SendDigits                         string   // Optional
-	IfMachine                          string   // False, Continue or Hangup; http://www.twilio.com/docs/errors/21207
 	Timeout                            int      // Optional
 	Record                             bool     // Optional
 	RecordingChannels                  string   // Optional
@@ -31,6 +30,9 @@ type CallbackParameters struct {
 	MachineDetectionSpeechThreshold    int      // Optional
 	MachineDetectionSpeechEndThreshold int      // Optional
 	MachineDetectionSilenceTimeout     int      // Optional
+	AsyncAmd                           bool     // Optional
+	AsyncAmdStatusCallback             string   // Optional
+	AsyncAmdStatusCallbackMethod       string   // Optional
 }
 
 // VoiceResponse contains the details about successful voice calls.
@@ -150,9 +152,6 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 	if callbackParameters.SendDigits != "" {
 		formValues.Set("SendDigits", callbackParameters.SendDigits)
 	}
-	if callbackParameters.IfMachine != "" {
-		formValues.Set("IfMachine", callbackParameters.IfMachine)
-	}
 	if callbackParameters.Timeout != 0 {
 		formValues.Set("Timeout", strconv.Itoa(callbackParameters.Timeout))
 	}
@@ -198,6 +197,17 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 		}
 	} else {
 		formValues.Set("Record", "false")
+	}
+
+	if callbackParameters.AsyncAmd {
+		formValues.Set("AsyncAmd", "true")
+
+		if callbackParameters.AsyncAmdStatusCallback != "" {
+			formValues.Set("AsyncAmdStatusCallback", callbackParameters.AsyncAmdStatusCallback)
+		}
+		if callbackParameters.AsyncAmdStatusCallbackMethod != "" {
+			formValues.Set("AsyncAmdStatusCallbackMethod", callbackParameters.AsyncAmdStatusCallbackMethod)
+		}
 	}
 
 	return twilio.voicePost("Calls.json", formValues)

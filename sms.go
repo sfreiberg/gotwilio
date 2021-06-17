@@ -26,6 +26,16 @@ type SmsResponse struct {
 	Url         string  `json:"uri"`
 }
 
+// Optional SMS parameters
+var (
+	// Settings for what Twilio should do with addresses in message logs
+	SmsAddressRetentionObfuscate = &Option{"AddressRetention", "obfuscate"}
+	SmsAddressRetentionRetain    = &Option{"AddressRetention", "retain"}
+	// Settings for what Twilio should do with message content in message logs
+	SmsContentRetentionDiscard = &Option{"ContentRetention", "discard"}
+	SmsContentRetentionRetain  = &Option{"ContentRetention", "retain"}
+)
+
 // DateCreatedAsTime returns SmsResponse.DateCreated as a time.Time object
 // instead of a string.
 func (sms *SmsResponse) DateCreatedAsTime() (time.Time, error) {
@@ -65,9 +75,15 @@ func (twilio *Twilio) SendWhatsAppMedia(from, to, body string, mediaURL []string
 
 // SendSMS uses Twilio to send a text message.
 // See http://www.twilio.com/docs/api/rest/sending-sms for more information.
-func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid string, opts ...*Option) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("From", from)
+
+	for _, opt := range opts {
+		if opt != nil {
+			formValues.Set(opt.Key, opt.Value)
+		}
+	}
 
 	smsResponse, exception, err = twilio.sendMessage(formValues)
 	return
