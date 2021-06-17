@@ -119,9 +119,10 @@ func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *E
 	return smsResponse, exception, err
 }
 
-// SendSMSWithCopilot uses Twilio Copilot to send a text message.
-// See https://www.twilio.com/docs/api/rest/sending-messages-copilot
-func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+// SendSMSWithMessagingService specifies a twilio messaging service to send sms.
+// Using a messaging service allows you to enable features such as Co-Pilot
+// See: https://www.twilio.com/docs/messaging/services
+func (twilio *Twilio) SendSMSWithMessagingService(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("MessagingServiceSid", messagingServiceSid)
 
