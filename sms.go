@@ -26,6 +26,53 @@ type SmsResponse struct {
 	Url         string  `json:"uri"`
 }
 
+// SmsPriceResponse is returned price information base on country code
+type SmsPriceResponse struct {
+	Country           string             `json:"country"`
+	ISOCountry        string             `json:"iso_country"`
+	InboundSmsPrices  []InboundSmsPrice  `json:"inbound_sms_prices"`
+	OutboundSmsPrices []OutboundSmsPrice `json:"outbound_sms_prices"`
+	PriceUnit         string             `json:"price_unit "`
+	Url               string             `json:"url"`
+}
+
+type InboundSmsPrice SMSPrice
+
+type OutboundSmsPrice struct {
+	Carrier string     `json:"carrier"`
+	Mcc     string     `json:"mcc"`
+	Mnc     string     `json:"mnc"`
+	Prices  []SMSPrice `json:"prices"`
+}
+
+type SMSPrice struct {
+	BasePrice    string `json:"base_price"`
+	CurrentPrice string `json:"current_price"`
+	NumberType   string `json:"number_type"`
+}
+
+// SmsCountryesponse is returned all countries about sms price.
+type SmsCountryResponse struct {
+	Meta      SmsCountryMeta `json:"meta"`
+	Countries []SmsCountry   `json:"countries"`
+}
+
+type SmsCountryMeta struct {
+	Page            int    `json:"page"`
+	PageSize        int    `json:"page_size"`
+	FirstPageUrl    string `json:"first_page_url"`
+	PreviousPageUrl string `json:"previous_page_url"`
+	Url             string `json:"url"`
+	NextPageUrl     string `json:"next_page_url"`
+	Key             string `json:"key"`
+}
+
+type SmsCountry struct {
+	Country    string `json:"country"`
+	ISOCountry string `json:"iso_country"`
+	Url        string `json:"url"`
+}
+
 // Optional SMS parameters
 var (
 	// Settings for what Twilio should do with addresses in message logs
@@ -127,6 +174,77 @@ func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCa
 
 	smsResponse, exception, err = twilio.sendMessage(formValues)
 	return
+}
+
+// GetSMSPrice uses Twilio to get price information base on country.
+// See https://www.twilio.com/docs/sms/api/pricing for more information.
+func (twilio *Twilio) GetSMSPrice(countryCode string) (smsPriceResponse *SmsPriceResponse, exception *Exception, err error) {
+	twilioUrl := twilio.PriceUrl + "/Messaging/Countries/" + countryCode
+	res, err := twilio.get(twilioUrl)
+	if err != nil {
+		return smsPriceResponse, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return smsPriceResponse, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return smsPriceResponse, exception, err
+	}
+
+	smsPriceResponse = new(SmsPriceResponse)
+	err = json.Unmarshal(responseBody, smsPriceResponse)
+	return smsPriceResponse, exception, err
+}
+
+// GetSMSCountries uses Twilio to get all countries about sms price.
+// See https://www.twilio.com/docs/sms/api/pricing for more information.
+func (twilio *Twilio) GetSMSCountries(nextPageUrl string, opts ...*Option) (smsCountryResponse *SmsCountryResponse, exception *Exception, err error) {
+	var twilioUrl string
+	if nextPageUrl == "" {
+		queryValues := url.Values{}
+		for _, opt := range opts {
+			if opt != nil {
+				queryValues.Set(opt.Key, opt.Value)
+			}
+		}
+
+		twilioUrl = twilio.PriceUrl + "/Messaging/Countries?" + queryValues.Encode()
+	} else {
+		twilioUrl = nextPageUrl
+	}
+
+	res, err := twilio.get(twilioUrl)
+	if err != nil {
+		return smsCountryResponse, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return smsCountryResponse, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return smsCountryResponse, exception, err
+	}
+
+	smsCountryResponse = new(SmsCountryResponse)
+	err = json.Unmarshal(responseBody, smsCountryResponse)
+	return smsCountryResponse, exception, err
 }
 
 // SendMMS uses Twilio to send a multimedia message.
