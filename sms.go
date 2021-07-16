@@ -32,7 +32,7 @@ type SmsPriceResponse struct {
 	ISOCountry        string             `json:"iso_country"`
 	InboundSmsPrices  []InboundSmsPrice  `json:"inbound_sms_prices"`
 	OutboundSmsPrices []OutboundSmsPrice `json:"outbound_sms_prices"`
-	PriceUnit         string             `json:"price_unit "`
+	PriceUnit         string             `json:"price_unit"`
 	Url               string             `json:"url"`
 }
 
