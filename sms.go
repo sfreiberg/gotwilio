@@ -11,20 +11,48 @@ import (
 
 // SmsResponse is returned after a text/sms message is posted to Twilio
 type SmsResponse struct {
-	Sid         string  `json:"sid"`
-	DateCreated string  `json:"date_created"`
-	DateUpdate  string  `json:"date_updated"`
-	DateSent    string  `json:"date_sent"`
-	AccountSid  string  `json:"account_sid"`
-	To          string  `json:"to"`
-	From        string  `json:"from"`
-	NumMedia    string  `json:"num_media"`
-	Body        string  `json:"body"`
-	Status      string  `json:"status"`
-	Direction   string  `json:"direction"`
-	ApiVersion  string  `json:"api_version"`
-	Price       *string `json:"price,omitempty"`
-	Url         string  `json:"uri"`
+	Sid                 string  `json:"sid"`
+	DateCreated         string  `json:"date_created"`
+	DateUpdate          string  `json:"date_updated"`
+	DateSent            string  `json:"date_sent"`
+	AccountSid          string  `json:"account_sid"`
+	To                  string  `json:"to"`
+	From                string  `json:"from"`
+	NumMedia            string  `json:"num_media"`
+	Body                string  `json:"body"`
+	NumSegments         string  `json:"num_segments"`
+	Status              string  `json:"status"`
+	MessagingServiceSid *string `json:"messaging_service_sid,omitempty"`
+	Direction           string  `json:"direction"`
+	ApiVersion          string  `json:"api_version"`
+	Price               *string `json:"price,omitempty"`
+	PriceUnit           *string `json:"price_unit,omitempty"`
+	Url                 string  `json:"uri"`
+}
+
+// MessageResponse is returned when checking on the status of a message.
+// See: https://www.twilio.com/docs/sms/api/message-resource#fetch-a-message-resource
+type MessageResponse struct {
+	Sid                 string            `json:"sid"`
+	DateCreated         string            `json:"date_created"`
+	DateUpdate          string            `json:"date_updated"`
+	DateSent            string            `json:"date_sent"`
+	AccountSid          string            `json:"account_sid"`
+	To                  string            `json:"to"`
+	From                string            `json:"from"`
+	NumMedia            string            `json:"num_media"`
+	Body                string            `json:"body"`
+	NumSegments         string            `json:"num_segments"`
+	Status              string            `json:"status"`
+	MessagingServiceSid *string           `json:"messaging_service_sid,omitempty"`
+	Direction           string            `json:"direction"`
+	ApiVersion          string            `json:"api_version"`
+	Price               *string           `json:"price,omitempty"`
+	PriceUnit           *string           `json:"price_unit,omitempty"`
+	Url                 string            `json:"uri"`
+	ErrorCode           *int              `json:"error_code,omitempty"`
+	ErrorMessage        *string           `json:"error_message,omitempty"`
+	SubresourceURIs     map[string]string `json:"subresource_uris,omitempty"`
 }
 
 // Optional SMS parameters
@@ -130,6 +158,39 @@ func (twilio *Twilio) GetSMSWithContext(ctx context.Context, sid string) (smsRes
 	smsResponse = new(SmsResponse)
 	err = json.Unmarshal(responseBody, smsResponse)
 	return smsResponse, exception, err
+}
+
+// GetMessage uses Twilio to get information about a text message.
+//
+// This can be used to check to see if a message has been successfully delivered, or if there was an error delivering the message.
+//
+// See https://www.twilio.com/docs/api/rest/sms for more information.
+func (twilio *Twilio) GetMessage(sid string) (messageResponse *MessageResponse, exception *Exception, err error) {
+	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages/" + sid + ".json"
+
+	res, err := twilio.get(twilioUrl)
+	if err != nil {
+		return messageResponse, exception, err
+	}
+	defer res.Body.Close()
+
+	responseBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return messageResponse, exception, err
+	}
+
+	if res.StatusCode != http.StatusOK {
+		exception = new(Exception)
+		err = json.Unmarshal(responseBody, exception)
+
+		// We aren't checking the error because we don't actually care.
+		// It's going to be passed to the client either way.
+		return messageResponse, exception, err
+	}
+
+	messageResponse = new(MessageResponse)
+	err = json.Unmarshal(responseBody, messageResponse)
+	return messageResponse, exception, err
 }
 
 // SendSMSWithCopilot uses Twilio Copilot to send a text message.
