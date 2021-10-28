@@ -2,6 +2,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -45,10 +46,14 @@ type ProxyService struct {
 
 // Create a new Twilio Service
 func (twilio *Twilio) NewProxyService(service ProxyServiceRequest) (response *ProxyService, exception *Exception, err error) {
+	return twilio.NewProxyServiceWithContext(context.Background(), service)
+}
+
+func (twilio *Twilio) NewProxyServiceWithContext(ctx context.Context, service ProxyServiceRequest) (response *ProxyService, exception *Exception, err error) {
 
 	twilioUrl := ProxyBaseUrl + "/Services"
 
-	res, err := twilio.post(proxyServiceFormValues(service), twilioUrl)
+	res, err := twilio.post(ctx, proxyServiceFormValues(service), twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -75,10 +80,14 @@ func (twilio *Twilio) NewProxyService(service ProxyServiceRequest) (response *Pr
 }
 
 func (twilio *Twilio) GetProxyService(sid string) (response *ProxyService, exception *Exception, err error) {
+	return twilio.GetProxyServiceWithContext(context.Background(), sid)
+}
+
+func (twilio *Twilio) GetProxyServiceWithContext(ctx context.Context, sid string) (response *ProxyService, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s", ProxyBaseUrl, "Services", sid)
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -105,10 +114,14 @@ func (twilio *Twilio) GetProxyService(sid string) (response *ProxyService, excep
 }
 
 func (twilio *Twilio) UpdateProxyService(sid string, service ProxyServiceRequest) (response *ProxyService, exception *Exception, err error) {
+	return twilio.UpdateProxyServiceWithContext(context.Background(), sid, service)
+}
+
+func (twilio *Twilio) UpdateProxyServiceWithContext(ctx context.Context, sid string, service ProxyServiceRequest) (response *ProxyService, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s", ProxyBaseUrl, "Services", sid)
 
-	res, err := twilio.post(proxyServiceFormValues(service), twilioUrl)
+	res, err := twilio.post(ctx, proxyServiceFormValues(service), twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -135,10 +148,14 @@ func (twilio *Twilio) UpdateProxyService(sid string, service ProxyServiceRequest
 }
 
 func (twilio *Twilio) DeleteProxyService(sid string) (exception *Exception, err error) {
+	return twilio.DeleteProxyServiceWithContext(context.Background(), sid)
+}
+
+func (twilio *Twilio) DeleteProxyServiceWithContext(ctx context.Context, sid string) (exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s", ProxyBaseUrl, "Services", sid)
 
-	res, err := twilio.delete(twilioUrl)
+	res, err := twilio.delete(ctx, twilioUrl)
 	if err != nil {
 		return exception, err
 	}

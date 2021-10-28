@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -98,11 +99,15 @@ func NewCallbackParameters(url string) *CallbackParameters {
 // GetCall uses Twilio to get information about a voice call.
 // See https://www.twilio.com/docs/voice/api/call
 func (twilio *Twilio) GetCall(sid string) (*VoiceResponse, *Exception, error) {
+	return twilio.GetCallWithContext(context.Background(), sid)
+}
+
+func (twilio *Twilio) GetCallWithContext(ctx context.Context, sid string) (*VoiceResponse, *Exception, error) {
 	var voiceResponse *VoiceResponse
 	var exception *Exception
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Calls/" + sid + ".json"
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -125,6 +130,10 @@ func (twilio *Twilio) GetCall(sid string) (*VoiceResponse, *Exception, error) {
 
 // Place a voice call with a list of callbacks specified.
 func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *CallbackParameters) (*VoiceResponse, *Exception, error) {
+	return twilio.CallWithUrlCallbacksWithContext(context.Background(), from, to, callbackParameters)
+}
+
+func (twilio *Twilio) CallWithUrlCallbacksWithContext(ctx context.Context, from, to string, callbackParameters *CallbackParameters) (*VoiceResponse, *Exception, error) {
 	formValues := url.Values{}
 	formValues.Set("From", from)
 	formValues.Set("To", to)
@@ -210,31 +219,39 @@ func (twilio *Twilio) CallWithUrlCallbacks(from, to string, callbackParameters *
 		}
 	}
 
-	return twilio.voicePost("Calls.json", formValues)
+	return twilio.voicePost(ctx, "Calls.json", formValues)
 }
 
 // Place a voice call with an ApplicationSid specified.
 func (twilio *Twilio) CallWithApplicationCallbacks(from, to, applicationSid string) (*VoiceResponse, *Exception, error) {
+	return twilio.CallWithApplicationCallbacksWithContext(context.Background(), from, to, applicationSid)
+}
+
+func (twilio *Twilio) CallWithApplicationCallbacksWithContext(ctx context.Context, from, to, applicationSid string) (*VoiceResponse, *Exception, error) {
 	formValues := url.Values{}
 	formValues.Set("From", from)
 	formValues.Set("To", to)
 	formValues.Set("ApplicationSid", applicationSid)
 
-	return twilio.voicePost("Calls.json", formValues)
+	return twilio.voicePost(ctx, "Calls.json", formValues)
 }
 
 // Update an existing call
 func (twilio *Twilio) CallUpdate(callSid string, formValues url.Values) (*VoiceResponse, *Exception, error) {
-	return twilio.voicePost("Calls/"+callSid+".json", formValues)
+	return twilio.CallUpdateWithContext(context.Background(), callSid, formValues)
+}
+
+func (twilio *Twilio) CallUpdateWithContext(ctx context.Context, callSid string, formValues url.Values) (*VoiceResponse, *Exception, error) {
+	return twilio.voicePost(ctx, "Calls/"+callSid+".json", formValues)
 }
 
 // This is a private method that has the common bits for placing or updating a voice call.
-func (twilio *Twilio) voicePost(resourcePath string, formValues url.Values) (*VoiceResponse, *Exception, error) {
+func (twilio *Twilio) voicePost(ctx context.Context, resourcePath string, formValues url.Values) (*VoiceResponse, *Exception, error) {
 	var voiceResponse *VoiceResponse
 	var exception *Exception
 
 	twilioUrl := twilio.buildUrl(resourcePath)
-	res, err := twilio.post(formValues, twilioUrl)
+	res, err := twilio.post(ctx, formValues, twilioUrl)
 	if err != nil {
 		return voiceResponse, exception, err
 	}

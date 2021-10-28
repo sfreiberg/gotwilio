@@ -2,6 +2,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -47,10 +48,14 @@ type ProxySession struct {
 
 // Create a new Twilio Service
 func (twilio *Twilio) NewProxySession(serviceID string, req ProxySessionRequest) (response *ProxySession, exception *Exception, err error) {
+	return twilio.NewProxySessionWithContext(context.Background(), serviceID, req)
+}
+
+func (twilio *Twilio) NewProxySessionWithContext(ctx context.Context, serviceID string, req ProxySessionRequest) (response *ProxySession, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s", ProxyBaseUrl, "Services", serviceID, "Sessions")
 
-	res, err := twilio.post(proxySessionFormValues(req), twilioUrl)
+	res, err := twilio.post(ctx, proxySessionFormValues(req), twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -80,10 +85,14 @@ func (twilio *Twilio) NewProxySession(serviceID string, req ProxySessionRequest)
 }
 
 func (twilio *Twilio) GetProxySession(serviceID, sessionID string) (response *ProxySession, exception *Exception, err error) {
+	return twilio.GetProxySessionWithContext(context.Background(), serviceID, sessionID)
+}
+
+func (twilio *Twilio) GetProxySessionWithContext(ctx context.Context, serviceID, sessionID string) (response *ProxySession, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", serviceID, "Sessions", sessionID)
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -113,10 +122,14 @@ func (twilio *Twilio) GetProxySession(serviceID, sessionID string) (response *Pr
 }
 
 func (twilio *Twilio) UpdateProxySession(serviceID, sessionID string, req ProxySessionRequest) (response *ProxySession, exception *Exception, err error) {
+	return twilio.UpdateProxySessionWithContext(context.Background(), serviceID, sessionID, req)
+}
+
+func (twilio *Twilio) UpdateProxySessionWithContext(ctx context.Context, serviceID, sessionID string, req ProxySessionRequest) (response *ProxySession, exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", serviceID, "Sessions", sessionID)
 
-	res, err := twilio.post(proxySessionFormValues(req), twilioUrl)
+	res, err := twilio.post(ctx, proxySessionFormValues(req), twilioUrl)
 	if err != nil {
 		return response, exception, err
 	}
@@ -146,10 +159,14 @@ func (twilio *Twilio) UpdateProxySession(serviceID, sessionID string, req ProxyS
 }
 
 func (twilio *Twilio) DeleteProxySession(serviceID, sessionID string) (exception *Exception, err error) {
+	return twilio.DeleteProxySessionWithContext(context.Background(), serviceID, sessionID)
+}
+
+func (twilio *Twilio) DeleteProxySessionWithContext(ctx context.Context, serviceID, sessionID string) (exception *Exception, err error) {
 
 	twilioUrl := fmt.Sprintf("%s/%s/%s/%s/%s", ProxyBaseUrl, "Services", serviceID, "Sessions", sessionID)
 
-	res, err := twilio.delete(twilioUrl)
+	res, err := twilio.delete(ctx, twilioUrl)
 	if err != nil {
 		return exception, err
 	}

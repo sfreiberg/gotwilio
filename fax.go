@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -56,7 +57,11 @@ type FaxResourcesList struct {
 }
 
 func (t *Twilio) CancelFax(faxSid string) (*Exception, error) {
-	resp, err := t.post(url.Values{"Status": []string{"cancelled"}}, "https://fax.twilio.com/v1/Faxes/"+faxSid)
+	return t.CancelFaxWithContext(context.Background(), faxSid)
+}
+
+func (t *Twilio) CancelFaxWithContext(ctx context.Context, faxSid string) (*Exception, error) {
+	resp, err := t.post(ctx, url.Values{"Status": []string{"cancelled"}}, "https://fax.twilio.com/v1/Faxes/"+faxSid)
 	if err != nil {
 		return nil, err
 	}
@@ -73,7 +78,11 @@ func (t *Twilio) CancelFax(faxSid string) (*Exception, error) {
 }
 
 func (t *Twilio) DeleteFax(faxSid string) (*Exception, error) {
-	resp, err := t.delete("https://fax.twilio.com/v1/Faxes/" + faxSid)
+	return t.DeleteFaxWithContext(context.Background(), faxSid)
+}
+
+func (t *Twilio) DeleteFaxWithContext(ctx context.Context, faxSid string) (*Exception, error) {
+	resp, err := t.delete(ctx, "https://fax.twilio.com/v1/Faxes/" + faxSid)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +99,11 @@ func (t *Twilio) DeleteFax(faxSid string) (*Exception, error) {
 }
 
 func (t *Twilio) GetFax(faxSid string) (*FaxResource, *Exception, error) {
-	resp, err := t.get("https://fax.twilio.com/v1/Faxes/" + faxSid)
+	return t.GetFaxWithContext(context.Background(), faxSid)
+}
+
+func (t *Twilio) GetFaxWithContext(ctx context.Context, faxSid string) (*FaxResource, *Exception, error) {
+	resp, err := t.get(ctx, "https://fax.twilio.com/v1/Faxes/" + faxSid)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -116,6 +129,10 @@ func (t *Twilio) GetFax(faxSid string) (*FaxResource, *Exception, error) {
 // GetFaxes gets faxes for a Twilio account.
 // See https://www.twilio.com/docs/fax/api/faxes#fax-list-resource
 func (t *Twilio) GetFaxes(to, from, createdOnOrBefore, createdAfter string) ([]*FaxResource, *Exception, error) {
+	return t.GetFaxesWithContext(context.Background(), to, from, createdOnOrBefore, createdAfter)
+}
+
+func (t *Twilio) GetFaxesWithContext(ctx context.Context, to, from, createdOnOrBefore, createdAfter string) ([]*FaxResource, *Exception, error) {
 	values := url.Values{}
 	if to != "" {
 		values.Set("To", to)
@@ -130,7 +147,7 @@ func (t *Twilio) GetFaxes(to, from, createdOnOrBefore, createdAfter string) ([]*
 		values.Set("DateCreatedAfter", createdAfter)
 	}
 
-	resp, err := t.get("https://fax.twilio.com/v1/Faxes")
+	resp, err := t.get(ctx, "https://fax.twilio.com/v1/Faxes")
 	if err != nil {
 		return nil, nil, err
 	}
@@ -144,7 +161,7 @@ func (t *Twilio) GetFaxes(to, from, createdOnOrBefore, createdAfter string) ([]*
 		return nil, exc, err
 	}
 
-	lr := t.newListResources()
+	lr := t.newListResources(ctx)
 	if err := json.Unmarshal(respBody, lr); err != nil {
 		return nil, nil, err
 	}
@@ -161,6 +178,10 @@ func (t *Twilio) GetFaxes(to, from, createdOnOrBefore, createdAfter string) ([]*
 // SendFax uses Twilio to send a fax.
 // See https://www.twilio.com/docs/fax/api/faxes#list-post for more information.
 func (t *Twilio) SendFax(to, from, mediaUrl, quality, statusCallback string, storeMedia bool) (*FaxResource, *Exception, error) {
+	return t.SendFaxWithContext(context.Background(), to, from, mediaUrl, quality, statusCallback, storeMedia)
+}
+
+func (t *Twilio) SendFaxWithContext(ctx context.Context, to, from, mediaUrl, quality, statusCallback string, storeMedia bool) (*FaxResource, *Exception, error) {
 	values := url.Values{}
 	values.Set("To", to)
 	values.Set("From", from)
@@ -175,7 +196,7 @@ func (t *Twilio) SendFax(to, from, mediaUrl, quality, statusCallback string, sto
 		values.Set("StoreMedia", "true")
 	}
 
-	resp, err := t.post(values, "https://fax.twilio.com/v1/Faxes")
+	resp, err := t.post(ctx, values, "https://fax.twilio.com/v1/Faxes")
 	if err != nil {
 		return nil, nil, err
 	}

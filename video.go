@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -128,10 +129,14 @@ type ListVideoRoomOptions struct {
 // See https://www.twilio.com/docs/video/api/rooms-resource
 // for more information.
 func (twilio *Twilio) CreateVideoRoom(options *createRoomOptions) (videoResponse *VideoResponse, exception *Exception, err error) {
+	return twilio.CreateVideoRoomWithContext(context.Background(), options)
+}
+
+func (twilio *Twilio) CreateVideoRoomWithContext(ctx context.Context, options *createRoomOptions) (videoResponse *VideoResponse, exception *Exception, err error) {
 	twilioUrl := twilio.VideoUrl + "/v1/Rooms"
 	formValues := createRoomOptionsToFormValues(options)
 
-	res, err := twilio.post(formValues, twilioUrl)
+	res, err := twilio.post(ctx, formValues, twilioUrl)
 	if err != nil {
 		return videoResponse, exception, err
 	}
@@ -165,6 +170,10 @@ func (twilio *Twilio) CreateVideoRoom(options *createRoomOptions) (videoResponse
 // See https://www.twilio.com/docs/video/api/rooms-resource
 // for more information.
 func (twilio *Twilio) ListVideoRooms(options *ListVideoRoomOptions) (videoResponse *ListVideoReponse, exception *Exception, err error) {
+	return twilio.ListVideoRoomsWithContext(context.Background(), options)
+}
+
+func (twilio *Twilio) ListVideoRoomsWithContext(ctx context.Context, options *ListVideoRoomOptions) (videoResponse *ListVideoReponse, exception *Exception, err error) {
 	q := &url.Values{}
 	if !options.DateCreatedAfter.Equal(time.Time{}) {
 		q.Set("DateCreatedAfter", options.DateCreatedAfter.Format(time.RFC3339))
@@ -181,7 +190,7 @@ func (twilio *Twilio) ListVideoRooms(options *ListVideoRoomOptions) (videoRespon
 
 	twilioUrl := twilio.VideoUrl + "/v1/Rooms?" + q.Encode()
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return videoResponse, exception, err
 	}
@@ -211,9 +220,13 @@ func (twilio *Twilio) ListVideoRooms(options *ListVideoRoomOptions) (videoRespon
 // See https://www.twilio.com/docs/video/api/rooms-resource
 // for more information.
 func (twilio *Twilio) GetVideoRoom(nameOrSid string) (videoResponse *VideoResponse, exception *Exception, err error) {
+	return twilio.GetVideoRoomWithContext(context.Background(), nameOrSid)
+}
+
+func (twilio *Twilio) GetVideoRoomWithContext(ctx context.Context, nameOrSid string) (videoResponse *VideoResponse, exception *Exception, err error) {
 	twilioUrl := twilio.VideoUrl + "/v1/Rooms/" + nameOrSid
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return videoResponse, exception, err
 	}
@@ -243,11 +256,15 @@ func (twilio *Twilio) GetVideoRoom(nameOrSid string) (videoResponse *VideoRespon
 // See https://www.twilio.com/docs/video/api/rooms-resource
 // for more information.
 func (twilio *Twilio) EndVideoRoom(nameOrSid string) (videoResponse *VideoResponse, exception *Exception, err error) {
+	return twilio.EndVideoRoomWithContext(context.Background(), nameOrSid)
+}
+
+func (twilio *Twilio) EndVideoRoomWithContext(ctx context.Context, nameOrSid string) (videoResponse *VideoResponse, exception *Exception, err error) {
 	twilioUrl := twilio.VideoUrl + "/v1/Rooms/" + nameOrSid
 	formValues := url.Values{}
 	formValues.Set("Status", fmt.Sprintf("%s", Completed))
 
-	res, err := twilio.post(formValues, twilioUrl)
+	res, err := twilio.post(ctx, formValues, twilioUrl)
 	if err != nil {
 		return videoResponse, exception, err
 	}
