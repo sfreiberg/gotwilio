@@ -1,7 +1,7 @@
 module github.com/sfreiberg/gotwilio
 
 require (
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/go-querystring v1.0.0
 	github.com/gorilla/schema v1.1.0
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
