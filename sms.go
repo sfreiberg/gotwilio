@@ -212,10 +212,10 @@ func (twilio *Twilio) GetSMSWithContext(ctx context.Context, sid string) (smsRes
 // This can be used to check to see if a message has been successfully delivered, or if there was an error delivering the message.
 //
 // See https://www.twilio.com/docs/api/rest/sms for more information.
-func (twilio *Twilio) GetMessage(sid string) (messageResponse *MessageResponse, exception *Exception, err error) {
+func (twilio *Twilio) GetMessage(ctx context.Context, sid string) (messageResponse *MessageResponse, exception *Exception, err error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages/" + sid + ".json"
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return messageResponse, exception, err
 	}
@@ -256,9 +256,9 @@ func (twilio *Twilio) SendSMSWithCopilotWithContext(ctx context.Context, messagi
 
 // GetSMSPrice uses Twilio to get price information base on country.
 // See https://www.twilio.com/docs/sms/api/pricing for more information.
-func (twilio *Twilio) GetSMSPrice(countryCode string) (smsPriceResponse *SmsPriceResponse, exception *Exception, err error) {
+func (twilio *Twilio) GetSMSPrice(ctx context.Context, countryCode string) (smsPriceResponse *SmsPriceResponse, exception *Exception, err error) {
 	twilioUrl := twilio.PriceUrl + "/Messaging/Countries/" + countryCode
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return smsPriceResponse, exception, err
 	}
@@ -285,7 +285,7 @@ func (twilio *Twilio) GetSMSPrice(countryCode string) (smsPriceResponse *SmsPric
 
 // GetSMSCountries uses Twilio to get all countries about sms price.
 // See https://www.twilio.com/docs/sms/api/pricing for more information.
-func (twilio *Twilio) GetSMSCountries(nextPageUrl string, opts ...*Option) (smsCountryResponse *SmsCountryResponse, exception *Exception, err error) {
+func (twilio *Twilio) GetSMSCountries(ctx context.Context, nextPageUrl string, opts ...*Option) (smsCountryResponse *SmsCountryResponse, exception *Exception, err error) {
 	var twilioUrl string
 	if nextPageUrl == "" {
 		queryValues := url.Values{}
@@ -300,7 +300,7 @@ func (twilio *Twilio) GetSMSCountries(nextPageUrl string, opts ...*Option) (smsC
 		twilioUrl = nextPageUrl
 	}
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return smsCountryResponse, exception, err
 	}
