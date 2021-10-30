@@ -159,6 +159,8 @@ func (twilio *Twilio) SendSMS(from, to, body, statusCallback, applicationSid str
 	return twilio.SendSMSWithContext(context.Background(), from, to, body, statusCallback, applicationSid, opts...)
 }
 
+// SendSMSWithContext uses Twilio to send a text message.
+// See http://www.twilio.com/docs/api/rest/sending-sms for more information.
 func (twilio *Twilio) SendSMSWithContext(ctx context.Context, from, to, body, statusCallback, applicationSid string, opts ...*Option) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("From", from)
@@ -179,6 +181,8 @@ func (twilio *Twilio) GetSMS(sid string) (smsResponse *SmsResponse, exception *E
 	return twilio.GetSMSWithContext(context.Background(), sid)
 }
 
+// GetSMSWithContext uses Twilio to get information about a text message.
+// See https://www.twilio.com/docs/api/rest/sms for more information.
 func (twilio *Twilio) GetSMSWithContext(ctx context.Context, sid string) (smsResponse *SmsResponse, exception *Exception, err error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/SMS/Messages/" + sid + ".json"
 
@@ -213,9 +217,18 @@ func (twilio *Twilio) GetSMSWithContext(ctx context.Context, sid string) (smsRes
 //
 // See https://www.twilio.com/docs/api/rest/sms for more information.
 func (twilio *Twilio) GetMessage(sid string) (messageResponse *MessageResponse, exception *Exception, err error) {
+	return twilio.GetMessageWithContext(context.Background(), sid)
+}
+
+// GetMessageWithContext uses Twilio to get information about a text message.
+//
+// This can be used to check to see if a message has been successfully delivered, or if there was an error delivering the message.
+//
+// See https://www.twilio.com/docs/api/rest/sms for more information.
+func (twilio *Twilio) GetMessageWithContext(ctx context.Context, sid string) (messageResponse *MessageResponse, exception *Exception, err error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages/" + sid + ".json"
 
-	res, err := twilio.get(context.Background(), twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return messageResponse, exception, err
 	}
@@ -257,8 +270,14 @@ func (twilio *Twilio) SendSMSWithCopilotWithContext(ctx context.Context, messagi
 // GetSMSPrice uses Twilio to get price information base on country.
 // See https://www.twilio.com/docs/sms/api/pricing for more information.
 func (twilio *Twilio) GetSMSPrice(countryCode string) (smsPriceResponse *SmsPriceResponse, exception *Exception, err error) {
+	return twilio.GetSMSPriceWithContext(context.Background(), countryCode)
+}
+
+// GetSMSPriceWithContext uses Twilio to get price information base on country.
+// See https://www.twilio.com/docs/sms/api/pricing for more information.
+func (twilio *Twilio) GetSMSPriceWithContext(ctx context.Context, countryCode string) (smsPriceResponse *SmsPriceResponse, exception *Exception, err error) {
 	twilioUrl := twilio.PriceUrl + "/Messaging/Countries/" + countryCode
-	res, err := twilio.get(context.Background(), twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return smsPriceResponse, exception, err
 	}
@@ -286,6 +305,12 @@ func (twilio *Twilio) GetSMSPrice(countryCode string) (smsPriceResponse *SmsPric
 // GetSMSCountries uses Twilio to get all countries about sms price.
 // See https://www.twilio.com/docs/sms/api/pricing for more information.
 func (twilio *Twilio) GetSMSCountries(nextPageUrl string, opts ...*Option) (smsCountryResponse *SmsCountryResponse, exception *Exception, err error) {
+	return twilio.GetSMSCountriesWithContext(context.Background(), nextPageUrl, opts...)
+}
+
+// GetSMSCountriesWithContext uses Twilio to get all countries about sms price.
+// See https://www.twilio.com/docs/sms/api/pricing for more information.
+func (twilio *Twilio) GetSMSCountriesWithContext(ctx context.Context, nextPageUrl string, opts ...*Option) (smsCountryResponse *SmsCountryResponse, exception *Exception, err error) {
 	var twilioUrl string
 	if nextPageUrl == "" {
 		queryValues := url.Values{}
@@ -300,7 +325,7 @@ func (twilio *Twilio) GetSMSCountries(nextPageUrl string, opts ...*Option) (smsC
 		twilioUrl = nextPageUrl
 	}
 
-	res, err := twilio.get(context.Background(), twilioUrl)
+	res, err := twilio.get(ctx, twilioUrl)
 	if err != nil {
 		return smsCountryResponse, exception, err
 	}
