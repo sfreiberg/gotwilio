@@ -215,7 +215,7 @@ func (twilio *Twilio) GetSMSWithContext(ctx context.Context, sid string) (smsRes
 func (twilio *Twilio) GetMessage(sid string) (messageResponse *MessageResponse, exception *Exception, err error) {
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Messages/" + sid + ".json"
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(context.Background(), twilioUrl)
 	if err != nil {
 		return messageResponse, exception, err
 	}
@@ -258,7 +258,7 @@ func (twilio *Twilio) SendSMSWithCopilotWithContext(ctx context.Context, messagi
 // See https://www.twilio.com/docs/sms/api/pricing for more information.
 func (twilio *Twilio) GetSMSPrice(countryCode string) (smsPriceResponse *SmsPriceResponse, exception *Exception, err error) {
 	twilioUrl := twilio.PriceUrl + "/Messaging/Countries/" + countryCode
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(context.Background(), twilioUrl)
 	if err != nil {
 		return smsPriceResponse, exception, err
 	}
@@ -300,7 +300,7 @@ func (twilio *Twilio) GetSMSCountries(nextPageUrl string, opts ...*Option) (smsC
 		twilioUrl = nextPageUrl
 	}
 
-	res, err := twilio.get(twilioUrl)
+	res, err := twilio.get(context.Background(), twilioUrl)
 	if err != nil {
 		return smsCountryResponse, exception, err
 	}
