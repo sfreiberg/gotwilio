@@ -32,7 +32,7 @@ type UsageRecord struct {
 	PriceUnit   string `json:"price_unit"`
 	Count       int    `json:"count,string"`
 	CountUnit   string `json:"count_unit"`
-	Usage       int    `json:"usage,string"`
+	Usage       string `json:"usage"`
 	UsageUnit   string `json:"usage_unit"`
 	// TODO: handle SubresourceUris
 }
@@ -59,7 +59,7 @@ func (twilio *Twilio) GetUsageWithContext(ctx context.Context, category, startDa
 	var exception *Exception
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records.json"
 
-	res, err := twilio.get(ctx, twilioUrl + "?" + formValues.Encode())
+	res, err := twilio.get(ctx, twilioUrl+"?"+formValues.Encode())
 	if err != nil {
 		return nil, nil, err
 	}
