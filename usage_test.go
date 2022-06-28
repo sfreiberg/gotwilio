@@ -59,7 +59,8 @@ const testUsageResponse = `
          "account_sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
          "usage": "0", 
          "start_date": "2012-08-15", 
-         "count_unit": "lookups"
+         "count_unit": "lookups",
+         "as_of": "2012-09-30T21:59:05+00:00"
       }, 
       {
          "category": "calls", 
@@ -83,7 +84,8 @@ const testUsageResponse = `
          "account_sid": "ACXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", 
          "usage": "21", 
          "start_date": "2012-08-15", 
-         "count_unit": "calls"
+         "count_unit": "calls",
+         "as_of": "2012-09-30T21:59:05+00:00"
       }
    ], 
    "next_page_uri": null,

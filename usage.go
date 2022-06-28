@@ -34,6 +34,7 @@ type UsageRecord struct {
 	CountUnit   string `json:"count_unit"`
 	Usage       int    `json:"usage,string"`
 	UsageUnit   string `json:"usage_unit"`
+	AsOf        string `json:"as_of"` // GMT timestamp formatted as YYYY-MM-DDTHH:MM:SS+00:00
 	// TODO: handle SubresourceUris
 }
 
@@ -59,7 +60,7 @@ func (twilio *Twilio) GetUsageWithContext(ctx context.Context, category, startDa
 	var exception *Exception
 	twilioUrl := twilio.BaseUrl + "/Accounts/" + twilio.AccountSid + "/Usage/Records.json"
 
-	res, err := twilio.get(ctx, twilioUrl + "?" + formValues.Encode())
+	res, err := twilio.get(ctx, twilioUrl+"?"+formValues.Encode())
 	if err != nil {
 		return nil, nil, err
 	}
