@@ -32,7 +32,7 @@ type UsageRecord struct {
 	PriceUnit   string `json:"price_unit"`
 	Count       int    `json:"count,string"`
 	CountUnit   string `json:"count_unit"`
-	Usage       int    `json:"usage,string"`
+	Usage       string `json:"usage"`
 	UsageUnit   string `json:"usage_unit"`
 	AsOf        string `json:"as_of"` // GMT timestamp formatted as YYYY-MM-DDTHH:MM:SS+00:00
 	// TODO: handle SubresourceUris
