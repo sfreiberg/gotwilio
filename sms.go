@@ -255,13 +255,19 @@ func (twilio *Twilio) GetMessageWithContext(ctx context.Context, sid string) (me
 
 // SendSMSWithCopilot uses Twilio Copilot to send a text message.
 // See https://www.twilio.com/docs/api/rest/sending-messages-copilot
-func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
-	return twilio.SendSMSWithCopilotWithContext(context.Background(), messagingServiceSid, to, body, statusCallback, applicationSid)
+func (twilio *Twilio) SendSMSWithCopilot(messagingServiceSid, to, body, statusCallback, applicationSid string, opts ...*Option) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendSMSWithCopilotWithContext(context.Background(), messagingServiceSid, to, body, statusCallback, applicationSid, opts...)
 }
 
-func (twilio *Twilio) SendSMSWithCopilotWithContext(ctx context.Context, messagingServiceSid, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+func (twilio *Twilio) SendSMSWithCopilotWithContext(ctx context.Context, messagingServiceSid, to, body, statusCallback, applicationSid string, opts ...*Option) (smsResponse *SmsResponse, exception *Exception, err error) {
 	formValues := initFormValues(to, body, nil, statusCallback, applicationSid)
 	formValues.Set("MessagingServiceSid", messagingServiceSid)
+
+	for _, opt := range opts {
+		if opt != nil {
+			formValues.Set(opt.Key, opt.Value)
+		}
+	}
 
 	smsResponse, exception, err = twilio.sendMessage(ctx, formValues)
 	return
