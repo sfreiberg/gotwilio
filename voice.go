@@ -221,7 +221,7 @@ func (twilio *Twilio) CallWithUrlCallbacksWithContext(ctx context.Context, from,
 	}
 
 	if callbackParameters.BYOC != "" {
-		formValues.Set("BYOC", callbackParameters.BYOC)
+		formValues.Set("byoc", callbackParameters.BYOC)
 	}
 
 	return twilio.voicePost(ctx, "Calls.json", formValues)
