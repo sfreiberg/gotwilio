@@ -5,14 +5,14 @@ This is the start of a library for [Twilio](http://www.twilio.com/). Gotwilio su
 Gotwilio is licensed under a BSD license.
 
 ## Installation
-To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
+To install gotwilio, simply run `go get github.com/yunginnanet/gotwilio`.
 
 ## SMS Example
 
 	package main
 
 	import (
-		"github.com/sfreiberg/gotwilio"
+		"github.com/yunginnanet/gotwilio"
 	)
 
 	func main() {
@@ -31,7 +31,7 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 	package main
 
 	import (
-		"github.com/sfreiberg/gotwilio"
+		"github.com/yunginnanet/gotwilio"
 	)
 
 	func main() {
@@ -51,7 +51,7 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 	package main
 
 	import (
-		"github.com/sfreiberg/gotwilio"
+		"github.com/yunginnanet/gotwilio"
 	)
 
 	func main() {
@@ -70,7 +70,7 @@ To install gotwilio, simply run `go get github.com/sfreiberg/gotwilio`.
 	package main
 
 	import (
-		"github.com/sfreiberg/gotwilio"
+		"github.com/yunginnanet/gotwilio"
 	)
 
 	func main() {
