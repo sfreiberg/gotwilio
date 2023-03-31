@@ -34,6 +34,7 @@ type CallbackParameters struct {
 	AsyncAmd                           bool     // Optional
 	AsyncAmdStatusCallback             string   // Optional
 	AsyncAmdStatusCallbackMethod       string   // Optional
+	BYOC                               string   // Optional
 }
 
 // VoiceResponse contains the details about successful voice calls.
@@ -217,6 +218,10 @@ func (twilio *Twilio) CallWithUrlCallbacksWithContext(ctx context.Context, from,
 		if callbackParameters.AsyncAmdStatusCallbackMethod != "" {
 			formValues.Set("AsyncAmdStatusCallbackMethod", callbackParameters.AsyncAmdStatusCallbackMethod)
 		}
+	}
+
+	if callbackParameters.BYOC != "" {
+		formValues.Set("BYOC", callbackParameters.BYOC)
 	}
 
 	return twilio.voicePost(ctx, "Calls.json", formValues)
