@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// These are the paramters to use when you want Twilio to use callback urls.
+// CallbackParameters These are the paramters to use when you want Twilio to use callback urls.
 // See http://www.twilio.com/docs/api/rest/making-calls for more info.
 type CallbackParameters struct {
 	Url                                string   // Required
