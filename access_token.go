@@ -1,10 +1,10 @@
 package gotwilio
 
 import (
-	"encoding/json"
 	"fmt"
 	"time"
 
+	json "github.com/bytedance/sonic"
 	"github.com/golang-jwt/jwt"
 )
 

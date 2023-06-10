@@ -13,6 +13,10 @@ var testPhoneNumberTo = os.Getenv("TEST_PHONE_NUMBER_TO")
 var testPhoneNumberFrom = os.Getenv("TEST_PHONE_NUMBER_FROM")
 
 func TestTwilio_GetConference(t *testing.T) {
+	if testConferenceSid == "" {
+		t.Skip("TEST_CONFERENCE_SID not set")
+	}
+
 	log.SetLevel(log.DebugLevel)
 	client := initTestTwilioClient()
 
@@ -28,6 +32,10 @@ func TestTwilio_GetConference(t *testing.T) {
 // Test Conference functionality end to end. Real Twilio Account SID and Auth Token are required.
 // A real conference call must also be active.
 func TestTwilio_Conference(t *testing.T) {
+	if testConferenceSid == "" {
+		t.Skip("TEST_CONFERENCE_SID not set")
+	}
+
 	log.SetLevel(log.DebugLevel)
 	client := initTestTwilioClient()
 

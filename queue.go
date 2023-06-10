@@ -2,9 +2,10 @@ package gotwilio
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
+
+	json "github.com/bytedance/sonic"
 )
 
 const (
@@ -35,7 +36,7 @@ func (twilio *Twilio) CreateQueueWithContext(ctx context.Context, friendlyName s
 	}
 	defer res.Body.Close()
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	if res.StatusCode != http.StatusCreated {
 		exception = new(Exception)

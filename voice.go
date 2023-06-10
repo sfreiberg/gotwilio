@@ -2,12 +2,13 @@ package gotwilio
 
 import (
 	"context"
-	"encoding/json"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
 	"time"
+
+	json "github.com/bytedance/sonic"
 )
 
 // CallbackParameters These are the paramters to use when you want Twilio to use callback urls.
@@ -114,7 +115,7 @@ func (twilio *Twilio) GetCallWithContext(ctx context.Context, sid string) (*Voic
 	}
 	defer res.Body.Close()
 
-	responseBody, err := ioutil.ReadAll(res.Body)
+	responseBody, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -262,7 +263,7 @@ func (twilio *Twilio) voicePost(ctx context.Context, resourcePath string, formVa
 	}
 	defer res.Body.Close()
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	if res.StatusCode != http.StatusOK && res.StatusCode != http.StatusCreated {
 		exception = new(Exception)

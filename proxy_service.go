@@ -3,12 +3,13 @@ package gotwilio
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
+
+	json "github.com/bytedance/sonic"
 )
 
 // https://www.twilio.com/docs/proxy/api/pb-proxy-service
@@ -50,7 +51,6 @@ func (twilio *Twilio) NewProxyService(service ProxyServiceRequest) (response *Pr
 }
 
 func (twilio *Twilio) NewProxyServiceWithContext(ctx context.Context, service ProxyServiceRequest) (response *ProxyService, exception *Exception, err error) {
-
 	twilioUrl := ProxyBaseUrl + "/Services"
 
 	res, err := twilio.post(ctx, proxyServiceFormValues(service), twilioUrl)

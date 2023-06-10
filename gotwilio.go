@@ -2,14 +2,15 @@
 package gotwilio
 
 import (
-	"encoding/json"
-	"fmt"
 	"context"
+	"fmt"
 	"net/http"
 	"net/url"
 	"path"
 	"strings"
 	"time"
+
+	json "github.com/bytedance/sonic"
 )
 
 const (
@@ -101,10 +102,10 @@ func (twilio *Twilio) getJSON(url string, result interface{}) error {
 
 	if resp.StatusCode != 200 {
 		re := Exception{}
-		json.NewDecoder(resp.Body).Decode(&re)
+		json.ConfigStd.NewDecoder(resp.Body).Decode(&re)
 		return re
 	}
-	return json.NewDecoder(resp.Body).Decode(&result)
+	return json.ConfigStd.NewDecoder(resp.Body).Decode(&result)
 }
 
 func (twilio *Twilio) getBasicAuthCredentials() (string, string) {

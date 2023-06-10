@@ -30,6 +30,10 @@ func TestSMS(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if exc.Code == 90010 {
+		t.Skip("skipping SMS test, account not active")
+	}
+
 	if exc != nil {
 		t.Fatal(exc)
 	}
@@ -44,6 +48,10 @@ func TestMMS(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	if exc.Code == 90010 {
+		t.Skip("skipping SMS test, account not active")
+	}
+
 	if exc != nil {
 		t.Fatal(exc)
 	}
@@ -56,6 +64,10 @@ func TestMMSMultipleFiles(t *testing.T) {
 	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, files, "", "")
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if exc.Code == 90010 {
+		t.Skip("skipping SMS test, account not active")
 	}
 
 	if exc != nil {
@@ -73,6 +85,10 @@ func TestMMSTooManyFiles(t *testing.T) {
 	_, exc, err := twilio.SendMMS(params["FROM"], params["TO"], msg, files, "", "")
 	if err != nil {
 		t.Fatal(err)
+	}
+
+	if exc.Code == 90010 {
+		t.Skip("skipping SMS test, account not active")
 	}
 
 	// Test for code for too many files

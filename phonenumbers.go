@@ -2,10 +2,10 @@ package gotwilio
 
 import (
 	"context"
-	"encoding/json"
 	"net/http"
 	"net/url"
 
+	json "github.com/bytedance/sonic"
 	"github.com/google/go-querystring/query"
 )
 
@@ -101,7 +101,7 @@ func (twilio *Twilio) GetAvailablePhoneNumbers(numberType PhoneNumberType, count
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 	if res.StatusCode != http.StatusOK {
 		exception := new(Exception)
 		err = decoder.Decode(exception)
@@ -188,7 +188,7 @@ func (twilio *Twilio) GetIncomingPhoneNumbersWithContext(ctx context.Context, re
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	// handle NULL response
 	if res.StatusCode != http.StatusOK {
@@ -220,7 +220,7 @@ func (twilio *Twilio) CreateIncomingPhoneNumberWithContext(ctx context.Context, 
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	// handle NULL response
 	if res.StatusCode != http.StatusCreated {
@@ -252,7 +252,7 @@ func (twilio *Twilio) UpdateIncomingPhoneNumberWithContext(ctx context.Context, 
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	// handle NULL response
 	if res.StatusCode != http.StatusOK {
@@ -274,14 +274,14 @@ func (twilio *Twilio) DeleteIncomingPhoneNumber(sid string) (*Exception, error) 
 
 func (twilio *Twilio) DeleteIncomingPhoneNumberWithContext(ctx context.Context, sid string) (*Exception, error) {
 	resourceName := sid + ".json"
-	res, err := twilio.delete(ctx, twilio.buildUrl("IncomingPhoneNumbers/" + resourceName))
+	res, err := twilio.delete(ctx, twilio.buildUrl("IncomingPhoneNumbers/"+resourceName))
 	if err != nil {
 		return nil, err
 	}
 
 	if res.StatusCode != http.StatusNoContent {
 		exception := new(Exception)
-		decoder := json.NewDecoder(res.Body)
+		decoder := json.ConfigStd.NewDecoder(res.Body)
 		err = decoder.Decode(exception)
 		return exception, err
 	}

@@ -2,11 +2,12 @@ package gotwilio
 
 import (
 	"context"
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
+
+	json "github.com/bytedance/sonic"
 )
 
 // SmsResponse is returned after a text/sms message is posted to Twilio

@@ -1,12 +1,13 @@
 module github.com/yunginnanet/gotwilio
 
 require (
+	github.com/bytedance/sonic v1.9.1
 	github.com/golang-jwt/jwt v3.2.2+incompatible
 	github.com/google/go-querystring v1.0.0
 	github.com/gorilla/schema v1.1.0
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/sirupsen/logrus v1.4.2
-	github.com/stretchr/testify v1.3.0
+	github.com/stretchr/testify v1.8.1
 	golang.org/x/sys v0.0.0-20190726091711-fc99dfbffb4e // indirect
 )
 

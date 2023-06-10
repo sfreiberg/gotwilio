@@ -2,10 +2,10 @@ package gotwilio
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"net/http"
 
+	json "github.com/bytedance/sonic"
 	"github.com/google/go-querystring/query"
 )
 
@@ -89,7 +89,7 @@ func (twilio *Twilio) GetConferenceWithContext(ctx context.Context, conferenceSi
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	// handle NULL response
 	if res.StatusCode != http.StatusOK {
@@ -120,7 +120,7 @@ func (twilio *Twilio) UpdateConferenceWithContext(ctx context.Context, conferenc
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	if res.StatusCode != http.StatusOK {
 		exception := new(Exception)
@@ -149,7 +149,7 @@ func (twilio *Twilio) GetConferenceParticipantsWithContext(ctx context.Context, 
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	// handle NULL response
 	if res.StatusCode != http.StatusOK {
@@ -176,7 +176,7 @@ func (twilio *Twilio) GetConferenceParticipantWithContext(ctx context.Context, c
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	// handle NULL response
 	if res.StatusCode != http.StatusOK {
@@ -207,7 +207,7 @@ func (twilio *Twilio) AddConferenceParticipantWithContext(ctx context.Context, c
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	if res.StatusCode != http.StatusCreated {
 		exception := new(Exception)
@@ -237,7 +237,7 @@ func (twilio *Twilio) UpdateConferenceParticipantWithContext(ctx context.Context
 		return nil, nil, err
 	}
 
-	decoder := json.NewDecoder(res.Body)
+	decoder := json.ConfigStd.NewDecoder(res.Body)
 
 	if res.StatusCode != http.StatusOK {
 		exception := new(Exception)
@@ -262,7 +262,7 @@ func (twilio *Twilio) DeleteConferenceParticipantWithContext(ctx context.Context
 	}
 
 	if res.StatusCode != http.StatusOK {
-		decoder := json.NewDecoder(res.Body)
+		decoder := json.ConfigStd.NewDecoder(res.Body)
 		exception := new(Exception)
 		err = decoder.Decode(exception)
 		return exception, err

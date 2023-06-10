@@ -2,12 +2,13 @@ package gotwilio
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"time"
+
+	json "github.com/bytedance/sonic"
 )
 
 // MediaRegion is the locations of Twilio's
