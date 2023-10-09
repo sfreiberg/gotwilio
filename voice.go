@@ -62,6 +62,7 @@ type VoiceResponse struct {
 	GroupSid       string  `json:"group_sid"`
 	CallerName     string  `json:"caller_name"`
 	Uri            string  `json:"uri"`
+	QueueTime      *string  `json:"queue_time,omitempty"`
 	// TODO: handle SubresourceUris
 	// TODO: handle annotation
 }
