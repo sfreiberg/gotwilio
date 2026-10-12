@@ -1,3 +1,8 @@
+> [!WARNING]
+> **gotwilio is no longer maintained.** Please use the official Twilio Go library, [twilio-go](https://github.com/twilio/twilio-go), instead. It covers every Twilio API and is maintained by Twilio.
+>
+> This repository is archived. The final release, v1.1.0, remains available, but it will not receive further fixes or features.
+
 ## Overview
 This is the start of a library for [Twilio](http://www.twilio.com/). Gotwilio supports making voice calls and sending text messages.
 
