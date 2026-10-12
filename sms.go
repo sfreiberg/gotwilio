@@ -137,7 +137,11 @@ func whatsapp(phone string) string {
 // SendWhatsApp uses Twilio to send a WhatsApp message.
 // See https://www.twilio.com/docs/sms/whatsapp/tutorial/send-and-receive-media-messages-whatsapp-python
 func (twilio *Twilio) SendWhatsApp(from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
-	return twilio.SendSMS(whatsapp(from), whatsapp(to), body, statusCallback, applicationSid)
+	return twilio.SendWhatsAppWithContext(context.Background(), from, to, body, statusCallback, applicationSid)
+}
+
+func (twilio *Twilio) SendWhatsAppWithContext(ctx context.Context, from, to, body, statusCallback, applicationSid string) (smsResponse *SmsResponse, exception *Exception, err error) {
+	return twilio.SendSMSWithContext(ctx, whatsapp(from), whatsapp(to), body, statusCallback, applicationSid)
 }
 
 // SendWhatsAppMedia uses Twilio to send a WhatsApp message with Media enabled.

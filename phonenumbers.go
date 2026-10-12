@@ -78,9 +78,13 @@ type AvailablePhoneNumber struct {
 
 // GetAvailablePhoneNumbers retrieves list of available phone numbers
 func (twilio *Twilio) GetAvailablePhoneNumbers(numberType PhoneNumberType, country string, options AvailablePhoneNumbersOptions) ([]*AvailablePhoneNumber, *Exception, error) {
+	return twilio.GetAvailablePhoneNumbersWithContext(context.Background(), numberType, country, options)
+}
+
+func (twilio *Twilio) GetAvailablePhoneNumbersWithContext(ctx context.Context, numberType PhoneNumberType, country string, options AvailablePhoneNumbersOptions) ([]*AvailablePhoneNumber, *Exception, error) {
 	// build initial request
 	resourceName := country + "/" + numberType.String() + ".json"
-	req, err := http.NewRequest(http.MethodGet, twilio.buildUrl("AvailablePhoneNumbers/"+resourceName), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, twilio.buildUrl("AvailablePhoneNumbers/"+resourceName), nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -100,6 +104,7 @@ func (twilio *Twilio) GetAvailablePhoneNumbers(numberType PhoneNumberType, count
 	if err != nil {
 		return nil, nil, err
 	}
+	defer res.Body.Close()
 
 	decoder := json.NewDecoder(res.Body)
 	if res.StatusCode != http.StatusOK {
@@ -112,7 +117,9 @@ func (twilio *Twilio) GetAvailablePhoneNumbers(numberType PhoneNumberType, count
 	availablePhoneNumberResponse := new(struct {
 		AvailablePhoneNumbers []*AvailablePhoneNumber `json:"available_phone_numbers"`
 	})
-	decoder.Decode(availablePhoneNumberResponse)
+	if err := decoder.Decode(availablePhoneNumberResponse); err != nil {
+		return nil, nil, err
+	}
 	return availablePhoneNumberResponse.AvailablePhoneNumbers, nil, nil
 }
 
