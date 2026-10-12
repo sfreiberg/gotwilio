@@ -1,3 +1,4 @@
+// Deprecated: gotwilio is no longer maintained. Use the official Twilio library, github.com/twilio/twilio-go, instead.
 module github.com/sfreiberg/gotwilio
 
 require (

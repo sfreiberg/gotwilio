@@ -1,4 +1,7 @@
 // Package gotwilio is a library for interacting with http://www.twilio.com/ API.
+//
+// Deprecated: gotwilio is no longer maintained. Use the official Twilio
+// library, github.com/twilio/twilio-go, instead.
 package gotwilio
 
 import (
