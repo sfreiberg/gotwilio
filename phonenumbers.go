@@ -274,7 +274,7 @@ func (twilio *Twilio) DeleteIncomingPhoneNumber(sid string) (*Exception, error) 
 
 func (twilio *Twilio) DeleteIncomingPhoneNumberWithContext(ctx context.Context, sid string) (*Exception, error) {
 	resourceName := sid + ".json"
-	res, err := twilio.delete(ctx, twilio.buildUrl("IncomingPhoneNumbers/" + resourceName))
+	res, err := twilio.delete(ctx, twilio.buildUrl("IncomingPhoneNumbers/"+resourceName))
 	if err != nil {
 		return nil, err
 	}
