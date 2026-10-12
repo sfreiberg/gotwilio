@@ -91,13 +91,14 @@ func (twilio *Twilio) WithAPIKey(apiKeySid string, apiKeySecret string) *Twilio 
 func (twilio *Twilio) getJSON(ctx context.Context, url string, result interface{}) error {
 	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
-		return fmt.Errorf("failed to create request: %v", err)
+		return fmt.Errorf("failed to create request: %w", err)
 	}
 	req.SetBasicAuth(twilio.getBasicAuthCredentials())
 	resp, err := twilio.do(req)
 	if err != nil {
 		return fmt.Errorf("failed to submit HTTP request: %w", err)
 	}
+	defer resp.Body.Close()
 
 	if resp.StatusCode != 200 {
 		re := Exception{}

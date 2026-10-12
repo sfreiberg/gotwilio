@@ -104,6 +104,7 @@ func (twilio *Twilio) GetAvailablePhoneNumbersWithContext(ctx context.Context, n
 	if err != nil {
 		return nil, nil, err
 	}
+	defer res.Body.Close()
 
 	decoder := json.NewDecoder(res.Body)
 	if res.StatusCode != http.StatusOK {
@@ -116,7 +117,9 @@ func (twilio *Twilio) GetAvailablePhoneNumbersWithContext(ctx context.Context, n
 	availablePhoneNumberResponse := new(struct {
 		AvailablePhoneNumbers []*AvailablePhoneNumber `json:"available_phone_numbers"`
 	})
-	decoder.Decode(availablePhoneNumberResponse)
+	if err := decoder.Decode(availablePhoneNumberResponse); err != nil {
+		return nil, nil, err
+	}
 	return availablePhoneNumberResponse.AvailablePhoneNumbers, nil, nil
 }
 
