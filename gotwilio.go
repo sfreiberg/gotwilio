@@ -2,9 +2,9 @@
 package gotwilio
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
-	"context"
 	"net/http"
 	"net/url"
 	"path"

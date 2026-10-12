@@ -20,7 +20,7 @@ type ListResources struct {
 	Faxes    []*FaxResource `json:"faxes"`
 	Messages []*SmsResponse `json:"messages"`
 
-	t *Twilio
+	t   *Twilio
 	ctx context.Context
 }
 

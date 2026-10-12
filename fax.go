@@ -82,7 +82,7 @@ func (t *Twilio) DeleteFax(faxSid string) (*Exception, error) {
 }
 
 func (t *Twilio) DeleteFaxWithContext(ctx context.Context, faxSid string) (*Exception, error) {
-	resp, err := t.delete(ctx, "https://fax.twilio.com/v1/Faxes/" + faxSid)
+	resp, err := t.delete(ctx, "https://fax.twilio.com/v1/Faxes/"+faxSid)
 	if err != nil {
 		return nil, err
 	}
@@ -103,7 +103,7 @@ func (t *Twilio) GetFax(faxSid string) (*FaxResource, *Exception, error) {
 }
 
 func (t *Twilio) GetFaxWithContext(ctx context.Context, faxSid string) (*FaxResource, *Exception, error) {
-	resp, err := t.get(ctx, "https://fax.twilio.com/v1/Faxes/" + faxSid)
+	resp, err := t.get(ctx, "https://fax.twilio.com/v1/Faxes/"+faxSid)
 	if err != nil {
 		return nil, nil, err
 	}
