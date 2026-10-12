@@ -1,6 +1,7 @@
 package gotwilio
 
 import (
+	"context"
 	"fmt"
 	"net/url"
 	"strings"
@@ -49,6 +50,10 @@ type Lookup struct {
 // SubmitLookup sends a lookup request populating form fields only if they
 // contain a non-zero value.
 func (twilio *Twilio) SubmitLookup(req LookupReq) (Lookup, error) {
+	return twilio.SubmitLookupWithContext(context.Background(), req)
+}
+
+func (twilio *Twilio) SubmitLookupWithContext(ctx context.Context, req LookupReq) (Lookup, error) {
 	encoder := schema.NewEncoder()
 	values := url.Values{}
 
@@ -70,12 +75,16 @@ func (twilio *Twilio) SubmitLookup(req LookupReq) (Lookup, error) {
 
 	url := fmt.Sprintf("%s/PhoneNumbers/%s?%s&%s", twilio.LookupURL, req.PhoneNumber, values.Encode(), types)
 	res := Lookup{}
-	err := twilio.getJSON(url, &res)
+	err := twilio.getJSON(ctx, url, &res)
 	return res, err
 }
 
 // LookupNoCarrier looks up a phone number's details without the carrier
 func (twilio *Twilio) LookupNoCarrier(phoneNumber string) (Lookup, error) {
+	return twilio.LookupNoCarrierWithContext(context.Background(), phoneNumber)
+}
+
+func (twilio *Twilio) LookupNoCarrierWithContext(ctx context.Context, phoneNumber string) (Lookup, error) {
 	req := LookupReq{PhoneNumber: phoneNumber}
-	return twilio.SubmitLookup(req)
+	return twilio.SubmitLookupWithContext(ctx, req)
 }

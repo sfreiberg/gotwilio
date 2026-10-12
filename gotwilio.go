@@ -88,15 +88,15 @@ func (twilio *Twilio) WithAPIKey(apiKeySid string, apiKeySecret string) *Twilio 
 	return twilio
 }
 
-func (twilio *Twilio) getJSON(url string, result interface{}) error {
-	req, err := http.NewRequest("GET", url, nil)
+func (twilio *Twilio) getJSON(ctx context.Context, url string, result interface{}) error {
+	req, err := http.NewRequestWithContext(ctx, "GET", url, nil)
 	if err != nil {
 		return fmt.Errorf("failed to create request: %v", err)
 	}
 	req.SetBasicAuth(twilio.getBasicAuthCredentials())
 	resp, err := twilio.do(req)
 	if err != nil {
-		return fmt.Errorf("failed to submit HTTP request: %v", err)
+		return fmt.Errorf("failed to submit HTTP request: %w", err)
 	}
 
 	if resp.StatusCode != 200 {

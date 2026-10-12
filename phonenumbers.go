@@ -78,9 +78,13 @@ type AvailablePhoneNumber struct {
 
 // GetAvailablePhoneNumbers retrieves list of available phone numbers
 func (twilio *Twilio) GetAvailablePhoneNumbers(numberType PhoneNumberType, country string, options AvailablePhoneNumbersOptions) ([]*AvailablePhoneNumber, *Exception, error) {
+	return twilio.GetAvailablePhoneNumbersWithContext(context.Background(), numberType, country, options)
+}
+
+func (twilio *Twilio) GetAvailablePhoneNumbersWithContext(ctx context.Context, numberType PhoneNumberType, country string, options AvailablePhoneNumbersOptions) ([]*AvailablePhoneNumber, *Exception, error) {
 	// build initial request
 	resourceName := country + "/" + numberType.String() + ".json"
-	req, err := http.NewRequest(http.MethodGet, twilio.buildUrl("AvailablePhoneNumbers/"+resourceName), nil)
+	req, err := http.NewRequestWithContext(ctx, http.MethodGet, twilio.buildUrl("AvailablePhoneNumbers/"+resourceName), nil)
 	if err != nil {
 		return nil, nil, err
 	}
